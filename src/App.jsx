@@ -1,5 +1,6 @@
 import { useEffect, useState, useCallback } from "react";
 import hamaLogo from "./assets/Hama.jpeg";
+import api from "./api";
 import {
   PieChart,
   Pie,
@@ -17,7 +18,7 @@ import {
 } from "recharts";
 
 /* ===================== CONFIG ===================== */
-const API_URL = "http://localhost:5000/api";
+const API_URL = "https://sales-backend-r0xw.onrender.com/api";
 
 /* ===================== INITIAL DATA (FALLBACK) ===================== */
 const INITIAL_USERS = [
@@ -63,188 +64,6 @@ const getToday = () => new Date().toISOString().split("T")[0];
 const getMonthYear = () => {
   const d = new Date();
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
-};
-
-/* ===================== API FUNCTIONS - FIXED ===================== */
-const api = {
-  async getUsers() {
-    try {
-      const res = await fetch(`${API_URL}/users`);
-      if (!res.ok) throw new Error("Failed to fetch users");
-      const users = await res.json();
-      localStorage.setItem("salesTracker_users", JSON.stringify(users));
-      return users;
-    } catch (err) {
-      console.error("API Error:", err);
-      const stored = localStorage.getItem("salesTracker_users");
-      return stored ? JSON.parse(stored) : INITIAL_USERS;
-    }
-  },
-
-  async addUser(userData) {
-    try {
-      const res = await fetch(`${API_URL}/users`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(userData),
-      });
-
-      if (!res.ok) {
-        const contentType = res.headers.get("content-type");
-        if (contentType && contentType.includes("application/json")) {
-          const errorData = await res.json();
-          throw new Error(errorData.error || "Failed to add user");
-        } else {
-          // HTML error page - backend is down or misconfigured
-          console.warn("Backend returned HTML error page");
-          return { success: true, offline: true };
-        }
-      }
-
-      return await res.json();
-    } catch (err) {
-      console.error("API Error:", err);
-      // Return success, caller handles localStorage
-      return { success: true, offline: true };
-    }
-  },
-
-  async login(username, password) {
-    try {
-      const res = await fetch(`${API_URL}/login`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, password }),
-      });
-      if (!res.ok) {
-        const error = await res.json();
-        throw new Error(error.error || "Login failed");
-      }
-      return await res.json();
-    } catch (err) {
-      console.error("API Error:", err);
-      const users = await this.getUsers();
-      const found = users.find(
-        (u) => u.username === username && u.password === password,
-      );
-      if (!found) throw new Error("Invalid username or password");
-      return { success: true, user: found };
-    }
-  },
-
-  async getProducts() {
-    try {
-      const res = await fetch(`${API_URL}/products`);
-      if (!res.ok) throw new Error("Failed to fetch products");
-      const products = await res.json();
-      localStorage.setItem("salesTracker_products", JSON.stringify(products));
-      return products;
-    } catch (err) {
-      console.error("API Error:", err);
-      const stored = localStorage.getItem("salesTracker_products");
-      return stored ? JSON.parse(stored) : [];
-    }
-  },
-
-  async getSales(query = {}) {
-    try {
-      const params = new URLSearchParams(query);
-      const res = await fetch(`${API_URL}/sales?${params}`);
-      if (!res.ok) throw new Error("Failed to fetch sales");
-      const sales = await res.json();
-
-      const stored = localStorage.getItem("salesTracker_sales");
-      const localSales = stored ? JSON.parse(stored) : [];
-      const merged = [...localSales];
-
-      sales.forEach((s) => {
-        if (!merged.find((m) => m.timestamp === s.timestamp)) {
-          merged.push(s);
-        }
-      });
-
-      localStorage.setItem("salesTracker_sales", JSON.stringify(merged));
-      return sales;
-    } catch (err) {
-      console.error("API Error:", err);
-      const stored = localStorage.getItem("salesTracker_sales");
-      let sales = stored ? JSON.parse(stored) : [];
-
-      if (query.salesmanId)
-        sales = sales.filter((s) => s.salesmanId === query.salesmanId);
-      if (query.date) sales = sales.filter((s) => s.date === query.date);
-      if (query.month)
-        sales = sales.filter((s) => s.date.startsWith(query.month));
-
-      return sales;
-    }
-  },
-
-  async addSale(saleData) {
-    // ALWAYS save locally first
-    const stored = localStorage.getItem("salesTracker_sales");
-    const sales = stored ? JSON.parse(stored) : [];
-    sales.push(saleData);
-    localStorage.setItem("salesTracker_sales", JSON.stringify(sales));
-
-    try {
-      const res = await fetch(`${API_URL}/sales`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(saleData),
-      });
-
-      if (!res.ok) throw new Error("Server error");
-
-      return { success: true, synced: true };
-    } catch (err) {
-      console.error("API Error:", err);
-      // Return success since it's saved locally
-      return { success: true, offline: true };
-    }
-  },
-
-  async getLeaves(query = {}) {
-    try {
-      const params = new URLSearchParams(query);
-      const res = await fetch(`${API_URL}/leaves?${params}`);
-      if (!res.ok) throw new Error("Failed to fetch leaves");
-      const leaves = await res.json();
-      localStorage.setItem("salesTracker_leaves", JSON.stringify(leaves));
-      return leaves;
-    } catch (err) {
-      console.error("API Error:", err);
-      const stored = localStorage.getItem("salesTracker_leaves");
-      let leaves = stored ? JSON.parse(stored) : [];
-
-      if (query.salesmanId)
-        leaves = leaves.filter((l) => l.salesmanId === query.salesmanId);
-      if (query.date) leaves = leaves.filter((l) => l.date === query.date);
-
-      return leaves;
-    }
-  },
-
-  async addLeave(leaveData) {
-    const stored = localStorage.getItem("salesTracker_leaves");
-    const leaves = stored ? JSON.parse(stored) : [];
-    leaves.push(leaveData);
-    localStorage.setItem("salesTracker_leaves", JSON.stringify(leaves));
-
-    try {
-      const res = await fetch(`${API_URL}/leaves`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(leaveData),
-      });
-
-      if (!res.ok) throw new Error("Server error");
-      return { success: true, synced: true };
-    } catch (err) {
-      console.error("API Error:", err);
-      return { success: true, offline: true };
-    }
-  },
 };
 
 /* ===================== STYLES ===================== */
@@ -697,13 +516,6 @@ const LoginPage = ({ onLogin }) => {
     setResetError("");
 
     try {
-      // Check if email belongs to admin
-      const storedUsers = localStorage.getItem("salesTracker_users");
-      const allUsers = storedUsers ? JSON.parse(storedUsers) : INITIAL_USERS;
-      const adminUser = allUsers.find(
-        (u) => u.role === "admin" && u.username === "gokul",
-      );
-
       // Admin can use ANY email address they want
       // No restriction - use your real Gmail address
 
@@ -759,49 +571,8 @@ const LoginPage = ({ onLogin }) => {
           setLoading(false);
           return;
         }
-      } catch (emailJSError) {
+      } catch {
         console.log("EmailJS not configured, using fallback");
-      }
-
-      // ========================================
-      // OPTION 2: FormSubmit (Alternative)
-      // ========================================
-      try {
-        const formData = new FormData();
-        formData.append("email", resetEmail);
-        formData.append("subject", "Password Reset OTP - HAMA Sales Tracker");
-        formData.append(
-          "message",
-          `
-Your OTP Code: ${newOTP}
-
-This OTP is valid for 10 minutes.
-
-If you did not request this password reset, please ignore this email.
-
-Best regards,
-HAMA Sales Tracker Team
-        `,
-        );
-
-        const formSubmitResponse = await fetch(
-          `https://formsubmit.co/ajax/${resetEmail}`,
-          {
-            method: "POST",
-            body: formData,
-          },
-        );
-
-        if (formSubmitResponse.ok) {
-          alert(
-            `✅ SUCCESS!\n\nOTP sent to: ${resetEmail}\n\n📧 Check your email inbox\n\n🔐 Your OTP: ${newOTP}\n\n⚠️ First time? Check spam and mark as "Not Spam"`,
-          );
-          setResetStep(2);
-          setLoading(false);
-          return;
-        }
-      } catch (formSubmitError) {
-        console.log("FormSubmit failed, using local demo");
       }
 
       // ========================================
@@ -840,9 +611,8 @@ For now, copy the OTP above ⬆️
       alert(instructions);
       setResetStep(2);
     } catch (error) {
+      console.error("OTP error:", error);
       setResetError("Failed to send OTP. Please try again.");
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -933,9 +703,8 @@ For now, copy the OTP above ⬆️
       setConfirmPassword("");
       setResetError("");
     } catch (error) {
+      console.error("Reset password error:", error);
       setResetError("Failed to reset password. Please try again.");
-    } finally {
-      setLoading(false);
     }
   };
 
