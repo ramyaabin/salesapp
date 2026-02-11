@@ -475,15 +475,15 @@ const SuccessToast = ({ message, onClose }) => {
     </div>
   );
 };
-
 /* ===================== LOGIN PAGE ===================== */
 const LoginPage = ({ onLogin }) => {
   const [u, setU] = useState("");
   const [p, setP] = useState("");
   const [err, setErr] = useState("");
   const [loading, setLoading] = useState(false);
+
   const [showForgotPassword, setShowForgotPassword] = useState(false);
-  const [resetStep, setResetStep] = useState(1); // 1: Email, 2: OTP, 3: New Password
+  const [resetStep, setResetStep] = useState(1);
   const [resetEmail, setResetEmail] = useState("");
   const [otp, setOtp] = useState("");
   const [generatedOTP, setGeneratedOTP] = useState("");
@@ -491,6 +491,7 @@ const LoginPage = ({ onLogin }) => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [resetError, setResetError] = useState("");
 
+  /* ===================== LOGIN ===================== */
   const go = async () => {
     setLoading(true);
     setErr("");
@@ -504,7 +505,7 @@ const LoginPage = ({ onLogin }) => {
     }
   };
 
-  // Send OTP to email
+  /* ===================== SEND OTP ===================== */
   const sendOTP = async () => {
     if (!resetEmail || !resetEmail.includes("@")) {
       setResetError("Please enter a valid email address");
@@ -515,129 +516,50 @@ const LoginPage = ({ onLogin }) => {
     setResetError("");
 
     try {
-      // Admin can use ANY email address they want
-      // No restriction - use your real Gmail address
-
-      // Generate 6-digit OTP
       const newOTP = Math.floor(100000 + Math.random() * 900000).toString();
       setGeneratedOTP(newOTP);
 
-      // Store OTP with timestamp (expires in 10 minutes)
-      const otpData = {
-        otp: newOTP,
-        email: resetEmail,
-        timestamp: new Date().getTime(),
-        expiresIn: 10 * 60 * 1000, // 10 minutes
-      };
-      localStorage.setItem("admin_otp", JSON.stringify(otpData));
+      localStorage.setItem(
+        "admin_otp",
+        JSON.stringify({
+          otp: newOTP,
+          email: resetEmail,
+          timestamp: Date.now(),
+          expiresIn: 10 * 60 * 1000,
+        }),
+      );
 
-      // ========================================
-      // OPTION 1: EmailJS (Works from browser!)
-      // ========================================
-      // This is a FREE service that sends real emails
-      // No backend needed!
-
-      try {
-        // Using EmailJS public API
-        const emailJSResponse = await fetch(
-          "https://api.emailjs.com/api/v1.0/email/send",
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              service_id: "service_hama_sales", // Public demo service
-              template_id: "template_otp",
-              user_id: "demo_user_hama",
-              template_params: {
-                to_email: resetEmail,
-                to_name: "Admin",
-                otp_code: newOTP,
-                app_name: "HAMA Sales Tracker",
-                validity: "10 minutes",
-                current_year: new Date().getFullYear(),
-              },
-            }),
-          },
-        );
-
-        if (emailJSResponse.ok) {
-          alert(
-            `✅ SUCCESS!\n\nOTP sent to: ${resetEmail}\n\n📧 Check your email inbox (and spam folder)\n\n🔐 Your OTP: ${newOTP}\n\n(Also shown here for convenience)`,
-          );
-          setResetStep(2);
-          setLoading(false);
-          return;
-        }
-      } catch {
-        console.log("EmailJS not configured, using fallback");
-      }
-
-      // ========================================
-      // FALLBACK: Show OTP locally (Demo mode)
-      // ========================================
-      const instructions = `
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-📧 OTP GENERATED (Demo Mode)
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-🔐 YOUR OTP CODE: ${newOTP}
-
-⏰ Valid for: 10 minutes
-📨 Email: ${resetEmail}
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-⚡ TO RECEIVE REAL EMAILS:
-
-EASY SETUP (5 minutes):
-1. Go to: https://www.emailjs.com
-2. Sign up (free account)
-3. Create email service
-4. Get your Service ID, Template ID, User ID
-5. Update the code with your IDs
-
-OR USE GMAIL DIRECTLY:
-Enter YOUR Gmail address above and
-the OTP will be sent there!
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-For now, copy the OTP above ⬆️
-      `;
-
-      alert(instructions);
+      alert(`OTP sent!\n\nOTP: ${newOTP}\n(Valid for 10 minutes)`);
       setResetStep(2);
-    } catch (error) {
-      console.error("OTP error:", error);
+    } catch (_error) {
       setResetError("Failed to send OTP. Please try again.");
+    } finally {
+      setLoading(false);
     }
   };
 
-  // Verify OTP
+  /* ===================== VERIFY OTP ===================== */
   const verifyOTP = () => {
     if (!otp) {
       setResetError("Please enter the OTP");
       return;
     }
 
-    // Check OTP expiry
-    const storedOTP = localStorage.getItem("admin_otp");
-    if (storedOTP) {
-      const otpData = JSON.parse(storedOTP);
-      const currentTime = new Date().getTime();
-      const elapsed = currentTime - otpData.timestamp;
+    const storedOTP = JSON.parse(localStorage.getItem("admin_otp") || "{}");
 
-      if (elapsed > otpData.expiresIn) {
-        setResetError("OTP has expired. Please request a new one.");
-        localStorage.removeItem("admin_otp");
-        return;
-      }
+    if (!storedOTP.otp) {
+      setResetError("OTP not found. Please request again.");
+      return;
+    }
+
+    if (Date.now() - storedOTP.timestamp > storedOTP.expiresIn) {
+      setResetError("OTP expired. Please request again.");
+      localStorage.removeItem("admin_otp");
+      return;
     }
 
     if (otp !== generatedOTP) {
-      setResetError("Invalid OTP. Please check and try again.");
+      setResetError("Invalid OTP");
       return;
     }
 
@@ -645,10 +567,10 @@ For now, copy the OTP above ⬆️
     setResetStep(3);
   };
 
-  // Reset Password
+  /* ===================== RESET PASSWORD ===================== */
   const resetPasswordSubmit = async () => {
     if (!newPassword || newPassword.length < 6) {
-      setResetError("Password must be at least 6 characters long");
+      setResetError("Password must be at least 6 characters");
       return;
     }
 
@@ -661,38 +583,16 @@ For now, copy the OTP above ⬆️
     setResetError("");
 
     try {
-      // Update admin password in localStorage
-      const storedUsers = localStorage.getItem("salesTracker_users");
-      const allUsers = storedUsers ? JSON.parse(storedUsers) : INITIAL_USERS;
-      const updatedUsers = allUsers.map((u) =>
-        u.role === "admin" && u.username === "gokul"
-          ? { ...u, password: newPassword }
-          : u,
-      );
-      localStorage.setItem("salesTracker_users", JSON.stringify(updatedUsers));
+      await api.resetPassword({
+        email: resetEmail,
+        otp,
+        newPassword,
+      });
 
-      // Try to update in backend (optional)
-      try {
-        await fetch(`${API_URL}/admin/reset-password`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            email: resetEmail,
-            otp: otp,
-            newPassword: newPassword,
-          }),
-        });
-      } catch (err) {
-        console.log("Backend update failed, but updated locally:", err);
-      }
+      alert("✅ Password reset successfully! Please login again.");
 
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-
-      alert(
-        "✅ Password reset successfully! You can now login with your new password.",
-      );
-
-      // Reset all states
+      // cleanup
+      localStorage.removeItem("admin_otp");
       setShowForgotPassword(false);
       setResetStep(1);
       setResetEmail("");
@@ -700,13 +600,14 @@ For now, copy the OTP above ⬆️
       setGeneratedOTP("");
       setNewPassword("");
       setConfirmPassword("");
-      setResetError("");
-    } catch (error) {
-      console.error("Reset password error:", error);
+    } catch (_error) {
       setResetError("Failed to reset password. Please try again.");
+    } finally {
+      setLoading(false);
     }
   };
 
+  /* ===================== CANCEL RESET ===================== */
   const cancelReset = () => {
     setShowForgotPassword(false);
     setResetStep(1);
@@ -718,318 +619,106 @@ For now, copy the OTP above ⬆️
     setResetError("");
   };
 
+  /* ===================== UI ===================== */
   return (
-    <>
-      <GlobalStyles />
-      <div style={styles.loginContainer}>
-        <div style={styles.loginCard}>
-          <div style={{ textAlign: "center", marginBottom: "32px" }}>
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "center",
-                marginBottom: "24px",
-              }}
+    <div
+      style={{
+        minHeight: "100vh",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+      }}
+    >
+      <div
+        style={{
+          width: 360,
+          padding: 24,
+          borderRadius: 12,
+          background: "#fff",
+        }}
+      >
+        <img
+          src={hamaLogo}
+          alt="HAMA"
+          style={{ height: 70, display: "block", margin: "0 auto 20px" }}
+        />
+
+        <h3 style={{ textAlign: "center" }}>
+          {showForgotPassword ? "Reset Password" : "Sales Tracker Login"}
+        </h3>
+
+        {err && <p style={{ color: "red" }}>{err}</p>}
+        {resetError && <p style={{ color: "red" }}>{resetError}</p>}
+
+        {!showForgotPassword && (
+          <>
+            <input
+              placeholder="Username"
+              value={u}
+              onChange={(e) => setU(e.target.value)}
+            />
+            <input
+              type="password"
+              placeholder="Password"
+              value={p}
+              onChange={(e) => setP(e.target.value)}
+            />
+
+            <button onClick={go} disabled={loading}>
+              {loading ? "Signing in..." : "Sign In"}
+            </button>
+
+            <button
+              onClick={() => setShowForgotPassword(true)}
+              style={{ marginTop: 10 }}
             >
-              <img
-                src={hamaLogo}
-                alt="HAMA"
-                style={{ height: "80px", width: "auto", objectFit: "contain" }}
-              />
-            </div>
-            <h2 style={styles.loginTitle}>
-              {showForgotPassword ? "Reset Password" : "Sales Tracker"}
-            </h2>
-            <p style={styles.loginSubtitle}>
-              {showForgotPassword
-                ? "Admin Password Recovery"
-                : "Sign in to your account"}
-            </p>
-          </div>
+              Forgot Password?
+            </button>
+          </>
+        )}
 
-          {/* PASSWORD RESET FLOW */}
-          {showForgotPassword ? (
-            <>
-              {resetError && (
-                <div
-                  style={{
-                    background: "#fff5f5",
-                    border: "1px solid #feb2b2",
-                    color: "#c53030",
-                    padding: "12px 16px",
-                    borderRadius: "8px",
-                    marginBottom: "20px",
-                    fontSize: "14px",
-                  }}
-                >
-                  {resetError}
-                </div>
-              )}
+        {showForgotPassword && resetStep === 1 && (
+          <>
+            <input
+              placeholder="Admin Email"
+              value={resetEmail}
+              onChange={(e) => setResetEmail(e.target.value)}
+            />
+            <button onClick={sendOTP}>Send OTP</button>
+            <button onClick={cancelReset}>Back</button>
+          </>
+        )}
 
-              {/* STEP 1: Email Verification */}
-              {resetStep === 1 && (
-                <>
-                  <div
-                    style={{
-                      background: "#e3f2fd",
-                      border: "1px solid #2196f3",
-                      borderRadius: "8px",
-                      padding: "12px",
-                      marginBottom: "20px",
-                      fontSize: "13px",
-                      color: "#1565c0",
-                    }}
-                  >
-                    ℹ️ Enter your registered admin email to receive a one-time
-                    password (OTP)
-                  </div>
+        {showForgotPassword && resetStep === 2 && (
+          <>
+            <input
+              placeholder="Enter OTP"
+              value={otp}
+              onChange={(e) => setOtp(e.target.value)}
+            />
+            <button onClick={verifyOTP}>Verify OTP</button>
+          </>
+        )}
 
-                  <div style={styles.formGroup}>
-                    <label style={styles.label}>Admin Email</label>
-                    <input
-                      type="email"
-                      placeholder="admin@hamasales.com"
-                      value={resetEmail}
-                      onChange={(e) => setResetEmail(e.target.value)}
-                      disabled={loading}
-                      style={styles.input}
-                      autoFocus
-                    />
-                  </div>
-
-                  <button
-                    onClick={sendOTP}
-                    disabled={loading}
-                    style={styles.button}
-                  >
-                    {loading ? "Sending OTP..." : "Send OTP"}
-                  </button>
-
-                  <button
-                    onClick={cancelReset}
-                    disabled={loading}
-                    style={{
-                      ...styles.button,
-                      background: "#f7f8f8",
-                      color: "#0f1111",
-                      marginTop: "12px",
-                      border: "1px solid #d5d9d9",
-                    }}
-                  >
-                    Back to Login
-                  </button>
-                </>
-              )}
-
-              {/* STEP 2: OTP Verification */}
-              {resetStep === 2 && (
-                <>
-                  <div
-                    style={{
-                      background: "#e8f5e9",
-                      border: "1px solid #4caf50",
-                      borderRadius: "8px",
-                      padding: "12px",
-                      marginBottom: "20px",
-                      fontSize: "13px",
-                      color: "#2e7d32",
-                    }}
-                  >
-                    ✅ OTP sent to {resetEmail}. Please check your email.
-                  </div>
-
-                  <div style={styles.formGroup}>
-                    <label style={styles.label}>Enter OTP</label>
-                    <input
-                      type="text"
-                      placeholder="Enter 6-digit code"
-                      value={otp}
-                      onChange={(e) =>
-                        setOtp(e.target.value.replace(/\D/g, "").slice(0, 6))
-                      }
-                      disabled={loading}
-                      style={{
-                        ...styles.input,
-                        fontSize: "24px",
-                        letterSpacing: "8px",
-                        textAlign: "center",
-                        fontWeight: "bold",
-                      }}
-                      maxLength={6}
-                      autoFocus
-                    />
-                  </div>
-
-                  <button
-                    onClick={verifyOTP}
-                    disabled={loading || otp.length !== 6}
-                    style={{
-                      ...styles.button,
-                      opacity: otp.length !== 6 ? 0.5 : 1,
-                    }}
-                  >
-                    Verify OTP
-                  </button>
-
-                  <button
-                    onClick={() => sendOTP()}
-                    disabled={loading}
-                    style={{
-                      ...styles.button,
-                      background: "#f7f8f8",
-                      color: "#0f1111",
-                      marginTop: "12px",
-                      border: "1px solid #d5d9d9",
-                    }}
-                  >
-                    Resend OTP
-                  </button>
-                </>
-              )}
-
-              {/* STEP 3: New Password */}
-              {resetStep === 3 && (
-                <>
-                  <div
-                    style={{
-                      background: "#e8f5e9",
-                      border: "1px solid #4caf50",
-                      borderRadius: "8px",
-                      padding: "12px",
-                      marginBottom: "20px",
-                      fontSize: "13px",
-                      color: "#2e7d32",
-                    }}
-                  >
-                    ✅ OTP verified! Create your new password.
-                  </div>
-
-                  <div style={styles.formGroup}>
-                    <label style={styles.label}>New Password</label>
-                    <input
-                      type="password"
-                      placeholder="Enter new password (min 6 chars)"
-                      value={newPassword}
-                      onChange={(e) => setNewPassword(e.target.value)}
-                      disabled={loading}
-                      style={styles.input}
-                      autoFocus
-                    />
-                  </div>
-
-                  <div style={styles.formGroup}>
-                    <label style={styles.label}>Confirm Password</label>
-                    <input
-                      type="password"
-                      placeholder="Re-enter new password"
-                      value={confirmPassword}
-                      onChange={(e) => setConfirmPassword(e.target.value)}
-                      disabled={loading}
-                      style={styles.input}
-                    />
-                  </div>
-
-                  <button
-                    onClick={resetPasswordSubmit}
-                    disabled={loading}
-                    style={styles.button}
-                  >
-                    {loading ? "Resetting Password..." : "Reset Password"}
-                  </button>
-                </>
-              )}
-            </>
-          ) : (
-            /* LOGIN FORM */
-            <>
-              {err && (
-                <div
-                  style={{
-                    background: "#fff5f5",
-                    border: "1px solid #feb2b2",
-                    color: "#c53030",
-                    padding: "12px 16px",
-                    borderRadius: "8px",
-                    marginBottom: "20px",
-                    fontSize: "14px",
-                  }}
-                >
-                  {err}
-                </div>
-              )}
-
-              <div style={styles.formGroup}>
-                <label style={styles.label}>Username</label>
-                <input
-                  type="text"
-                  placeholder="Enter your username"
-                  value={u}
-                  onChange={(e) => setU(e.target.value)}
-                  onKeyPress={(e) => e.key === "Enter" && !loading && go()}
-                  disabled={loading}
-                  style={styles.input}
-                />
-              </div>
-
-              <div style={styles.formGroup}>
-                <label style={styles.label}>Password</label>
-                <input
-                  type="password"
-                  placeholder="Enter your password"
-                  value={p}
-                  onChange={(e) => setP(e.target.value)}
-                  onKeyPress={(e) => e.key === "Enter" && !loading && go()}
-                  disabled={loading}
-                  style={styles.input}
-                />
-              </div>
-
-              <div
-                style={{
-                  textAlign: "right",
-                  marginBottom: "16px",
-                }}
-              >
-                <button
-                  onClick={() => setShowForgotPassword(true)}
-                  style={{
-                    background: "none",
-                    border: "none",
-                    color: "#d32f2f",
-                    fontSize: "13px",
-                    fontWeight: "500",
-                    cursor: "pointer",
-                    textDecoration: "underline",
-                    padding: 0,
-                  }}
-                >
-                  Forgot Password?
-                </button>
-              </div>
-
-              <button onClick={go} disabled={loading} style={styles.button}>
-                {loading ? "Signing in..." : "Sign In"}
-              </button>
-
-              <div
-                style={{
-                  marginTop: "24px",
-                  padding: "12px",
-                  background: "#f7f8f8",
-                  borderRadius: "8px",
-                  fontSize: "12px",
-                  color: "#565959",
-                  textAlign: "center",
-                }}
-              >
-                🔐 <strong>Admin only:</strong> Use "Forgot Password" to reset
-                via email OTP
-              </div>
-            </>
-          )}
-        </div>
+        {showForgotPassword && resetStep === 3 && (
+          <>
+            <input
+              type="password"
+              placeholder="New Password"
+              value={newPassword}
+              onChange={(e) => setNewPassword(e.target.value)}
+            />
+            <input
+              type="password"
+              placeholder="Confirm Password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+            />
+            <button onClick={resetPasswordSubmit}>Reset Password</button>
+          </>
+        )}
       </div>
-    </>
+    </div>
   );
 };
 

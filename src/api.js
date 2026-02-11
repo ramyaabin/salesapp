@@ -10,7 +10,6 @@ const api = {
       localStorage.setItem("salesTracker_users", JSON.stringify(users));
       return users;
     } catch (_error) {
-      // Using _error to indicate intentionally unused
       console.error("API Error:", _error);
       const stored = localStorage.getItem("salesTracker_users");
       return stored ? JSON.parse(stored) : [];
@@ -43,6 +42,7 @@ const api = {
     }
   },
 
+  /* -------------------- AUTH -------------------- */
   async login(username, password) {
     try {
       const res = await fetch(`${API_URL}/api/login`, {
@@ -59,13 +59,35 @@ const api = {
       return await res.json();
     } catch (err) {
       console.error("API Error:", err);
-      // fallback to localStorage users
+
+      // fallback to localStorage users (offline/demo mode)
       const users = await this.getUsers();
       const found = users.find(
         (u) => u.username === username && u.password === password,
       );
       if (!found) throw new Error("Invalid username or password");
       return { success: true, user: found };
+    }
+  },
+
+  /* -------------------- ADMIN -------------------- */
+  async resetPassword(data) {
+    try {
+      const res = await fetch(`${API_URL}/api/admin/reset-password`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+
+      if (!res.ok) {
+        const error = await res.json();
+        throw new Error(error.error || "Password reset failed");
+      }
+
+      return await res.json();
+    } catch (error) {
+      console.error("API Error:", error);
+      throw error;
     }
   },
 
@@ -119,7 +141,6 @@ const api = {
   },
 
   async addSale(saleData) {
-    // Save locally first
     const stored = localStorage.getItem("salesTracker_sales");
     const sales = stored ? JSON.parse(stored) : [];
     sales.push(saleData);
