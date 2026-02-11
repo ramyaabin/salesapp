@@ -18,7 +18,6 @@ import {
 } from "recharts";
 
 /* ===================== CONFIG ===================== */
-const API_URL = "https://sales-backend-r0xw.onrender.com/api";
 
 /* ===================== INITIAL DATA (FALLBACK) ===================== */
 const INITIAL_USERS = [
