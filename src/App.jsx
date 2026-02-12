@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState } from "react";
 import hamaLogo from "./assets/Hama.jpeg";
 import api from "./api";
 import {
