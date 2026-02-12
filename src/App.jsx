@@ -891,6 +891,8 @@ const ManageSalesmen = ({ navigate, onLogout }) => {
 const DownloadProducts = ({ navigate, onLogout }) => {
   const [loading, setLoading] = useState(true);
   const [products, setProducts] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filteredProducts, setFilteredProducts] = useState([]);
 
   useEffect(() => {
     loadProducts();
@@ -901,6 +903,7 @@ const DownloadProducts = ({ navigate, onLogout }) => {
     try {
       const data = await api.getProducts();
       setProducts(data);
+      setFilteredProducts(data);
     } catch (err) {
       console.error("Error loading products:", err);
     } finally {
@@ -908,9 +911,23 @@ const DownloadProducts = ({ navigate, onLogout }) => {
     }
   };
 
+  // Filter products based on search term
+  useEffect(() => {
+    if (searchTerm.trim() === "") {
+      setFilteredProducts(products);
+    } else {
+      const filtered = products.filter(
+        (p) =>
+          p.brand.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          p.itemCode.toLowerCase().includes(searchTerm.toLowerCase()),
+      );
+      setFilteredProducts(filtered);
+    }
+  }, [searchTerm, products]);
+
   const downloadCSV = () => {
     let csv = "Brand,Item Code,Price\n";
-    products.forEach((p) => {
+    filteredProducts.forEach((p) => {
       csv += `${p.brand},${p.itemCode},${p.price}\n`;
     });
     const blob = new Blob([csv], { type: "text/csv" });
@@ -948,15 +965,35 @@ const DownloadProducts = ({ navigate, onLogout }) => {
         </div>
 
         <div style={styles.mainContent}>
-          <div style={{ marginBottom: "20px" }}>
+          <div
+            style={{
+              marginBottom: "20px",
+              display: "flex",
+              gap: "12px",
+              alignItems: "center",
+            }}
+          >
             <button onClick={downloadCSV} style={styles.button}>
               Download CSV
             </button>
+            <input
+              type="text"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              placeholder="Search by brand or item code..."
+              style={{
+                ...styles.input,
+                flex: 1,
+                maxWidth: "400px",
+              }}
+            />
           </div>
 
           <div className="card" style={styles.card}>
             <h3 style={styles.cardTitle}>
-              All Products ({products.length} items)
+              {searchTerm
+                ? `Search Results (${filteredProducts.length} of ${products.length} items)`
+                : `All Products (${products.length} items)`}
             </h3>
             <div style={{ maxHeight: "600px", overflowY: "auto" }}>
               <table style={styles.table}>
@@ -968,13 +1005,28 @@ const DownloadProducts = ({ navigate, onLogout }) => {
                   </tr>
                 </thead>
                 <tbody>
-                  {products.map((p, idx) => (
-                    <tr key={idx}>
-                      <td style={styles.td}>{p.brand}</td>
-                      <td style={styles.td}>{p.itemCode}</td>
-                      <td style={styles.td}>{money(p.price)}</td>
+                  {filteredProducts.length > 0 ? (
+                    filteredProducts.map((p, idx) => (
+                      <tr key={idx}>
+                        <td style={styles.td}>{p.brand}</td>
+                        <td style={styles.td}>{p.itemCode}</td>
+                        <td style={styles.td}>{money(p.price)}</td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td
+                        colSpan="3"
+                        style={{
+                          ...styles.td,
+                          textAlign: "center",
+                          color: "#565959",
+                        }}
+                      >
+                        No products found matching "{searchTerm}"
+                      </td>
                     </tr>
-                  ))}
+                  )}
                 </tbody>
               </table>
             </div>
@@ -997,6 +1049,11 @@ const SalesmanDashboard = ({ user, navigate, onLogout }) => {
     loadData();
   }, []);
 
+  // Auto-refresh leaves when view or date changes
+  useEffect(() => {
+    refreshLeaves();
+  }, [view, selectedDate]);
+
   const loadData = async () => {
     setLoading(true);
     try {
@@ -1010,6 +1067,15 @@ const SalesmanDashboard = ({ user, navigate, onLogout }) => {
       console.error("Error loading data:", err);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const refreshLeaves = async () => {
+    try {
+      const leavesData = await api.getLeaves({ salesmanId: user.salesmanId });
+      setLeaves(leavesData);
+    } catch (err) {
+      console.error("Error refreshing leaves:", err);
     }
   };
 
@@ -1314,12 +1380,14 @@ const AddSale = ({ user, navigate, onLogout }) => {
   const [date, setDate] = useState(getToday());
   const [brand, setBrand] = useState("");
   const [itemCode, setItemCode] = useState("");
+  const [itemCodeSearch, setItemCodeSearch] = useState("");
   const [quantity, setQuantity] = useState("");
   const [price, setPrice] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [showToast, setShowToast] = useState(false);
   const [products, setProducts] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
+  const [showDropdown, setShowDropdown] = useState(false);
 
   useEffect(() => {
     loadProducts();
@@ -1345,13 +1413,32 @@ const AddSale = ({ user, navigate, onLogout }) => {
     }
   }, [brand, products]);
 
-  const handleItemCodeSelect = (e) => {
-    const selectedCode = e.target.value;
-    setItemCode(selectedCode);
-    const product = products.find((p) => p.itemCode === selectedCode);
-    if (product) {
-      setPrice(product.price);
+  // Type-ahead search for item codes
+  useEffect(() => {
+    if (itemCodeSearch && itemCodeSearch.length > 0) {
+      const searchResults = products.filter((p) =>
+        p.itemCode.toLowerCase().includes(itemCodeSearch.toLowerCase()),
+      );
+      setFilteredProducts(searchResults);
+      setShowDropdown(true);
+    } else if (brand) {
+      const filtered = products.filter(
+        (p) => p.brand.toLowerCase() === brand.toLowerCase(),
+      );
+      setFilteredProducts(filtered);
+      setShowDropdown(false);
+    } else {
+      setFilteredProducts([]);
+      setShowDropdown(false);
     }
+  }, [itemCodeSearch, brand, products]);
+
+  const handleItemCodeSelect = (selectedProduct) => {
+    setItemCode(selectedProduct.itemCode);
+    setItemCodeSearch(selectedProduct.itemCode);
+    setBrand(selectedProduct.brand);
+    setPrice(selectedProduct.price);
+    setShowDropdown(false);
   };
 
   const handleSubmit = async () => {
@@ -1462,20 +1549,70 @@ const AddSale = ({ user, navigate, onLogout }) => {
               </select>
             </div>
             <div style={styles.formGroup}>
-              <label style={styles.label}>Item Code</label>
-              <select
-                value={itemCode}
-                onChange={handleItemCodeSelect}
-                disabled={submitting || !brand}
-                style={styles.select}
-              >
-                <option value="">Select Item Code</option>
-                {filteredProducts.map((p) => (
-                  <option key={p.itemCode} value={p.itemCode}>
-                    {p.itemCode}
-                  </option>
-                ))}
-              </select>
+              <label style={styles.label}>
+                Item Code (Search or select from dropdown)
+              </label>
+              <div style={{ position: "relative" }}>
+                <input
+                  type="text"
+                  value={itemCodeSearch}
+                  onChange={(e) => setItemCodeSearch(e.target.value)}
+                  onFocus={() => itemCodeSearch && setShowDropdown(true)}
+                  disabled={submitting}
+                  style={styles.input}
+                  placeholder="Type to search item code..."
+                />
+                {showDropdown && filteredProducts.length > 0 && (
+                  <div
+                    style={{
+                      position: "absolute",
+                      top: "100%",
+                      left: 0,
+                      right: 0,
+                      maxHeight: "200px",
+                      overflowY: "auto",
+                      background: "white",
+                      border: "1px solid #d5d9d9",
+                      borderRadius: "8px",
+                      marginTop: "4px",
+                      boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+                      zIndex: 1000,
+                    }}
+                  >
+                    {filteredProducts.slice(0, 10).map((p) => (
+                      <div
+                        key={p.itemCode}
+                        onClick={() => handleItemCodeSelect(p)}
+                        style={{
+                          padding: "10px 12px",
+                          cursor: "pointer",
+                          borderBottom: "1px solid #f0f0f0",
+                          transition: "background 0.2s",
+                        }}
+                        onMouseEnter={(e) =>
+                          (e.target.style.background = "#f8f9fa")
+                        }
+                        onMouseLeave={(e) =>
+                          (e.target.style.background = "white")
+                        }
+                      >
+                        <div style={{ fontWeight: "600", fontSize: "14px" }}>
+                          {p.itemCode}
+                        </div>
+                        <div
+                          style={{
+                            fontSize: "12px",
+                            color: "#565959",
+                            marginTop: "2px",
+                          }}
+                        >
+                          {p.brand} • {money(p.price)}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
             </div>
             <div style={styles.formGroup}>
               <label style={styles.label}>Quantity</label>
