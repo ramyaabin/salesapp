@@ -265,45 +265,113 @@ const styles = {
     width: "100%",
     border: "1px solid #ddd",
   },
+  logoContainer: {
+    textAlign: "center",
+    marginBottom: "24px",
+  },
+  logo: {
+    height: "70px",
+    width: "auto",
+    objectFit: "contain",
+  },
   loginTitle: {
-    fontSize: "28px",
+    fontSize: "24px",
     fontWeight: "700",
-    color: "#0f1111",
-    margin: "0 0 8px 0",
-    letterSpacing: "-0.5px",
+    color: "#232f3e",
+    marginBottom: "8px",
+    textAlign: "center",
   },
-  loginSubtitle: { color: "#565959", fontSize: "14px", fontWeight: "400" },
-  input: {
-    width: "100%",
-    padding: "10px 12px",
-    border: "1px solid #d5d9d9",
-    borderRadius: "8px",
+  loginSubtitle: {
     fontSize: "14px",
-    outline: "none",
-    boxSizing: "border-box",
-    background: "#ffffff",
-    color: "#0f1111",
-    transition: "all 0.2s ease",
+    color: "#565959",
+    marginBottom: "32px",
+    textAlign: "center",
   },
-  button: {
-    width: "100%",
-    background: "#d32f2f",
-    color: "white",
-    fontWeight: "500",
-    padding: "10px 16px",
-    borderRadius: "8px",
-    border: "none",
-    cursor: "pointer",
-    fontSize: "14px",
-    transition: "all 0.2s ease",
+  formGroup: {
+    marginBottom: "20px",
   },
-  formGroup: { marginBottom: "16px" },
   label: {
     display: "block",
-    fontSize: "14px",
+    fontSize: "13px",
     fontWeight: "600",
     color: "#0f1111",
     marginBottom: "6px",
+  },
+  input: {
+    width: "100%",
+    padding: "10px 12px",
+    fontSize: "14px",
+    border: "1px solid #d5d9d9",
+    borderRadius: "8px",
+    outline: "none",
+    transition: "all 0.2s ease",
+    boxSizing: "border-box",
+  },
+  button: {
+    width: "100%",
+    padding: "12px",
+    background: "#d32f2f",
+    color: "white",
+    border: "none",
+    borderRadius: "8px",
+    fontSize: "14px",
+    fontWeight: "600",
+    cursor: "pointer",
+    transition: "all 0.2s ease",
+  },
+  dashboardContainer: {
+    minHeight: "100vh",
+    background: "#f8f9fa",
+    fontFamily: "'Amazon Ember', 'Helvetica Neue', Arial, sans-serif",
+  },
+  header: {
+    background: "#ffffff",
+    borderBottom: "1px solid #ddd",
+    boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
+    position: "sticky",
+    top: 0,
+    zIndex: 100,
+  },
+  headerContent: {
+    maxWidth: "1600px",
+    margin: "0 auto",
+    padding: "16px 40px",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  headerTitle: {
+    fontSize: "24px",
+    fontWeight: "700",
+    color: "#232f3e",
+    margin: 0,
+  },
+  headerButton: {
+    padding: "8px 16px",
+    background: "#ffffff",
+    border: "1px solid #d5d9d9",
+    borderRadius: "8px",
+    color: "#0f1111",
+    fontSize: "13px",
+    fontWeight: "500",
+    cursor: "pointer",
+    transition: "all 0.2s ease",
+  },
+  logoutButton: {
+    padding: "8px 16px",
+    background: "#d32f2f",
+    border: "none",
+    borderRadius: "8px",
+    color: "white",
+    fontSize: "13px",
+    fontWeight: "500",
+    cursor: "pointer",
+    transition: "all 0.2s ease",
+  },
+  mainContent: {
+    maxWidth: "1600px",
+    margin: "0 auto",
+    padding: "24px 40px",
   },
   card: {
     background: "#ffffff",
@@ -316,135 +384,151 @@ const styles = {
   cardTitle: {
     fontSize: "18px",
     fontWeight: "700",
-    color: "#0f1111",
-    margin: "0 0 16px 0",
+    color: "#232f3e",
+    marginBottom: "20px",
   },
-  table: { width: "100%", borderCollapse: "collapse" },
+  table: {
+    width: "100%",
+    borderCollapse: "collapse",
+  },
   th: {
     textAlign: "left",
     padding: "12px",
     borderBottom: "2px solid #ddd",
     fontSize: "13px",
     fontWeight: "600",
-    color: "#0f1111",
+    color: "#565959",
     textTransform: "uppercase",
     letterSpacing: "0.5px",
   },
   td: {
     padding: "12px",
-    borderBottom: "1px solid #e3e6e6",
+    borderBottom: "1px solid #f0f0f0",
     fontSize: "14px",
-    color: "#0f1111",
+    color: "#232f3e",
   },
   actionButton: {
-    padding: "8px 16px",
+    padding: "6px 12px",
     background: "#d32f2f",
     color: "white",
     border: "none",
-    borderRadius: "8px",
-    cursor: "pointer",
-    fontSize: "13px",
+    borderRadius: "6px",
+    fontSize: "12px",
     fontWeight: "500",
+    cursor: "pointer",
     transition: "all 0.2s ease",
   },
   textarea: {
     width: "100%",
     padding: "10px 12px",
-    border: "1px solid #d5d9d9",
-    borderRadius: "8px",
     fontSize: "14px",
-    outline: "none",
-    boxSizing: "border-box",
-    background: "#ffffff",
-    color: "#0f1111",
-    resize: "vertical",
-    fontFamily: "'Amazon Ember', 'Helvetica Neue', Arial, sans-serif",
-  },
-  uploadArea: {
-    border: "2px dashed #d5d9d9",
-    borderRadius: "8px",
-    padding: "40px",
-    textAlign: "center",
-    cursor: "pointer",
-    background: "#f7f8f8",
-    transition: "all 0.2s ease",
-  },
-  searchResults: {
     border: "1px solid #d5d9d9",
     borderRadius: "8px",
-    marginTop: "8px",
-    maxHeight: "300px",
-    overflowY: "auto",
-    background: "#ffffff",
+    outline: "none",
+    fontFamily: "inherit",
+    resize: "vertical",
+    boxSizing: "border-box",
   },
-  searchResultItem: {
-    padding: "12px 16px",
+  dateInput: {
+    width: "100%",
+    padding: "10px 12px",
+    fontSize: "14px",
+    border: "1px solid #d5d9d9",
+    borderRadius: "8px",
+    outline: "none",
     cursor: "pointer",
-    transition: "all 0.2s ease",
-    borderBottom: "1px solid #e3e6e6",
+    boxSizing: "border-box",
   },
-  dashboardContainer: modernStyles.dashboardContainer,
-  header: modernStyles.header,
-  headerContent: modernStyles.headerContent,
-  headerTitle: modernStyles.headerTitle,
-  headerButton: modernStyles.headerButton,
-  userBadge: modernStyles.userBadge,
-  userAvatar: modernStyles.userAvatar,
-  logoutButton: modernStyles.logoutButton,
-  mainContent: modernStyles.mainContent,
-  controlBar: modernStyles.controlBar,
-  viewToggle: modernStyles.viewToggle,
-  toggleButton: modernStyles.toggleButton,
-  toggleButtonActive: modernStyles.toggleButtonActive,
-  dateInput: modernStyles.dateInput,
-  statsGrid: modernStyles.statsGrid,
-  statsCard: modernStyles.statsCard,
-  statsIcon: modernStyles.statsIcon,
-  statsLabel: modernStyles.statsLabel,
-  statsValue: modernStyles.statsValue,
+  select: {
+    width: "100%",
+    padding: "10px 12px",
+    fontSize: "14px",
+    border: "1px solid #d5d9d9",
+    borderRadius: "8px",
+    outline: "none",
+    cursor: "pointer",
+    background: "white",
+    boxSizing: "border-box",
+  },
 };
 
 /* ===================== GLOBAL STYLES ===================== */
-const GlobalStyles = () => (
-  <style>{`
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-    * { font-family: 'Inter', 'Amazon Ember', 'Helvetica Neue', Arial, sans-serif; }
-    body { margin: 0; padding: 0; background: #f8f9fa; }
-    button:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,0.12); }
-    button:active:not(:disabled) { transform: translateY(0); }
-    input:focus, textarea:focus { outline: none; border-color: #d32f2f !important; box-shadow: 0 0 0 3px rgba(211, 47, 47, 0.1) !important; }
-    .stats-card:hover { transform: translateY(-4px); box-shadow: 0 4px 16px rgba(0,0,0,0.12); }
-    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-    @keyframes pulse { 
-      0%, 100% { transform: scale(1); opacity: 1; } 
-      50% { transform: scale(1.1); opacity: 0.8; } 
-    }
-    ::-webkit-scrollbar { width: 10px; height: 10px; }
-    ::-webkit-scrollbar-track { background: #f7f8f8; }
-    ::-webkit-scrollbar-thumb { background: #d5d9d9; borderRadius: 5px; }
-  `}</style>
-);
+const GlobalStyles = () => {
+  useEffect(() => {
+    const style = document.createElement("style");
+    style.textContent = `
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        padding: 0;
+        font-family: 'Amazon Ember', 'Helvetica Neue', Arial, sans-serif;
+      }
+      button:hover {
+        opacity: 0.9;
+        transform: translateY(-1px);
+      }
+      button:active {
+        transform: translateY(0);
+      }
+      input:focus, textarea:focus, select:focus {
+        border-color: #d32f2f;
+        box-shadow: 0 0 0 3px rgba(211, 47, 47, 0.1);
+      }
+      table tr:hover {
+        background: #f8f9fa;
+      }
+      .card:hover {
+        box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+      }
+    `;
+    document.head.appendChild(style);
+    return () => document.head.removeChild(style);
+  }, []);
+  return null;
+};
 
 /* ===================== LOADING SPINNER ===================== */
 const LoadingSpinner = () => (
   <div
     style={{
+      minHeight: "100vh",
       display: "flex",
-      justifyContent: "center",
       alignItems: "center",
-      padding: "60px",
+      justifyContent: "center",
+      background: "#f8f9fa",
     }}
   >
     <div
       style={{
-        width: "40px",
-        height: "40px",
-        border: "4px solid #f7f8f8",
-        borderTop: "4px solid #d32f2f",
-        borderRadius: "50%",
-        animation: "spin 1s linear infinite",
+        fontSize: "18px",
+        color: "#565959",
+        display: "flex",
+        alignItems: "center",
+        gap: "12px",
       }}
-    />
+    >
+      <div
+        style={{
+          width: "32px",
+          height: "32px",
+          border: "3px solid #f0f0f0",
+          borderTop: "3px solid #d32f2f",
+          borderRadius: "50%",
+          animation: "spin 1s linear infinite",
+        }}
+      />
+      Loading...
+    </div>
+    <style>
+      {`
+        @keyframes spin {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+        }
+      `}
+    </style>
   </div>
 );
 
@@ -467,277 +551,108 @@ const SuccessToast = ({ message, onClose }) => {
         borderRadius: "8px",
         boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
         zIndex: 1000,
-        animation: "slideIn 0.3s ease-out",
-        fontWeight: "500",
+        display: "flex",
+        alignItems: "center",
+        gap: "12px",
+        animation: "slideIn 0.3s ease",
       }}
     >
-      ✓ {message}
+      <span style={{ fontSize: "24px" }}>✓</span>
+      <span style={{ fontSize: "14px", fontWeight: "500" }}>{message}</span>
+      <style>
+        {`
+          @keyframes slideIn {
+            from { transform: translateX(400px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+          }
+        `}
+      </style>
     </div>
   );
 };
+
 /* ===================== LOGIN PAGE ===================== */
 const LoginPage = ({ onLogin }) => {
-  const [u, setU] = useState("");
-  const [p, setP] = useState("");
-  const [err, setErr] = useState("");
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const [showForgotPassword, setShowForgotPassword] = useState(false);
-  const [resetStep, setResetStep] = useState(1);
-  const [resetEmail, setResetEmail] = useState("");
-  const [otp, setOtp] = useState("");
-  const [generatedOTP, setGeneratedOTP] = useState("");
-  const [newPassword, setNewPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [resetError, setResetError] = useState("");
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    if (!username || !password) {
+      alert("Please enter username and password");
+      return;
+    }
 
-  /* ===================== LOGIN ===================== */
-  const go = async () => {
     setLoading(true);
-    setErr("");
     try {
-      const result = await api.login(u, p);
-      if (result.success) onLogin(result.user);
-    } catch (error) {
-      setErr(error.message);
+      const result = await api.login(username, password);
+      if (result.success) {
+        onLogin(result.user);
+      }
+    } catch (err) {
+      alert(err.message);
     } finally {
       setLoading(false);
     }
   };
 
-  /* ===================== SEND OTP ===================== */
-  const sendOTP = async () => {
-    if (!resetEmail || !resetEmail.includes("@")) {
-      setResetError("Please enter a valid email address");
-      return;
-    }
-
-    setLoading(true);
-    setResetError("");
-
-    try {
-      const newOTP = Math.floor(100000 + Math.random() * 900000).toString();
-      setGeneratedOTP(newOTP);
-
-      localStorage.setItem(
-        "admin_otp",
-        JSON.stringify({
-          otp: newOTP,
-          email: resetEmail,
-          timestamp: Date.now(),
-          expiresIn: 10 * 60 * 1000,
-        }),
-      );
-
-      alert(`OTP sent!\n\nOTP: ${newOTP}\n(Valid for 10 minutes)`);
-      setResetStep(2);
-    } catch (_error) {
-      setResetError("Failed to send OTP. Please try again.");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  /* ===================== VERIFY OTP ===================== */
-  const verifyOTP = () => {
-    if (!otp) {
-      setResetError("Please enter the OTP");
-      return;
-    }
-
-    const storedOTP = JSON.parse(localStorage.getItem("admin_otp") || "{}");
-
-    if (!storedOTP.otp) {
-      setResetError("OTP not found. Please request again.");
-      return;
-    }
-
-    if (Date.now() - storedOTP.timestamp > storedOTP.expiresIn) {
-      setResetError("OTP expired. Please request again.");
-      localStorage.removeItem("admin_otp");
-      return;
-    }
-
-    if (otp !== generatedOTP) {
-      setResetError("Invalid OTP");
-      return;
-    }
-
-    setResetError("");
-    setResetStep(3);
-  };
-
-  /* ===================== RESET PASSWORD ===================== */
-  const resetPasswordSubmit = async () => {
-    if (!newPassword || newPassword.length < 6) {
-      setResetError("Password must be at least 6 characters");
-      return;
-    }
-
-    if (newPassword !== confirmPassword) {
-      setResetError("Passwords do not match");
-      return;
-    }
-
-    setLoading(true);
-    setResetError("");
-
-    try {
-      await api.resetPassword({
-        email: resetEmail,
-        otp,
-        newPassword,
-      });
-
-      alert("✅ Password reset successfully! Please login again.");
-
-      // cleanup
-      localStorage.removeItem("admin_otp");
-      setShowForgotPassword(false);
-      setResetStep(1);
-      setResetEmail("");
-      setOtp("");
-      setGeneratedOTP("");
-      setNewPassword("");
-      setConfirmPassword("");
-    } catch (_error) {
-      setResetError("Failed to reset password. Please try again.");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  /* ===================== CANCEL RESET ===================== */
-  const cancelReset = () => {
-    setShowForgotPassword(false);
-    setResetStep(1);
-    setResetEmail("");
-    setOtp("");
-    setGeneratedOTP("");
-    setNewPassword("");
-    setConfirmPassword("");
-    setResetError("");
-  };
-
-  /* ===================== UI ===================== */
   return (
-    <div
-      style={{
-        minHeight: "100vh",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-      }}
-    >
-      <div
-        style={{
-          width: 360,
-          padding: 24,
-          borderRadius: 12,
-          background: "#fff",
-        }}
-      >
-        <img
-          src={hamaLogo}
-          alt="HAMA"
-          style={{ height: 70, display: "block", margin: "0 auto 20px" }}
-        />
-
-        <h3 style={{ textAlign: "center" }}>
-          {showForgotPassword ? "Reset Password" : "Sales Tracker Login"}
-        </h3>
-
-        {err && <p style={{ color: "red" }}>{err}</p>}
-        {resetError && <p style={{ color: "red" }}>{resetError}</p>}
-
-        {!showForgotPassword && (
-          <>
-            <input
-              placeholder="Username"
-              value={u}
-              onChange={(e) => setU(e.target.value)}
-            />
-            <input
-              type="password"
-              placeholder="Password"
-              value={p}
-              onChange={(e) => setP(e.target.value)}
-            />
-
-            <button onClick={go} disabled={loading}>
+    <>
+      <GlobalStyles />
+      <div style={styles.loginContainer}>
+        <div style={styles.loginCard}>
+          <div style={styles.logoContainer}>
+            <img src={hamaLogo} alt="HAMA" style={styles.logo} />
+          </div>
+          <h2 style={styles.loginTitle}>HAMA Sales Tracker</h2>
+          <p style={styles.loginSubtitle}>Sign in to your account</p>
+          <form onSubmit={handleLogin}>
+            <div style={styles.formGroup}>
+              <label style={styles.label}>Username</label>
+              <input
+                type="text"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                disabled={loading}
+                style={styles.input}
+                placeholder="Enter your username"
+              />
+            </div>
+            <div style={styles.formGroup}>
+              <label style={styles.label}>Password</label>
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                disabled={loading}
+                style={styles.input}
+                placeholder="Enter your password"
+              />
+            </div>
+            <button type="submit" disabled={loading} style={styles.button}>
               {loading ? "Signing in..." : "Sign In"}
             </button>
-
-            <button
-              onClick={() => setShowForgotPassword(true)}
-              style={{ marginTop: 10 }}
-            >
-              Forgot Password?
-            </button>
-          </>
-        )}
-
-        {showForgotPassword && resetStep === 1 && (
-          <>
-            <input
-              placeholder="Admin Email"
-              value={resetEmail}
-              onChange={(e) => setResetEmail(e.target.value)}
-            />
-            <button onClick={sendOTP}>Send OTP</button>
-            <button onClick={cancelReset}>Back</button>
-          </>
-        )}
-
-        {showForgotPassword && resetStep === 2 && (
-          <>
-            <input
-              placeholder="Enter OTP"
-              value={otp}
-              onChange={(e) => setOtp(e.target.value)}
-            />
-            <button onClick={verifyOTP}>Verify OTP</button>
-          </>
-        )}
-
-        {showForgotPassword && resetStep === 3 && (
-          <>
-            <input
-              type="password"
-              placeholder="New Password"
-              value={newPassword}
-              onChange={(e) => setNewPassword(e.target.value)}
-            />
-            <input
-              type="password"
-              placeholder="Confirm Password"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-            />
-            <button onClick={resetPasswordSubmit}>Reset Password</button>
-          </>
-        )}
+          </form>
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 
-/* ===================== MANAGE SALESMEN - FIXED ===================== */
+/* ===================== MANAGE SALESMEN ===================== */
 const ManageSalesmen = ({ navigate, onLogout }) => {
   const [salesmen, setSalesmen] = useState([]);
-  const [showAddForm, setShowAddForm] = useState(false);
-  const [newSalesman, setNewSalesman] = useState({
+  const [showForm, setShowForm] = useState(false);
+  const [formData, setFormData] = useState({
     name: "",
     username: "",
     password: "",
+    salesmanId: "",
   });
+  const [resetData, setResetData] = useState({ salesmanId: "", password: "" });
+  const [showResetForm, setShowResetForm] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [submitting, setSubmitting] = useState(false);
-  const [showToast, setShowToast] = useState(false);
-  const [toastMessage, setToastMessage] = useState("");
-  const [deleteConfirm, setDeleteConfirm] = useState(null);
-  const [resetPasswordModal, setResetPasswordModal] = useState(null);
-  const [newPassword, setNewPassword] = useState("");
 
   useEffect(() => {
     loadSalesmen();
@@ -755,218 +670,46 @@ const ManageSalesmen = ({ navigate, onLogout }) => {
     }
   };
 
-  const addSalesman = async () => {
-    if (!newSalesman.name || !newSalesman.username || !newSalesman.password) {
+  const handleAddSalesman = async (e) => {
+    e.preventDefault();
+    if (!formData.name || !formData.username || !formData.password) {
+      alert("Please fill all required fields");
+      return;
+    }
+
+    try {
+      const userData = {
+        ...formData,
+        role: "salesman",
+        salesmanId:
+          formData.salesmanId ||
+          `SM${String(salesmen.length + 1).padStart(3, "0")}`,
+      };
+
+      await api.addUser(userData);
+      alert("Salesman added successfully!");
+      setFormData({ name: "", username: "", password: "", salesmanId: "" });
+      setShowForm(false);
+      loadSalesmen();
+    } catch (err) {
+      alert("Error adding salesman: " + err.message);
+    }
+  };
+
+  const handleResetPassword = async (e) => {
+    e.preventDefault();
+    if (!resetData.salesmanId || !resetData.password) {
       alert("Please fill all fields");
       return;
     }
 
-    setSubmitting(true);
     try {
-      // Get current users from localStorage
-      const storedUsers = localStorage.getItem("salesTracker_users");
-      const allUsers = storedUsers ? JSON.parse(storedUsers) : INITIAL_USERS;
-
-      // Check if username already exists
-      const existingUser = allUsers.find(
-        (u) => u.username === newSalesman.username,
-      );
-      if (existingUser) {
-        alert("Username already exists. Please choose a different username.");
-        setSubmitting(false);
-        return;
-      }
-
-      // Calculate new salesman ID
-      const salesmanCount = allUsers.filter(
-        (u) => u.role === "salesman",
-      ).length;
-      const newSalesmanId = `SM${String(salesmanCount + 1).padStart(3, "0")}`;
-
-      // Create new user data with same structure as Ravi and Priya
-      const userData = {
-        id: allUsers.length + 1,
-        username: newSalesman.username,
-        password: newSalesman.password,
-        name: newSalesman.name,
-        role: "salesman",
-        salesmanId: newSalesmanId,
-      };
-
-      // Save to localStorage FIRST (this ensures it works even if backend is down)
-      allUsers.push(userData);
-      localStorage.setItem("salesTracker_users", JSON.stringify(allUsers));
-
-      // Try to save to backend (optional) - but DON'T add to localStorage again
-      try {
-        await fetch(`${API_URL}/users`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(userData),
-        });
-      } catch (err) {
-        console.log("Backend save failed, but saved locally:", err);
-      }
-
-      // Reset form and reload
-      setNewSalesman({ name: "", username: "", password: "" });
-      setShowAddForm(false);
-      setToastMessage("Salesman added successfully!");
-      setShowToast(true);
-      await loadSalesmen();
-    } catch (err) {
-      alert("Error adding salesman: " + err.message);
-    } finally {
-      setSubmitting(false);
-    }
-  };
-
-  // Download salesman reports before deletion
-  const downloadSalesmanReports = (salesman) => {
-    // Get all sales for this salesman
-    const storedSales = localStorage.getItem("salesTracker_sales");
-    const allSales = storedSales ? JSON.parse(storedSales) : [];
-    const salesmanSales = allSales.filter(
-      (s) => s.salesmanId === salesman.salesmanId,
-    );
-
-    // Get all leaves for this salesman
-    const storedLeaves = localStorage.getItem("salesTracker_leaves");
-    const allLeaves = storedLeaves ? JSON.parse(storedLeaves) : [];
-    const salesmanLeaves = allLeaves.filter(
-      (l) => l.salesmanId === salesman.salesmanId,
-    );
-
-    // Create Sales Report CSV
-    let salesCSV = "Date,Brand,Item Code,Quantity,Price,Total\n";
-    salesmanSales.forEach((s) => {
-      salesCSV += `${s.date},${s.brand},${s.itemCode},${s.quantity},${s.price},${s.totalAmount || s.quantity * s.price}\n`;
-    });
-
-    // Create Leaves Report CSV
-    let leavesCSV = "Date,Reason\n";
-    salesmanLeaves.forEach((l) => {
-      leavesCSV += `${l.date},"${l.reason}"\n`;
-    });
-
-    // Download Sales Report
-    const salesBlob = new Blob([salesCSV], { type: "text/csv" });
-    const salesUrl = window.URL.createObjectURL(salesBlob);
-    const salesLink = document.createElement("a");
-    salesLink.href = salesUrl;
-    salesLink.download = `${salesman.name}_sales_report.csv`;
-    salesLink.click();
-    window.URL.revokeObjectURL(salesUrl);
-
-    // Download Leaves Report if there are any leaves
-    if (salesmanLeaves.length > 0) {
-      setTimeout(() => {
-        const leavesBlob = new Blob([leavesCSV], { type: "text/csv" });
-        const leavesUrl = window.URL.createObjectURL(leavesBlob);
-        const leavesLink = document.createElement("a");
-        leavesLink.href = leavesUrl;
-        leavesLink.download = `${salesman.name}_leaves_report.csv`;
-        leavesLink.click();
-        window.URL.revokeObjectURL(leavesUrl);
-      }, 500);
-    }
-  };
-
-  // Delete salesman and all their data
-  const deleteSalesman = async (salesman) => {
-    setSubmitting(true);
-    try {
-      // 1. Remove from users
-      const storedUsers = localStorage.getItem("salesTracker_users");
-      const allUsers = storedUsers ? JSON.parse(storedUsers) : INITIAL_USERS;
-      const updatedUsers = allUsers.filter(
-        (u) => u.salesmanId !== salesman.salesmanId,
-      );
-      localStorage.setItem("salesTracker_users", JSON.stringify(updatedUsers));
-
-      // 2. Remove all sales
-      const storedSales = localStorage.getItem("salesTracker_sales");
-      const allSales = storedSales ? JSON.parse(storedSales) : [];
-      const updatedSales = allSales.filter(
-        (s) => s.salesmanId !== salesman.salesmanId,
-      );
-      localStorage.setItem("salesTracker_sales", JSON.stringify(updatedSales));
-
-      // 3. Remove all leaves
-      const storedLeaves = localStorage.getItem("salesTracker_leaves");
-      const allLeaves = storedLeaves ? JSON.parse(storedLeaves) : [];
-      const updatedLeaves = allLeaves.filter(
-        (l) => l.salesmanId !== salesman.salesmanId,
-      );
-      localStorage.setItem(
-        "salesTracker_leaves",
-        JSON.stringify(updatedLeaves),
-      );
-
-      // 4. Try to delete from backend (optional)
-      try {
-        await fetch(`${API_URL}/users/${salesman.salesmanId}`, {
-          method: "DELETE",
-        });
-      } catch (err) {
-        console.log("Backend delete failed, but removed locally:", err);
-      }
-
-      // Close dialog and reload
-      setDeleteConfirm(null);
-      setToastMessage("Salesman removed successfully!");
-      setShowToast(true);
-      await loadSalesmen();
-    } catch (err) {
-      alert("Error deleting salesman: " + err.message);
-    } finally {
-      setSubmitting(false);
-    }
-  };
-
-  // Reset salesman password
-  const resetPassword = async () => {
-    if (!newPassword || newPassword.length < 6) {
-      alert("Password must be at least 6 characters long");
-      return;
-    }
-
-    setSubmitting(true);
-    try {
-      // Update password in localStorage
-      const storedUsers = localStorage.getItem("salesTracker_users");
-      const allUsers = storedUsers ? JSON.parse(storedUsers) : INITIAL_USERS;
-      const updatedUsers = allUsers.map((u) =>
-        u.salesmanId === resetPasswordModal.salesmanId
-          ? { ...u, password: newPassword }
-          : u,
-      );
-      localStorage.setItem("salesTracker_users", JSON.stringify(updatedUsers));
-
-      // Try to update in backend (optional)
-      try {
-        await fetch(
-          `${API_URL}/users/${resetPasswordModal.salesmanId}/password`,
-          {
-            method: "PUT",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ password: newPassword }),
-          },
-        );
-      } catch (err) {
-        console.log("Backend update failed, but updated locally:", err);
-      }
-
-      // Close modal and reload
-      setResetPasswordModal(null);
-      setNewPassword("");
-      setToastMessage("Password reset successfully!");
-      setShowToast(true);
-      await loadSalesmen();
+      await api.resetPassword(resetData);
+      alert("Password reset successfully!");
+      setResetData({ salesmanId: "", password: "" });
+      setShowResetForm(false);
     } catch (err) {
       alert("Error resetting password: " + err.message);
-    } finally {
-      setSubmitting(false);
     }
   };
 
@@ -975,410 +718,12 @@ const ManageSalesmen = ({ navigate, onLogout }) => {
   return (
     <>
       <GlobalStyles />
-      {showToast && (
-        <SuccessToast
-          message={toastMessage}
-          onClose={() => setShowToast(false)}
-        />
-      )}
-
-      {/* DELETE CONFIRMATION MODAL */}
-      {deleteConfirm && (
-        <div
-          style={{
-            position: "fixed",
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            background: "rgba(0,0,0,0.7)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            zIndex: 1000,
-            overflowY: "auto",
-            padding: "20px",
-          }}
-        >
-          <div
-            style={{
-              background: "#ffffff",
-              borderRadius: "12px",
-              padding: "32px",
-              maxWidth: "600px",
-              width: "100%",
-              boxShadow: "0 8px 32px rgba(0,0,0,0.3)",
-              maxHeight: "90vh",
-              overflowY: "auto",
-            }}
-          >
-            <div style={{ textAlign: "center", marginBottom: "24px" }}>
-              <div
-                style={{
-                  fontSize: "72px",
-                  marginBottom: "16px",
-                  animation: "pulse 2s infinite",
-                }}
-              >
-                ⚠️
-              </div>
-              <h3
-                style={{
-                  fontSize: "28px",
-                  fontWeight: "700",
-                  color: "#d32f2f",
-                  margin: "0 0 16px 0",
-                }}
-              >
-                PERMANENT DELETION WARNING
-              </h3>
-            </div>
-
-            {/* Salesman Info */}
-            <div
-              style={{
-                background: "#f7f8f8",
-                border: "2px solid #d5d9d9",
-                borderRadius: "8px",
-                padding: "20px",
-                marginBottom: "20px",
-              }}
-            >
-              <h4
-                style={{
-                  fontSize: "16px",
-                  fontWeight: "700",
-                  color: "#0f1111",
-                  margin: "0 0 12px 0",
-                }}
-              >
-                📋 Salesman Details
-              </h4>
-              <div style={{ fontSize: "14px", color: "#0f1111" }}>
-                <p style={{ margin: "8px 0" }}>
-                  <strong>Name:</strong> {deleteConfirm.name}
-                </p>
-                <p style={{ margin: "8px 0" }}>
-                  <strong>ID:</strong> {deleteConfirm.salesmanId}
-                </p>
-                <p style={{ margin: "8px 0" }}>
-                  <strong>Username:</strong> {deleteConfirm.username}
-                </p>
-              </div>
-            </div>
-
-            {/* Data Statistics */}
-            <div
-              style={{
-                background: "#fff3e0",
-                border: "2px solid #ff9800",
-                borderRadius: "8px",
-                padding: "20px",
-                marginBottom: "20px",
-              }}
-            >
-              <h4
-                style={{
-                  fontSize: "16px",
-                  fontWeight: "700",
-                  color: "#e65100",
-                  margin: "0 0 12px 0",
-                }}
-              >
-                📊 Data to be Deleted
-              </h4>
-              <div style={{ fontSize: "14px", color: "#e65100" }}>
-                <p style={{ margin: "8px 0" }}>
-                  <strong>Sales Records:</strong>{" "}
-                  {(() => {
-                    const storedSales =
-                      localStorage.getItem("salesTracker_sales");
-                    const allSales = storedSales ? JSON.parse(storedSales) : [];
-                    return allSales.filter(
-                      (s) => s.salesmanId === deleteConfirm.salesmanId,
-                    ).length;
-                  })()}{" "}
-                  transactions
-                </p>
-                <p style={{ margin: "8px 0" }}>
-                  <strong>Leave Records:</strong>{" "}
-                  {(() => {
-                    const storedLeaves = localStorage.getItem(
-                      "salesTracker_leaves",
-                    );
-                    const allLeaves = storedLeaves
-                      ? JSON.parse(storedLeaves)
-                      : [];
-                    return allLeaves.filter(
-                      (l) => l.salesmanId === deleteConfirm.salesmanId,
-                    ).length;
-                  })()}{" "}
-                  leaves
-                </p>
-              </div>
-            </div>
-
-            {/* Critical Warning */}
-            <div
-              style={{
-                background: "#fff5f5",
-                border: "3px solid #d32f2f",
-                borderRadius: "8px",
-                padding: "20px",
-                marginBottom: "24px",
-              }}
-            >
-              <p
-                style={{
-                  fontSize: "15px",
-                  color: "#c53030",
-                  margin: "0 0 16px 0",
-                  fontWeight: "700",
-                  lineHeight: "1.6",
-                }}
-              >
-                ⚠️ This action will permanently remove the salesman and all
-                associated data from the system. Please download all required
-                reports before proceeding. This action cannot be undone.
-              </p>
-              <p
-                style={{
-                  fontSize: "14px",
-                  color: "#c53030",
-                  margin: "0",
-                  fontWeight: "600",
-                }}
-              >
-                The following will be PERMANENTLY DELETED:
-              </p>
-              <ul
-                style={{
-                  margin: "12px 0 0 0",
-                  paddingLeft: "20px",
-                  color: "#c53030",
-                  fontSize: "14px",
-                }}
-              >
-                <li>Salesman user account</li>
-                <li>All sales transactions (till date)</li>
-                <li>All leave applications (till date)</li>
-                <li>Removal from all reports and statistics</li>
-                <li>Removal from Admin Dashboard</li>
-              </ul>
-            </div>
-
-            {/* Download Reports Section */}
-            <div
-              style={{
-                background: "#e8f5e9",
-                border: "2px solid #4caf50",
-                borderRadius: "8px",
-                padding: "20px",
-                marginBottom: "24px",
-              }}
-            >
-              <h4
-                style={{
-                  fontSize: "16px",
-                  fontWeight: "700",
-                  color: "#2e7d32",
-                  margin: "0 0 12px 0",
-                }}
-              >
-                📥 Download Reports (Till Date)
-              </h4>
-              <p
-                style={{
-                  fontSize: "13px",
-                  color: "#2e7d32",
-                  margin: "0 0 16px 0",
-                }}
-              >
-                Please download all reports before proceeding with deletion
-              </p>
-              <div style={{ display: "flex", gap: "12px", flexWrap: "wrap" }}>
-                <button
-                  onClick={() => downloadSalesmanReports(deleteConfirm)}
-                  style={{
-                    padding: "10px 20px",
-                    background: "#4caf50",
-                    color: "white",
-                    border: "none",
-                    borderRadius: "6px",
-                    cursor: "pointer",
-                    fontSize: "14px",
-                    fontWeight: "500",
-                    flex: 1,
-                    minWidth: "150px",
-                  }}
-                >
-                  📥 Download All Reports
-                </button>
-              </div>
-            </div>
-
-            {/* Action Buttons */}
-            <div
-              style={{
-                display: "flex",
-                gap: "12px",
-                justifyContent: "center",
-              }}
-            >
-              <button
-                onClick={() => setDeleteConfirm(null)}
-                disabled={submitting}
-                style={{
-                  padding: "12px 32px",
-                  background: "#f7f8f8",
-                  border: "2px solid #d5d9d9",
-                  borderRadius: "8px",
-                  color: "#0f1111",
-                  fontSize: "15px",
-                  fontWeight: "600",
-                  cursor: submitting ? "not-allowed" : "pointer",
-                  flex: 1,
-                }}
-              >
-                Cancel
-              </button>
-              <button
-                onClick={() => deleteSalesman(deleteConfirm)}
-                disabled={submitting}
-                style={{
-                  padding: "12px 32px",
-                  background: "#d32f2f",
-                  border: "none",
-                  borderRadius: "8px",
-                  color: "white",
-                  fontSize: "15px",
-                  fontWeight: "600",
-                  cursor: submitting ? "not-allowed" : "pointer",
-                  flex: 1,
-                }}
-              >
-                {submitting ? "Deleting..." : "⚠️ Confirm Deletion"}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* PASSWORD RESET MODAL */}
-      {resetPasswordModal && (
-        <div
-          style={{
-            position: "fixed",
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            background: "rgba(0,0,0,0.7)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            zIndex: 1000,
-          }}
-        >
-          <div
-            style={{
-              background: "#ffffff",
-              borderRadius: "12px",
-              padding: "32px",
-              maxWidth: "450px",
-              width: "90%",
-              boxShadow: "0 8px 32px rgba(0,0,0,0.3)",
-            }}
-          >
-            <div style={{ textAlign: "center", marginBottom: "24px" }}>
-              <div style={{ fontSize: "48px", marginBottom: "16px" }}>🔐</div>
-              <h3
-                style={{
-                  fontSize: "24px",
-                  fontWeight: "700",
-                  color: "#0f1111",
-                  margin: "0 0 8px 0",
-                }}
-              >
-                Reset Password
-              </h3>
-              <p style={{ fontSize: "14px", color: "#565959", margin: 0 }}>
-                {resetPasswordModal.name} ({resetPasswordModal.salesmanId})
-              </p>
-            </div>
-
-            <div
-              style={{
-                background: "#fff3e0",
-                border: "1px solid #ff9800",
-                borderRadius: "8px",
-                padding: "12px",
-                marginBottom: "20px",
-              }}
-            >
-              <p
-                style={{
-                  fontSize: "13px",
-                  color: "#e65100",
-                  margin: 0,
-                  fontWeight: "500",
-                }}
-              >
-                ⚠️ Only Admin can reset salesman passwords. Salesmen cannot
-                reset their own passwords.
-              </p>
-            </div>
-
-            <div style={styles.formGroup}>
-              <label style={styles.label}>New Password</label>
-              <input
-                type="text"
-                placeholder="Enter new password (min 6 characters)"
-                value={newPassword}
-                onChange={(e) => setNewPassword(e.target.value)}
-                disabled={submitting}
-                style={styles.input}
-                autoFocus
-              />
-            </div>
-
-            <div style={{ display: "flex", gap: "12px", marginTop: "24px" }}>
-              <button
-                onClick={() => {
-                  setResetPasswordModal(null);
-                  setNewPassword("");
-                }}
-                disabled={submitting}
-                style={{
-                  ...styles.headerButton,
-                  flex: 1,
-                  padding: "10px",
-                }}
-              >
-                Cancel
-              </button>
-              <button
-                onClick={resetPassword}
-                disabled={submitting}
-                style={{
-                  ...styles.button,
-                  flex: 1,
-                  padding: "10px",
-                }}
-              >
-                {submitting ? "Resetting..." : "Reset Password"}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
       <div style={styles.dashboardContainer}>
         <div style={styles.header}>
           <div style={styles.headerContent}>
             <div style={modernStyles.logoContainer}>
               <img src={hamaLogo} alt="HAMA" style={modernStyles.logo} />
-              <h1 style={styles.headerTitle}>Manage Team</h1>
+              <h1 style={styles.headerTitle}>Manage Salesmen</h1>
             </div>
             <div style={{ display: "flex", gap: "12px" }}>
               <button
@@ -1395,197 +740,142 @@ const ManageSalesmen = ({ navigate, onLogout }) => {
         </div>
 
         <div style={styles.mainContent}>
-          <div className="card" style={styles.card}>
-            <div
+          <div style={{ marginBottom: "20px" }}>
+            <button
+              onClick={() => setShowForm(!showForm)}
               style={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                marginBottom: "20px",
+                ...styles.button,
+                width: "auto",
+                marginRight: "10px",
               }}
             >
-              <h3 style={styles.cardTitle}>All Salesmen ({salesmen.length})</h3>
-              <button
-                onClick={() => setShowAddForm(!showAddForm)}
-                style={{
-                  ...styles.button,
-                  width: "auto",
-                  padding: "8px 16px",
-                  background: showAddForm ? "#888" : "#d32f2f",
-                }}
-              >
-                {showAddForm ? "Cancel" : "+ Add Salesman"}
-              </button>
-            </div>
+              {showForm ? "Cancel" : "Add New Salesman"}
+            </button>
+            <button
+              onClick={() => setShowResetForm(!showResetForm)}
+              style={{ ...styles.button, width: "auto" }}
+            >
+              {showResetForm ? "Cancel" : "Reset Password"}
+            </button>
+          </div>
 
-            {showAddForm && (
-              <div
-                style={{
-                  background: "#f7f8f8",
-                  padding: "20px",
-                  borderRadius: "8px",
-                  marginBottom: "20px",
-                  border: "1px solid #ddd",
-                }}
-              >
-                <h4
-                  style={{
-                    fontSize: "16px",
-                    fontWeight: "600",
-                    color: "#0f1111",
-                    margin: "0 0 16px 0",
-                  }}
-                >
-                  Add New Salesman
-                </h4>
-                <div
-                  style={{
-                    display: "grid",
-                    gridTemplateColumns: "1fr 1fr 1fr",
-                    gap: "16px",
-                    marginBottom: "16px",
-                  }}
-                >
-                  <div style={styles.formGroup}>
-                    <label style={styles.label}>Name</label>
-                    <input
-                      type="text"
-                      value={newSalesman.name}
-                      onChange={(e) =>
-                        setNewSalesman({ ...newSalesman, name: e.target.value })
-                      }
-                      disabled={submitting}
-                      style={styles.input}
-                    />
-                  </div>
-                  <div style={styles.formGroup}>
-                    <label style={styles.label}>Username</label>
-                    <input
-                      type="text"
-                      value={newSalesman.username}
-                      onChange={(e) =>
-                        setNewSalesman({
-                          ...newSalesman,
-                          username: e.target.value,
-                        })
-                      }
-                      disabled={submitting}
-                      style={styles.input}
-                    />
-                  </div>
-                  <div style={styles.formGroup}>
-                    <label style={styles.label}>Password</label>
-                    <input
-                      type="password"
-                      value={newSalesman.password}
-                      onChange={(e) =>
-                        setNewSalesman({
-                          ...newSalesman,
-                          password: e.target.value,
-                        })
-                      }
-                      disabled={submitting}
-                      style={styles.input}
-                    />
-                  </div>
+          {showForm && (
+            <div className="card" style={styles.card}>
+              <h3 style={styles.cardTitle}>Add New Salesman</h3>
+              <form onSubmit={handleAddSalesman}>
+                <div style={styles.formGroup}>
+                  <label style={styles.label}>Name *</label>
+                  <input
+                    type="text"
+                    value={formData.name}
+                    onChange={(e) =>
+                      setFormData({ ...formData, name: e.target.value })
+                    }
+                    style={styles.input}
+                    placeholder="Full Name"
+                  />
                 </div>
-                <button
-                  onClick={addSalesman}
-                  disabled={submitting}
-                  style={styles.button}
-                >
-                  {submitting ? "Adding..." : "Add Salesman"}
+                <div style={styles.formGroup}>
+                  <label style={styles.label}>Username *</label>
+                  <input
+                    type="text"
+                    value={formData.username}
+                    onChange={(e) =>
+                      setFormData({ ...formData, username: e.target.value })
+                    }
+                    style={styles.input}
+                    placeholder="Login username"
+                  />
+                </div>
+                <div style={styles.formGroup}>
+                  <label style={styles.label}>Password *</label>
+                  <input
+                    type="password"
+                    value={formData.password}
+                    onChange={(e) =>
+                      setFormData({ ...formData, password: e.target.value })
+                    }
+                    style={styles.input}
+                    placeholder="Login password"
+                  />
+                </div>
+                <div style={styles.formGroup}>
+                  <label style={styles.label}>
+                    Salesman ID (optional, auto-generated if empty)
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.salesmanId}
+                    onChange={(e) =>
+                      setFormData({ ...formData, salesmanId: e.target.value })
+                    }
+                    style={styles.input}
+                    placeholder="e.g., SM001"
+                  />
+                </div>
+                <button type="submit" style={styles.button}>
+                  Add Salesman
                 </button>
-              </div>
-            )}
+              </form>
+            </div>
+          )}
 
+          {showResetForm && (
+            <div className="card" style={styles.card}>
+              <h3 style={styles.cardTitle}>Reset Password</h3>
+              <form onSubmit={handleResetPassword}>
+                <div style={styles.formGroup}>
+                  <label style={styles.label}>Salesman ID</label>
+                  <select
+                    value={resetData.salesmanId}
+                    onChange={(e) =>
+                      setResetData({ ...resetData, salesmanId: e.target.value })
+                    }
+                    style={styles.select}
+                  >
+                    <option value="">Select Salesman</option>
+                    {salesmen.map((sm) => (
+                      <option key={sm.id || sm._id} value={sm.salesmanId}>
+                        {sm.name} ({sm.salesmanId})
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div style={styles.formGroup}>
+                  <label style={styles.label}>New Password</label>
+                  <input
+                    type="password"
+                    value={resetData.password}
+                    onChange={(e) =>
+                      setResetData({ ...resetData, password: e.target.value })
+                    }
+                    style={styles.input}
+                    placeholder="Enter new password"
+                  />
+                </div>
+                <button type="submit" style={styles.button}>
+                  Reset Password
+                </button>
+              </form>
+            </div>
+          )}
+
+          <div className="card" style={styles.card}>
+            <h3 style={styles.cardTitle}>Current Salesmen</h3>
             <table style={styles.table}>
               <thead>
                 <tr>
-                  <th style={styles.th}>Salesman ID</th>
                   <th style={styles.th}>Name</th>
                   <th style={styles.th}>Username</th>
-                  <th style={styles.th}>Password</th>
-                  <th style={styles.th}>Actions</th>
+                  <th style={styles.th}>Salesman ID</th>
                 </tr>
               </thead>
               <tbody>
-                {salesmen.map((salesman) => (
-                  <tr key={salesman.id || salesman._id}>
-                    <td style={styles.td}>{salesman.salesmanId}</td>
-                    <td style={styles.td}>{salesman.name}</td>
-                    <td style={styles.td}>{salesman.username}</td>
-                    <td style={styles.td}>
-                      <span
-                        style={{
-                          fontFamily: "monospace",
-                          background: "#f7f8f8",
-                          padding: "4px 8px",
-                          borderRadius: "4px",
-                          fontSize: "13px",
-                        }}
-                      >
-                        {salesman.password}
-                      </span>
-                    </td>
-                    <td style={styles.td}>
-                      <div style={{ display: "flex", gap: "8px" }}>
-                        <button
-                          onClick={() => setResetPasswordModal(salesman)}
-                          style={{
-                            padding: "6px 12px",
-                            background: "#ffffff",
-                            border: "1px solid #1976d2",
-                            borderRadius: "6px",
-                            color: "#1976d2",
-                            fontSize: "13px",
-                            fontWeight: "500",
-                            cursor: "pointer",
-                            transition: "all 0.2s ease",
-                            display: "flex",
-                            alignItems: "center",
-                            gap: "6px",
-                          }}
-                          onMouseEnter={(e) => {
-                            e.currentTarget.style.background = "#1976d2";
-                            e.currentTarget.style.color = "white";
-                          }}
-                          onMouseLeave={(e) => {
-                            e.currentTarget.style.background = "#ffffff";
-                            e.currentTarget.style.color = "#1976d2";
-                          }}
-                        >
-                          🔐 Reset
-                        </button>
-                        <button
-                          onClick={() => setDeleteConfirm(salesman)}
-                          style={{
-                            padding: "6px 12px",
-                            background: "#ffffff",
-                            border: "1px solid #d32f2f",
-                            borderRadius: "6px",
-                            color: "#d32f2f",
-                            fontSize: "13px",
-                            fontWeight: "500",
-                            cursor: "pointer",
-                            transition: "all 0.2s ease",
-                            display: "flex",
-                            alignItems: "center",
-                            gap: "6px",
-                          }}
-                          onMouseEnter={(e) => {
-                            e.currentTarget.style.background = "#d32f2f";
-                            e.currentTarget.style.color = "white";
-                          }}
-                          onMouseLeave={(e) => {
-                            e.currentTarget.style.background = "#ffffff";
-                            e.currentTarget.style.color = "#d32f2f";
-                          }}
-                        >
-                          🗑️ Delete
-                        </button>
-                      </div>
-                    </td>
+                {salesmen.map((sm) => (
+                  <tr key={sm.id || sm._id}>
+                    <td style={styles.td}>{sm.name}</td>
+                    <td style={styles.td}>{sm.username}</td>
+                    <td style={styles.td}>{sm.salesmanId}</td>
                   </tr>
                 ))}
               </tbody>
@@ -1597,19 +887,10 @@ const ManageSalesmen = ({ navigate, onLogout }) => {
   );
 };
 
-/* ===================== DOWNLOAD PRODUCTS - WITH SEARCH ===================== */
+/* ===================== DOWNLOAD PRODUCTS ===================== */
 const DownloadProducts = ({ navigate, onLogout }) => {
-  const [products, setProducts] = useState([]);
-  const [filteredProducts, setFilteredProducts] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [page, setPage] = useState(1);
-  const [searchQuery, setSearchQuery] = useState("");
-  const PAGE_SIZE = 20;
-
-  const val = (obj, keys) =>
-    keys.find((k) => obj?.[k] !== undefined)
-      ? obj[keys.find((k) => obj?.[k] !== undefined)]
-      : "";
+  const [products, setProducts] = useState([]);
 
   useEffect(() => {
     loadProducts();
@@ -1620,8 +901,6 @@ const DownloadProducts = ({ navigate, onLogout }) => {
     try {
       const data = await api.getProducts();
       setProducts(data);
-      setFilteredProducts(data);
-      setPage(1);
     } catch (err) {
       console.error("Error loading products:", err);
     } finally {
@@ -1629,89 +908,20 @@ const DownloadProducts = ({ navigate, onLogout }) => {
     }
   };
 
-  /* ===================== SEARCH FUNCTIONALITY ===================== */
-  const handleSearch = (query) => {
-    setSearchQuery(query);
-    setPage(1);
-
-    if (!query || query.trim() === "") {
-      setFilteredProducts(products);
-      return;
-    }
-
-    const searchTerm = query.toLowerCase();
-    const filtered = products.filter((p) => {
-      const brand = String(val(p, ["brand", "Brand"]) || "").toLowerCase();
-      const modelNumber = String(
-        val(p, ["modelNumber", "Model ", "Model"]) || "",
-      ).toLowerCase();
-      const itemCode = String(
-        val(p, ["itemCode", "Item Code"]) || "",
-      ).toLowerCase();
-
-      return (
-        brand.includes(searchTerm) ||
-        modelNumber.includes(searchTerm) ||
-        itemCode.includes(searchTerm)
-      );
-    });
-
-    setFilteredProducts(filtered);
-  };
-
-  /* ===================== DOWNLOAD EXCEL ===================== */
-  const handleDownload = async () => {
-    try {
-      const res = await fetch(`${API_URL}/download-products`, {
-        method: "GET",
-      });
-
-      if (!res.ok) {
-        // Fallback: create CSV if backend endpoint doesn't exist
-        downloadAsCSV();
-        return;
-      }
-
-      const blob = await res.blob();
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = "products.xlsx";
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-      window.URL.revokeObjectURL(url);
-    } catch (err) {
-      console.error("Download error:", err);
-      downloadAsCSV();
-    }
-  };
-
-  /* ===================== FALLBACK: DOWNLOAD AS CSV ===================== */
-  const downloadAsCSV = () => {
-    let csv = "Brand,Model Number,Item Code,Price\n";
+  const downloadCSV = () => {
+    let csv = "Brand,Item Code,Price\n";
     products.forEach((p) => {
-      const brand = val(p, ["brand", "Brand"]);
-      const model = val(p, ["modelNumber", "Model ", "Model"]);
-      const itemCode = val(p, ["itemCode", "Item Code"]);
-      const price = val(p, ["rspVat", " RSP+Vat ", "RSP+Vat"]);
-      csv += `"${brand}","${model}","${itemCode}",${price}\n`;
+      csv += `${p.brand},${p.itemCode},${p.price}\n`;
     });
-
     const blob = new Blob([csv], { type: "text/csv" });
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
     a.download = "products.csv";
     a.click();
-    window.URL.revokeObjectURL(url);
   };
 
-  const totalPages = Math.ceil(filteredProducts.length / PAGE_SIZE);
-  const paginatedProducts = filteredProducts.slice(
-    (page - 1) * PAGE_SIZE,
-    page * PAGE_SIZE,
-  );
+  if (loading) return <LoadingSpinner />;
 
   return (
     <>
@@ -1721,7 +931,7 @@ const DownloadProducts = ({ navigate, onLogout }) => {
           <div style={styles.headerContent}>
             <div style={modernStyles.logoContainer}>
               <img src={hamaLogo} alt="HAMA" style={modernStyles.logo} />
-              <h1 style={styles.headerTitle}>Download Products</h1>
+              <h1 style={styles.headerTitle}>Product List</h1>
             </div>
             <div style={{ display: "flex", gap: "12px" }}>
               <button
@@ -1738,152 +948,36 @@ const DownloadProducts = ({ navigate, onLogout }) => {
         </div>
 
         <div style={styles.mainContent}>
+          <div style={{ marginBottom: "20px" }}>
+            <button onClick={downloadCSV} style={styles.button}>
+              Download CSV
+            </button>
+          </div>
+
           <div className="card" style={styles.card}>
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                marginBottom: "20px",
-                flexWrap: "wrap",
-                gap: "12px",
-              }}
-            >
-              <h3 style={styles.cardTitle}>
-                Product Catalog ({filteredProducts.length})
-              </h3>
-              <button
-                onClick={handleDownload}
-                style={{
-                  ...styles.button,
-                  width: "auto",
-                  padding: "10px 20px",
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "8px",
-                }}
-              >
-                📥 Download Excel
-              </button>
+            <h3 style={styles.cardTitle}>
+              All Products ({products.length} items)
+            </h3>
+            <div style={{ maxHeight: "600px", overflowY: "auto" }}>
+              <table style={styles.table}>
+                <thead>
+                  <tr>
+                    <th style={styles.th}>Brand</th>
+                    <th style={styles.th}>Item Code</th>
+                    <th style={styles.th}>Price (AED)</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {products.map((p, idx) => (
+                    <tr key={idx}>
+                      <td style={styles.td}>{p.brand}</td>
+                      <td style={styles.td}>{p.itemCode}</td>
+                      <td style={styles.td}>{money(p.price)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
-
-            {/* SEARCH BAR */}
-            <div style={styles.formGroup}>
-              <input
-                type="text"
-                placeholder="🔍 Search by Brand, Model Number, or Item Code..."
-                value={searchQuery}
-                onChange={(e) => handleSearch(e.target.value)}
-                style={{
-                  ...styles.input,
-                  fontSize: "15px",
-                  padding: "12px 16px",
-                }}
-              />
-            </div>
-
-            {loading ? (
-              <LoadingSpinner />
-            ) : filteredProducts.length > 0 ? (
-              <>
-                <div style={{ maxHeight: "500px", overflowY: "auto" }}>
-                  <table style={styles.table}>
-                    <thead>
-                      <tr>
-                        <th style={styles.th}>Brand</th>
-                        <th style={styles.th}>Model Number</th>
-                        <th style={styles.th}>Item Code</th>
-                        <th style={styles.th}>Price</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {paginatedProducts.map((p, idx) => (
-                        <tr key={idx}>
-                          <td style={styles.td}>
-                            {val(p, ["brand", "Brand"])}
-                          </td>
-                          <td style={styles.td}>
-                            {val(p, ["modelNumber", "Model ", "Model"])}
-                          </td>
-                          <td style={styles.td}>
-                            {val(p, ["itemCode", "Item Code"])}
-                          </td>
-                          <td style={styles.td}>
-                            {money(
-                              Number(
-                                val(p, ["rspVat", " RSP+Vat ", "RSP+Vat"]),
-                              ),
-                            )}
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-
-                {/* PAGINATION */}
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    gap: "16px",
-                    marginTop: "16px",
-                  }}
-                >
-                  <button
-                    onClick={() => setPage((p) => Math.max(1, p - 1))}
-                    disabled={page === 1}
-                    style={{
-                      ...styles.headerButton,
-                      opacity: page === 1 ? 0.5 : 1,
-                      cursor: page === 1 ? "not-allowed" : "pointer",
-                    }}
-                  >
-                    ◀ Previous
-                  </button>
-                  <span style={{ color: "#565959", fontWeight: "500" }}>
-                    Page {page} of {totalPages}
-                  </span>
-                  <button
-                    onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-                    disabled={page === totalPages}
-                    style={{
-                      ...styles.headerButton,
-                      opacity: page === totalPages ? 0.5 : 1,
-                      cursor: page === totalPages ? "not-allowed" : "pointer",
-                    }}
-                  >
-                    Next ▶
-                  </button>
-                </div>
-              </>
-            ) : (
-              <div
-                style={{
-                  textAlign: "center",
-                  padding: "40px",
-                  color: "#565959",
-                }}
-              >
-                <p style={{ fontSize: "16px", margin: "0 0 8px 0" }}>
-                  {searchQuery
-                    ? `No products found for "${searchQuery}"`
-                    : "No products available"}
-                </p>
-                {searchQuery && (
-                  <button
-                    onClick={() => handleSearch("")}
-                    style={{
-                      ...styles.headerButton,
-                      marginTop: "12px",
-                    }}
-                  >
-                    Clear Search
-                  </button>
-                )}
-              </div>
-            )}
           </div>
         </div>
       </div>
@@ -1891,99 +985,378 @@ const DownloadProducts = ({ navigate, onLogout }) => {
   );
 };
 
-/* ===================== ADD SALE - FIXED ===================== */
-const AddSale = ({ user, navigate, onLogout }) => {
-  const [products, setProducts] = useState([]);
-  const [formData, setFormData] = useState({
-    brand: "",
-    modelNumber: "",
-    itemCode: "",
-    quantity: 1,
-  });
-  const [searchResults, setSearchResults] = useState([]);
+/* ===================== SALESMAN DASHBOARD ===================== */
+const SalesmanDashboard = ({ user, navigate, onLogout }) => {
+  const [sales, setSales] = useState([]);
+  const [leaves, setLeaves] = useState([]);
+  const [selectedDate, setSelectedDate] = useState(getToday());
+  const [view, setView] = useState("daily");
   const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    loadData();
+  }, []);
+
+  const loadData = async () => {
+    setLoading(true);
+    try {
+      const [salesData, leavesData] = await Promise.all([
+        api.getSales({ salesmanId: user.salesmanId }),
+        api.getLeaves({ salesmanId: user.salesmanId }),
+      ]);
+      setSales(salesData);
+      setLeaves(leavesData);
+    } catch (err) {
+      console.error("Error loading data:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const getDailySales = (date) => sales.filter((s) => s.date === date);
+  const getMonthlySales = (monthYear) =>
+    sales.filter((s) => s.date.startsWith(monthYear));
+  const calculateTotal = (salesData) =>
+    salesData.reduce(
+      (sum, s) => sum + (s.totalAmount || s.quantity * s.price),
+      0,
+    );
+
+  const currentSales =
+    view === "daily"
+      ? getDailySales(selectedDate)
+      : getMonthlySales(selectedDate);
+  const dailyLeaves = leaves.filter((l) => l.date === selectedDate);
+  const monthlyLeaves = leaves.filter((l) =>
+    l.date.startsWith(selectedDate.slice(0, 7)),
+  );
+
+  // Prepare chart data for daily trend
+  const getDailyTrendData = () => {
+    const last7Days = [];
+    for (let i = 6; i >= 0; i--) {
+      const date = new Date();
+      date.setDate(date.getDate() - i);
+      const dateStr = date.toISOString().split("T")[0];
+      const daySales = sales.filter((s) => s.date === dateStr);
+      const total = calculateTotal(daySales);
+      last7Days.push({
+        date: date.toLocaleDateString("en-AE", {
+          month: "short",
+          day: "numeric",
+        }),
+        sales: total,
+      });
+    }
+    return last7Days;
+  };
+
+  const dailyTrendData = getDailyTrendData();
+
+  if (loading) return <LoadingSpinner />;
+
+  return (
+    <>
+      <GlobalStyles />
+      <div style={modernStyles.dashboardContainer}>
+        {/* Header */}
+        <div style={modernStyles.header}>
+          <div style={modernStyles.headerContent}>
+            <div style={modernStyles.logoContainer}>
+              <img src={hamaLogo} alt="HAMA" style={modernStyles.logo} />
+              <div>
+                <h1 style={modernStyles.headerTitle}>HAMA Sales Tracker</h1>
+                <p style={modernStyles.headerSubtitle}>Salesman Dashboard</p>
+              </div>
+            </div>
+            <div style={{ display: "flex", gap: "12px", alignItems: "center" }}>
+              <div style={modernStyles.userBadge}>
+                <div style={modernStyles.userAvatar}>
+                  {user.name.charAt(0).toUpperCase()}
+                </div>
+                <div>
+                  <div style={modernStyles.userName}>{user.name}</div>
+                  <div style={{ fontSize: "11px", color: "#565959" }}>
+                    {user.salesmanId}
+                  </div>
+                </div>
+              </div>
+              <button onClick={onLogout} style={modernStyles.logoutButton}>
+                Logout
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Main Content */}
+        <div style={modernStyles.mainContent}>
+          {/* Control Bar */}
+          <div style={modernStyles.controlBar}>
+            <div style={modernStyles.viewToggle}>
+              <button
+                onClick={() => {
+                  setView("daily");
+                  setSelectedDate(getToday());
+                }}
+                style={{
+                  ...modernStyles.toggleButton,
+                  ...(view === "daily" ? modernStyles.toggleButtonActive : {}),
+                }}
+              >
+                Daily View
+              </button>
+              <button
+                onClick={() => {
+                  setView("monthly");
+                  setSelectedDate(getMonthYear());
+                }}
+                style={{
+                  ...modernStyles.toggleButton,
+                  ...(view === "monthly"
+                    ? modernStyles.toggleButtonActive
+                    : {}),
+                }}
+              >
+                Monthly View
+              </button>
+            </div>
+            <input
+              type={view === "daily" ? "date" : "month"}
+              value={selectedDate}
+              onChange={(e) => setSelectedDate(e.target.value)}
+              style={modernStyles.dateInput}
+            />
+          </div>
+
+          {/* Stats Cards */}
+          <div style={modernStyles.statsGrid}>
+            <div style={modernStyles.statsCard}>
+              <div style={modernStyles.statsIcon}>📊</div>
+              <div>
+                <p style={modernStyles.statsLabel}>Total Sales</p>
+                <h2 style={modernStyles.statsValue}>
+                  {money(calculateTotal(currentSales))}
+                </h2>
+              </div>
+            </div>
+            <div style={modernStyles.statsCard}>
+              <div style={modernStyles.statsIcon}>🛍️</div>
+              <div>
+                <p style={modernStyles.statsLabel}>Transactions</p>
+                <h2 style={modernStyles.statsValue}>{currentSales.length}</h2>
+              </div>
+            </div>
+            <div style={modernStyles.statsCard}>
+              <div style={modernStyles.statsIcon}>📅</div>
+              <div>
+                <p style={modernStyles.statsLabel}>Leave Days</p>
+                <h2 style={modernStyles.statsValue}>
+                  {view === "daily" ? dailyLeaves.length : monthlyLeaves.length}
+                </h2>
+              </div>
+            </div>
+          </div>
+
+          {/* Sales Trend Chart */}
+          {view === "daily" && (
+            <div style={modernStyles.chartCard}>
+              <h3 style={modernStyles.chartTitle}>
+                Last 7 Days Sales Trend
+                <span style={modernStyles.chartSubtitle}>
+                  Daily performance overview
+                </span>
+              </h3>
+              <ResponsiveContainer width="100%" height={250}>
+                <LineChart data={dailyTrendData}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="date" />
+                  <YAxis />
+                  <Tooltip formatter={(value) => money(value)} />
+                  <Legend />
+                  <Line
+                    type="monotone"
+                    dataKey="sales"
+                    stroke="#d32f2f"
+                    strokeWidth={2}
+                    name="Sales (AED)"
+                  />
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
+          )}
+
+          {/* Action Buttons */}
+          <div style={{ display: "flex", gap: "12px", marginBottom: "24px" }}>
+            <button
+              onClick={() => navigate("add-sale")}
+              style={{ ...styles.button, width: "auto" }}
+            >
+              Add New Sale
+            </button>
+            <button
+              onClick={() => navigate("apply-leave")}
+              style={{
+                ...styles.button,
+                width: "auto",
+                background: "#ff9800",
+              }}
+            >
+              Apply for Leave
+            </button>
+          </div>
+
+          {/* Sales Table */}
+          <div className="card" style={styles.card}>
+            <h3 style={styles.cardTitle}>
+              Sales (
+              {view === "daily" ? formatDate(selectedDate) : selectedDate})
+            </h3>
+            {currentSales.length === 0 ? (
+              <p style={{ color: "#565959", textAlign: "center" }}>
+                No sales recorded for this {view === "daily" ? "day" : "month"}
+              </p>
+            ) : (
+              <div style={{ maxHeight: "400px", overflowY: "auto" }}>
+                <table style={styles.table}>
+                  <thead>
+                    <tr>
+                      <th style={styles.th}>Date</th>
+                      <th style={styles.th}>Brand</th>
+                      <th style={styles.th}>Item Code</th>
+                      <th style={styles.th}>Quantity</th>
+                      <th style={styles.th}>Price</th>
+                      <th style={styles.th}>Total</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {currentSales.map((sale, idx) => (
+                      <tr key={idx}>
+                        <td style={styles.td}>{formatDate(sale.date)}</td>
+                        <td style={styles.td}>{sale.brand}</td>
+                        <td style={styles.td}>{sale.itemCode}</td>
+                        <td style={styles.td}>{sale.quantity}</td>
+                        <td style={styles.td}>{money(sale.price)}</td>
+                        <td
+                          style={{
+                            ...styles.td,
+                            fontWeight: "700",
+                            color: "#d32f2f",
+                          }}
+                        >
+                          {money(
+                            sale.totalAmount || sale.quantity * sale.price,
+                          )}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </div>
+
+          {/* Leave Records */}
+          {view === "daily" && dailyLeaves.length > 0 && (
+            <div className="card" style={styles.card}>
+              <h3 style={styles.cardTitle}>Leave Today</h3>
+              <table style={styles.table}>
+                <thead>
+                  <tr>
+                    <th style={styles.th}>Date</th>
+                    <th style={styles.th}>Reason</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {dailyLeaves.map((leave, idx) => (
+                    <tr key={idx}>
+                      <td style={styles.td}>{formatDate(leave.date)}</td>
+                      <td style={styles.td}>{leave.reason}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+
+          {view === "monthly" && monthlyLeaves.length > 0 && (
+            <div className="card" style={styles.card}>
+              <h3 style={styles.cardTitle}>
+                Monthly Leave Report ({monthlyLeaves.length} days)
+              </h3>
+              <div style={{ maxHeight: "300px", overflowY: "auto" }}>
+                <table style={styles.table}>
+                  <thead>
+                    <tr>
+                      <th style={styles.th}>Date</th>
+                      <th style={styles.th}>Reason</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {monthlyLeaves.map((leave, idx) => (
+                      <tr key={idx}>
+                        <td style={styles.td}>{formatDate(leave.date)}</td>
+                        <td style={styles.td}>{leave.reason}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    </>
+  );
+};
+
+/* ===================== ADD SALE ===================== */
+const AddSale = ({ user, navigate, onLogout }) => {
+  const [date, setDate] = useState(getToday());
+  const [brand, setBrand] = useState("");
+  const [itemCode, setItemCode] = useState("");
+  const [quantity, setQuantity] = useState("");
+  const [price, setPrice] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [showToast, setShowToast] = useState(false);
+  const [products, setProducts] = useState([]);
+  const [filteredProducts, setFilteredProducts] = useState([]);
 
   useEffect(() => {
     loadProducts();
   }, []);
 
   const loadProducts = async () => {
-    setLoading(true);
     try {
       const data = await api.getProducts();
       setProducts(data);
     } catch (err) {
       console.error("Error loading products:", err);
-    } finally {
-      setLoading(false);
     }
   };
 
-  const searchProducts = (query) => {
-    if (!query || query.length < 2) {
-      setSearchResults([]);
-      return;
+  useEffect(() => {
+    if (brand) {
+      const filtered = products.filter(
+        (p) => p.brand.toLowerCase() === brand.toLowerCase(),
+      );
+      setFilteredProducts(filtered);
+    } else {
+      setFilteredProducts([]);
     }
-    const results = products
-      .filter((p) => {
-        const brand = String(p.brand || p.Brand || "").toLowerCase();
-        const itemCode = String(
-          p.itemCode || p["Item Code"] || "",
-        ).toLowerCase();
-        const modelNumber = String(
-          p.modelNumber || p["Model "] || p["Model"] || "",
-        ).toLowerCase();
-        const searchTerm = query.toLowerCase();
-        return (
-          brand.includes(searchTerm) ||
-          itemCode.includes(searchTerm) ||
-          modelNumber.includes(searchTerm)
-        );
-      })
-      .slice(0, 10);
-    setSearchResults(results);
-  };
+  }, [brand, products]);
 
-  const selectProduct = (product) => {
-    const brand = product.brand || product.Brand || "";
-    const modelNumber =
-      product.modelNumber || product["Model "] || product["Model"] || "";
-    const itemCode = product.itemCode || product["Item Code"] || "";
-    setFormData({
-      brand,
-      modelNumber: String(modelNumber),
-      itemCode: String(itemCode),
-      quantity: formData.quantity,
-    });
-    setSearchResults([]);
+  const handleItemCodeSelect = (e) => {
+    const selectedCode = e.target.value;
+    setItemCode(selectedCode);
+    const product = products.find((p) => p.itemCode === selectedCode);
+    if (product) {
+      setPrice(product.price);
+    }
   };
 
   const handleSubmit = async () => {
-    if (!formData.brand || !formData.itemCode || !formData.quantity) {
+    if (!date || !brand || !itemCode || !quantity || !price) {
       alert("Please fill all fields");
-      return;
-    }
-    if (formData.quantity <= 0) {
-      alert("Quantity must be greater than 0");
-      return;
-    }
-
-    const product = products.find(
-      (p) =>
-        String(p.itemCode || p["Item Code"] || "") ===
-        String(formData.itemCode),
-    );
-    if (!product) {
-      alert("Product not found. Please search and select a valid product.");
-      return;
-    }
-
-    const productPrice =
-      product.rspVat || product[" RSP+Vat "] || product["RSP+Vat"] || 0;
-    if (!productPrice || productPrice <= 0) {
-      alert("Invalid product price. Please contact administrator.");
       return;
     }
 
@@ -1992,39 +1365,41 @@ const AddSale = ({ user, navigate, onLogout }) => {
       const sale = {
         salesmanId: user.salesmanId,
         salesmanName: user.name,
-        brand: formData.brand,
-        modelNumber: formData.modelNumber,
-        itemCode: formData.itemCode,
-        quantity: Number(formData.quantity),
-        price: productPrice,
-        date: getToday(),
+        date: date,
+        brand: brand,
+        itemCode: itemCode,
+        quantity: Number(quantity),
+        price: Number(price),
+        totalAmount: Number(quantity) * Number(price),
         timestamp: new Date().toISOString(),
       };
 
       await api.addSale(sale);
 
-      setFormData({ brand: "", modelNumber: "", itemCode: "", quantity: 1 });
+      setBrand("");
+      setItemCode("");
+      setQuantity("");
+      setPrice("");
       setShowToast(true);
 
-      // Navigate after showing toast
       setTimeout(() => {
         navigate("salesman-dashboard");
       }, 1500);
     } catch (err) {
-      alert("Error recording sale: " + err.message);
+      alert("Error adding sale: " + err.message);
     } finally {
       setSubmitting(false);
     }
   };
 
-  if (loading) return <LoadingSpinner />;
+  const uniqueBrands = [...new Set(products.map((p) => p.brand))].sort();
 
   return (
     <>
       <GlobalStyles />
       {showToast && (
         <SuccessToast
-          message="Sale recorded successfully!"
+          message="Sale added successfully!"
           onClose={() => setShowToast(false)}
         />
       )}
@@ -2034,7 +1409,7 @@ const AddSale = ({ user, navigate, onLogout }) => {
           <div style={styles.headerContent}>
             <div style={modernStyles.logoContainer}>
               <img src={hamaLogo} alt="HAMA" style={modernStyles.logo} />
-              <h1 style={styles.headerTitle}>Add Sale</h1>
+              <h1 style={styles.headerTitle}>Add New Sale</h1>
             </div>
             <div style={{ display: "flex", gap: "12px" }}>
               <button
@@ -2055,438 +1430,96 @@ const AddSale = ({ user, navigate, onLogout }) => {
             className="card"
             style={{ ...styles.card, maxWidth: "700px", margin: "0 auto" }}
           >
-            <h3 style={styles.cardTitle}>Enter Sale Details</h3>
-
-            {products.length === 0 && (
-              <div
-                style={{
-                  background: "#fff5f5",
-                  border: "1px solid #feb2b2",
-                  color: "#c53030",
-                  padding: "12px 16px",
-                  borderRadius: "8px",
-                  marginBottom: "20px",
-                  fontSize: "14px",
-                }}
-              >
-                No products available. Please ask admin to upload products
-                first.
-              </div>
-            )}
-
+            <h3 style={styles.cardTitle}>Sale Details</h3>
             <div style={styles.formGroup}>
-              <label style={styles.label}>
-                Search Product (Brand or Item Code)
-              </label>
+              <label style={styles.label}>Date</label>
               <input
-                type="text"
-                placeholder="Type to search..."
-                onChange={(e) => searchProducts(e.target.value)}
-                disabled={submitting || products.length === 0}
-                style={styles.input}
+                type="date"
+                value={date}
+                onChange={(e) => setDate(e.target.value)}
+                disabled={submitting}
+                style={styles.dateInput}
               />
-
-              {searchResults.length > 0 && (
-                <div style={styles.searchResults}>
-                  {searchResults.map((p, idx) => (
-                    <div
-                      key={idx}
-                      onClick={() => selectProduct(p)}
-                      style={styles.searchResultItem}
-                      onMouseEnter={(e) =>
-                        (e.currentTarget.style.background = "#f7f8f8")
-                      }
-                      onMouseLeave={(e) =>
-                        (e.currentTarget.style.background = "transparent")
-                      }
-                    >
-                      <div
-                        style={{
-                          fontWeight: "600",
-                          color: "#0f1111",
-                          fontSize: "14px",
-                          marginBottom: "4px",
-                        }}
-                      >
-                        {p.brand || p.Brand}{" "}
-                        {(p.modelNumber || p["Model "] || p["Model"]) &&
-                          `- ${p.modelNumber || p["Model "] || p["Model"]}`}
-                      </div>
-                      <div style={{ fontSize: "13px", color: "#565959" }}>
-                        Item Code:{" "}
-                        <span style={{ fontWeight: "600", color: "#0f1111" }}>
-                          {p.itemCode || p["Item Code"]}
-                        </span>{" "}
-                        | Price:{" "}
-                        {money(p.rspVat || p[" RSP+Vat "] || p["RSP+Vat"] || 0)}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
             </div>
-
             <div style={styles.formGroup}>
               <label style={styles.label}>Brand</label>
-              <input
-                type="text"
-                value={formData.brand}
-                onChange={(e) =>
-                  setFormData({ ...formData, brand: e.target.value })
-                }
-                placeholder="Select from search or type brand name"
-                disabled={submitting}
-                style={{
-                  ...styles.input,
-                  background: formData.brand ? "#e8f5e9" : "#ffffff",
+              <select
+                value={brand}
+                onChange={(e) => {
+                  setBrand(e.target.value);
+                  setItemCode("");
+                  setPrice("");
                 }}
-              />
-            </div>
-
-            <div style={styles.formGroup}>
-              <label style={styles.label}>Model No.</label>
-              <input
-                type="text"
-                value={formData.modelNumber}
-                onChange={(e) =>
-                  setFormData({ ...formData, modelNumber: e.target.value })
-                }
-                placeholder="Selected from product search"
                 disabled={submitting}
-                style={{
-                  ...styles.input,
-                  background: formData.modelNumber ? "#e8f5e9" : "#ffffff",
-                }}
-              />
+                style={styles.select}
+              >
+                <option value="">Select Brand</option>
+                {uniqueBrands.map((b) => (
+                  <option key={b} value={b}>
+                    {b}
+                  </option>
+                ))}
+              </select>
             </div>
-
             <div style={styles.formGroup}>
               <label style={styles.label}>Item Code</label>
-              <input
-                type="text"
-                value={formData.itemCode}
-                onChange={(e) =>
-                  setFormData({ ...formData, itemCode: e.target.value })
-                }
-                placeholder="Select from search or type item code"
-                disabled={submitting}
-                style={{
-                  ...styles.input,
-                  background: formData.itemCode ? "#e8f5e9" : "#ffffff",
-                }}
-              />
+              <select
+                value={itemCode}
+                onChange={handleItemCodeSelect}
+                disabled={submitting || !brand}
+                style={styles.select}
+              >
+                <option value="">Select Item Code</option>
+                {filteredProducts.map((p) => (
+                  <option key={p.itemCode} value={p.itemCode}>
+                    {p.itemCode}
+                  </option>
+                ))}
+              </select>
             </div>
-
             <div style={styles.formGroup}>
               <label style={styles.label}>Quantity</label>
               <input
                 type="number"
-                min="1"
-                value={formData.quantity}
-                onChange={(e) =>
-                  setFormData({ ...formData, quantity: e.target.value })
-                }
+                value={quantity}
+                onChange={(e) => setQuantity(e.target.value)}
                 disabled={submitting}
                 style={styles.input}
+                placeholder="Enter quantity"
+                min="1"
               />
             </div>
-
+            <div style={styles.formGroup}>
+              <label style={styles.label}>Price (AED)</label>
+              <input
+                type="number"
+                value={price}
+                disabled
+                style={styles.input}
+                placeholder="Auto-filled from product"
+              />
+            </div>
+            <div style={styles.formGroup}>
+              <label style={styles.label}>Total Amount</label>
+              <input
+                type="text"
+                value={
+                  quantity && price
+                    ? money(Number(quantity) * Number(price))
+                    : ""
+                }
+                disabled
+                style={styles.input}
+                placeholder="Calculated automatically"
+              />
+            </div>
             <button
               onClick={handleSubmit}
-              disabled={submitting || products.length === 0}
+              disabled={submitting}
               style={styles.button}
             >
-              {submitting ? "Recording..." : "Record Sale"}
+              {submitting ? "Submitting..." : "Add Sale"}
             </button>
-          </div>
-        </div>
-      </div>
-    </>
-  );
-};
-
-/* ===================== SALESMAN DASHBOARD - WITH CHARTS ===================== */
-const SalesmanDashboard = ({ user, navigate, onLogout }) => {
-  const [sales, setSales] = useState([]);
-  const [view, setView] = useState("daily");
-  const [selectedDate, setSelectedDate] = useState(getToday());
-  const [loading, setLoading] = useState(true);
-
-  const loadSales = useCallback(async () => {
-    setLoading(true);
-    try {
-      const data = await api.getSales({ salesmanId: user.salesmanId });
-      setSales(Array.isArray(data) ? data : []);
-    } catch (err) {
-      console.error("Error loading sales:", err);
-    } finally {
-      setLoading(false);
-    }
-  }, [user.salesmanId]);
-
-  useEffect(() => {
-    loadSales();
-  }, [loadSales]);
-
-  const getDailySales = () => sales.filter((s) => s.date === selectedDate);
-  const getMonthlySales = () =>
-    sales.filter((s) => s.date?.slice(0, 7) === selectedDate);
-
-  const currentSales = view === "daily" ? getDailySales() : getMonthlySales();
-  const totalSales = currentSales.reduce(
-    (sum, s) =>
-      sum + (Number(s.totalAmount) || Number(s.quantity) * Number(s.price)),
-    0,
-  );
-
-  const getSalesByBrand = () => {
-    const brandMap = {};
-    currentSales.forEach((s) => {
-      const brand = s.brand || "Unknown";
-      if (!brandMap[brand]) brandMap[brand] = { quantity: 0, total: 0 };
-      brandMap[brand].quantity += Number(s.quantity) || 0;
-      brandMap[brand].total +=
-        Number(s.totalAmount) || Number(s.quantity) * Number(s.price);
-    });
-    return brandMap;
-  };
-
-  const brandSales = getSalesByBrand();
-
-  // Prepare chart data
-  const pieChartData = Object.entries(brandSales).map(([brand, data]) => ({
-    name: brand,
-    value: data.total,
-  }));
-
-  const barChartData = Object.entries(brandSales).map(([brand, data]) => ({
-    brand: brand,
-    sales: data.total,
-    units: data.quantity,
-  }));
-
-  const COLORS = ["#d32f2f", "#f44336", "#e57373", "#ef5350", "#ff1744"];
-
-  if (loading) return <LoadingSpinner />;
-
-  return (
-    <>
-      <GlobalStyles />
-      <div style={styles.dashboardContainer}>
-        <div style={styles.header}>
-          <div style={styles.headerContent}>
-            <div style={modernStyles.logoContainer}>
-              <img src={hamaLogo} alt="HAMA" style={modernStyles.logo} />
-              <h1 style={styles.headerTitle}>My Dashboard</h1>
-            </div>
-            <div style={{ display: "flex", gap: "12px", alignItems: "center" }}>
-              <button
-                onClick={() => navigate("add-sale")}
-                style={{ ...styles.button, width: "auto", padding: "8px 16px" }}
-              >
-                + Add Sale
-              </button>
-              <button
-                onClick={() => navigate("apply-leave")}
-                style={styles.headerButton}
-              >
-                Apply Leave
-              </button>
-              <div style={styles.userBadge}>
-                <div style={styles.userAvatar}>{user.name?.charAt(0)}</div>
-                <span style={modernStyles.userName}>{user.name}</span>
-              </div>
-              <button onClick={onLogout} style={styles.logoutButton}>
-                Logout
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <div style={styles.mainContent}>
-          <div style={styles.controlBar}>
-            <div style={styles.viewToggle}>
-              <button
-                onClick={() => {
-                  setView("daily");
-                  setSelectedDate(getToday());
-                }}
-                style={{
-                  ...styles.toggleButton,
-                  ...(view === "daily" ? styles.toggleButtonActive : {}),
-                }}
-              >
-                Daily Progress
-              </button>
-              <button
-                onClick={() => {
-                  setView("monthly");
-                  setSelectedDate(getMonthYear());
-                }}
-                style={{
-                  ...styles.toggleButton,
-                  ...(view === "monthly" ? styles.toggleButtonActive : {}),
-                }}
-              >
-                Monthly Progress
-              </button>
-            </div>
-            <input
-              type={view === "daily" ? "date" : "month"}
-              value={selectedDate}
-              onChange={(e) => setSelectedDate(e.target.value)}
-              style={styles.dateInput}
-            />
-          </div>
-
-          <div style={styles.statsGrid}>
-            <div className="stats-card" style={styles.statsCard}>
-              <div style={styles.statsIcon}>💰</div>
-              <div>
-                <p style={styles.statsLabel}>Total Sales</p>
-                <p style={styles.statsValue}>{money(totalSales)}</p>
-              </div>
-            </div>
-            <div className="stats-card" style={styles.statsCard}>
-              <div style={styles.statsIcon}>📊</div>
-              <div>
-                <p style={styles.statsLabel}>Transactions</p>
-                <p style={styles.statsValue}>{currentSales.length}</p>
-              </div>
-            </div>
-          </div>
-
-          {/* CHARTS SECTION */}
-          {currentSales.length > 0 && (
-            <div style={modernStyles.chartsGrid}>
-              {/* Pie Chart */}
-              <div style={modernStyles.chartCard}>
-                <h3 style={modernStyles.chartTitle}>
-                  Sales Distribution by Brand
-                </h3>
-                <ResponsiveContainer width="100%" height={300}>
-                  <PieChart>
-                    <Pie
-                      data={pieChartData}
-                      cx="50%"
-                      cy="50%"
-                      labelLine={false}
-                      label={({ name, percent }) =>
-                        `${name}: ${(percent * 100).toFixed(0)}%`
-                      }
-                      outerRadius={80}
-                      fill="#8884d8"
-                      dataKey="value"
-                    >
-                      {pieChartData.map((entry, index) => (
-                        <Cell
-                          key={`cell-${index}`}
-                          fill={COLORS[index % COLORS.length]}
-                        />
-                      ))}
-                    </Pie>
-                    <Tooltip formatter={(value) => money(value)} />
-                    <Legend />
-                  </PieChart>
-                </ResponsiveContainer>
-              </div>
-
-              {/* Bar Chart */}
-              <div style={modernStyles.chartCard}>
-                <h3 style={modernStyles.chartTitle}>Sales by Brand</h3>
-                <ResponsiveContainer width="100%" height={300}>
-                  <BarChart data={barChartData}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="brand" />
-                    <YAxis />
-                    <Tooltip formatter={(value) => money(value)} />
-                    <Legend />
-                    <Bar dataKey="sales" fill="#d32f2f" />
-                  </BarChart>
-                </ResponsiveContainer>
-              </div>
-            </div>
-          )}
-
-          <div className="card" style={styles.card}>
-            <h3 style={styles.cardTitle}>Sales by Brand</h3>
-            <table style={styles.table}>
-              <thead>
-                <tr>
-                  <th style={styles.th}>Brand</th>
-                  <th style={styles.th}>Units Sold</th>
-                  <th style={styles.th}>Total Sales</th>
-                </tr>
-              </thead>
-              <tbody>
-                {Object.entries(brandSales).map(([brand, data]) => (
-                  <tr key={brand}>
-                    <td style={styles.td}>{brand}</td>
-                    <td style={styles.td}>{data.quantity}</td>
-                    <td
-                      style={{
-                        ...styles.td,
-                        color: "#d32f2f",
-                        fontWeight: "600",
-                      }}
-                    >
-                      {money(data.total)}
-                    </td>
-                  </tr>
-                ))}
-                {Object.keys(brandSales).length === 0 && (
-                  <tr>
-                    <td
-                      colSpan="3"
-                      style={{ ...styles.td, textAlign: "center" }}
-                    >
-                      No sales recorded for this period
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
-          </div>
-
-          <div className="card" style={styles.card}>
-            <h3 style={styles.cardTitle}>Recent Sales</h3>
-            <div style={{ maxHeight: "500px", overflowY: "auto" }}>
-              <table style={styles.table}>
-                <thead>
-                  <tr>
-                    <th style={styles.th}>Date</th>
-                    <th style={styles.th}>Brand</th>
-                    <th style={styles.th}>Item Code</th>
-                    <th style={styles.th}>Quantity</th>
-                    <th style={styles.th}>Price</th>
-                    <th style={styles.th}>Total</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {currentSales.map((sale) => (
-                    <tr key={sale.timestamp || sale.itemCode}>
-                      <td style={styles.td}>{formatDate(sale.date)}</td>
-                      <td style={styles.td}>{sale.brand}</td>
-                      <td style={styles.td}>{sale.itemCode}</td>
-                      <td style={styles.td}>{sale.quantity}</td>
-                      <td style={styles.td}>{money(sale.price)}</td>
-                      <td
-                        style={{
-                          ...styles.td,
-                          color: "#d32f2f",
-                          fontWeight: "600",
-                        }}
-                      >
-                        {money(
-                          Number(sale.totalAmount) ||
-                            Number(sale.quantity) * Number(sale.price),
-                        )}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
           </div>
         </div>
       </div>
@@ -2618,6 +1651,11 @@ const AdminDashboard = ({ user, navigate, onLogout }) => {
     loadData();
   }, []);
 
+  // Refresh leave data when view or selectedDate changes
+  useEffect(() => {
+    refreshLeaves();
+  }, [view, selectedDate]);
+
   const loadData = async () => {
     setLoading(true);
     try {
@@ -2633,6 +1671,15 @@ const AdminDashboard = ({ user, navigate, onLogout }) => {
       console.error("Error loading data:", err);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const refreshLeaves = async () => {
+    try {
+      const leavesData = await api.getLeaves();
+      setLeaves(leavesData);
+    } catch (err) {
+      console.error("Error refreshing leaves:", err);
     }
   };
 
@@ -2764,34 +1811,45 @@ const AdminDashboard = ({ user, navigate, onLogout }) => {
               >
                 Products
               </button>
-              <div style={styles.userBadge}>
-                <div style={styles.userAvatar}>{user.name.charAt(0)}</div>
-                <span style={modernStyles.userName}>{user.name}</span>
+              <div style={modernStyles.userBadge}>
+                <div style={modernStyles.userAvatar}>
+                  {user.name.charAt(0).toUpperCase()}
+                </div>
+                <div style={modernStyles.userName}>{user.name}</div>
               </div>
-              <button onClick={onLogout} style={styles.logoutButton}>
+              <button onClick={onLogout} style={modernStyles.logoutButton}>
                 Logout
               </button>
             </div>
           </div>
         </div>
 
-        <div style={styles.mainContent}>
-          <div style={styles.controlBar}>
-            <div style={styles.viewToggle}>
+        <div style={modernStyles.mainContent}>
+          {/* Control Bar */}
+          <div style={modernStyles.controlBar}>
+            <div style={modernStyles.viewToggle}>
               <button
-                onClick={() => setView("daily")}
+                onClick={() => {
+                  setView("daily");
+                  setSelectedDate(getToday());
+                }}
                 style={{
-                  ...styles.toggleButton,
-                  ...(view === "daily" ? styles.toggleButtonActive : {}),
+                  ...modernStyles.toggleButton,
+                  ...(view === "daily" ? modernStyles.toggleButtonActive : {}),
                 }}
               >
                 Daily View
               </button>
               <button
-                onClick={() => setView("monthly")}
+                onClick={() => {
+                  setView("monthly");
+                  setSelectedDate(getMonthYear());
+                }}
                 style={{
-                  ...styles.toggleButton,
-                  ...(view === "monthly" ? styles.toggleButtonActive : {}),
+                  ...modernStyles.toggleButton,
+                  ...(view === "monthly"
+                    ? modernStyles.toggleButtonActive
+                    : {}),
                 }}
               >
                 Monthly View
@@ -2801,98 +1859,88 @@ const AdminDashboard = ({ user, navigate, onLogout }) => {
               type={view === "daily" ? "date" : "month"}
               value={selectedDate}
               onChange={(e) => setSelectedDate(e.target.value)}
-              style={styles.dateInput}
+              style={modernStyles.dateInput}
             />
           </div>
 
-          <div style={styles.statsGrid}>
-            <div className="stats-card" style={styles.statsCard}>
-              <div style={styles.statsIcon}>💰</div>
+          {/* Stats Cards */}
+          <div style={modernStyles.statsGrid}>
+            <div style={modernStyles.statsCard}>
+              <div style={modernStyles.statsIcon}>💰</div>
               <div>
-                <p style={styles.statsLabel}>Total Sales</p>
-                <p style={styles.statsValue}>
+                <p style={modernStyles.statsLabel}>Total Sales</p>
+                <h2 style={modernStyles.statsValue}>
                   {money(calculateTotal(currentSales))}
+                </h2>
+              </div>
+            </div>
+            <div style={modernStyles.statsCard}>
+              <div style={modernStyles.statsIcon}>🛍️</div>
+              <div>
+                <p style={modernStyles.statsLabel}>Transactions</p>
+                <h2 style={modernStyles.statsValue}>{currentSales.length}</h2>
+              </div>
+            </div>
+            <div style={modernStyles.statsCard}>
+              <div style={modernStyles.statsIcon}>👥</div>
+              <div>
+                <p style={modernStyles.statsLabel}>Active Salesmen</p>
+                <h2 style={modernStyles.statsValue}>{salesmen.length}</h2>
+              </div>
+            </div>
+            <div style={modernStyles.statsCard}>
+              <div style={modernStyles.statsIcon}>📅</div>
+              <div>
+                <p style={modernStyles.statsLabel}>Leaves</p>
+                <h2 style={modernStyles.statsValue}>
+                  {view === "daily" ? dailyLeaves.length : monthlyLeaves.length}
+                </h2>
+              </div>
+            </div>
+          </div>
+
+          {/* Performer of the Month - Only for Monthly View */}
+          {performerOfMonth && (
+            <div
+              style={{
+                ...modernStyles.statsCard,
+                marginBottom: "24px",
+                background: "linear-gradient(135deg, #d32f2f 0%, #f44336 100%)",
+                color: "white",
+                padding: "32px",
+              }}
+            >
+              <div style={{ fontSize: "48px" }}>🏆</div>
+              <div style={{ flex: 1 }}>
+                <p
+                  style={{
+                    ...modernStyles.statsLabel,
+                    color: "rgba(255,255,255,0.9)",
+                  }}
+                >
+                  Performer of the Month
+                </p>
+                <h2
+                  style={{
+                    ...modernStyles.statsValue,
+                    color: "white",
+                    marginBottom: "8px",
+                  }}
+                >
+                  {performerOfMonth.salesman.name}
+                </h2>
+                <p style={{ fontSize: "16px", margin: 0, opacity: 0.95 }}>
+                  {money(performerOfMonth.sales)} •{" "}
+                  {performerOfMonth.transactions} transactions
                 </p>
               </div>
             </div>
-            <div className="stats-card" style={styles.statsCard}>
-              <div style={styles.statsIcon}>📊</div>
-              <div>
-                <p style={styles.statsLabel}>Transactions</p>
-                <p style={styles.statsValue}>{currentSales.length}</p>
-              </div>
-            </div>
-            <div className="stats-card" style={styles.statsCard}>
-              <div style={styles.statsIcon}>👥</div>
-              <div>
-                <p style={styles.statsLabel}>Active Salesmen</p>
-                <p style={styles.statsValue}>{salesmen.length}</p>
-              </div>
-            </div>
-            {view === "daily" ? (
-              <div className="stats-card" style={styles.statsCard}>
-                <div style={styles.statsIcon}>🏖️</div>
-                <div>
-                  <p style={styles.statsLabel}>On Leave Today</p>
-                  <p style={styles.statsValue}>{dailyLeaves.length}</p>
-                </div>
-              </div>
-            ) : performerOfMonth && performerOfMonth.sales > 0 ? (
-              <div
-                className="stats-card"
-                style={{
-                  ...styles.statsCard,
-                  background:
-                    "linear-gradient(135deg, #d32f2f 0%, #f44336 100%)",
-                  color: "white",
-                }}
-              >
-                <div style={{ ...styles.statsIcon, fontSize: "48px" }}>🏆</div>
-                <div>
-                  <p
-                    style={{
-                      ...styles.statsLabel,
-                      color: "rgba(255,255,255,0.9)",
-                    }}
-                  >
-                    Top Performer
-                  </p>
-                  <p
-                    style={{
-                      ...styles.statsValue,
-                      color: "white",
-                      fontSize: "20px",
-                    }}
-                  >
-                    {performerOfMonth.salesman.name}
-                  </p>
-                  <p
-                    style={{
-                      fontSize: "14px",
-                      color: "rgba(255,255,255,0.9)",
-                      margin: "4px 0 0 0",
-                      fontWeight: "600",
-                    }}
-                  >
-                    {money(performerOfMonth.sales)}
-                  </p>
-                </div>
-              </div>
-            ) : (
-              <div className="stats-card" style={styles.statsCard}>
-                <div style={styles.statsIcon}>🏖️</div>
-                <div>
-                  <p style={styles.statsLabel}>Total Leaves</p>
-                  <p style={styles.statsValue}>{monthlyLeaves.length}</p>
-                </div>
-              </div>
-            )}
-          </div>
+          )}
 
-          {/* ADMIN CHARTS SECTION */}
-          {currentSales.length > 0 && (
+          {/* Charts - Only show in Monthly View */}
+          {view === "monthly" && (
             <div style={modernStyles.chartsGrid}>
-              {/* Top Brand Performance - Pie Chart */}
+              {/* Top Brands - Pie Chart */}
               <div style={modernStyles.chartCard}>
                 <h3 style={modernStyles.chartTitle}>
                   Top Brand Performance

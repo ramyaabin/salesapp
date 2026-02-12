@@ -60,7 +60,6 @@ const api = {
     } catch (err) {
       console.error("API Error:", err);
 
-      // fallback to localStorage users (offline/demo mode)
       const users = await this.getUsers();
       const found = users.find(
         (u) => u.username === username && u.password === password,
@@ -73,11 +72,14 @@ const api = {
   /* -------------------- ADMIN -------------------- */
   async resetPassword(data) {
     try {
-      const res = await fetch(`${API_URL}/api/admin/reset-password`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
-      });
+      const res = await fetch(
+        `${API_URL}/api/users/${data.salesmanId}/password`,
+        {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ password: data.password }),
+        },
+      );
 
       if (!res.ok) {
         const error = await res.json();
@@ -96,7 +98,17 @@ const api = {
     try {
       const res = await fetch(`${API_URL}/api/products`);
       if (!res.ok) throw new Error("Failed to fetch products");
-      const products = await res.json();
+      let products = await res.json();
+
+      // Normalize keys: trim spaces
+      products = products.map((p) => {
+        const normalized = {};
+        for (const key in p) {
+          normalized[key.trim()] = p[key];
+        }
+        return normalized;
+      });
+
       localStorage.setItem("salesTracker_products", JSON.stringify(products));
       return products;
     } catch (_error) {
@@ -114,18 +126,11 @@ const api = {
       if (!res.ok) throw new Error("Failed to fetch sales");
       const sales = await res.json();
 
-      const stored = localStorage.getItem("salesTracker_sales");
-      const localSales = stored ? JSON.parse(stored) : [];
-      const merged = [...localSales];
-
-      sales.forEach((s) => {
-        if (!merged.find((m) => m.timestamp === s.timestamp)) merged.push(s);
-      });
-
-      localStorage.setItem("salesTracker_sales", JSON.stringify(merged));
+      localStorage.setItem("salesTracker_sales", JSON.stringify(sales));
       return sales;
     } catch (_error) {
       console.error("API Error:", _error);
+
       let sales = localStorage.getItem("salesTracker_sales")
         ? JSON.parse(localStorage.getItem("salesTracker_sales"))
         : [];
@@ -141,11 +146,6 @@ const api = {
   },
 
   async addSale(saleData) {
-    const stored = localStorage.getItem("salesTracker_sales");
-    const sales = stored ? JSON.parse(stored) : [];
-    sales.push(saleData);
-    localStorage.setItem("salesTracker_sales", JSON.stringify(sales));
-
     try {
       const res = await fetch(`${API_URL}/api/sales`, {
         method: "POST",
@@ -154,9 +154,23 @@ const api = {
       });
 
       if (!res.ok) throw new Error("Server error");
+
+      const result = await res.json();
+
+      const stored = localStorage.getItem("salesTracker_sales");
+      const sales = stored ? JSON.parse(stored) : [];
+      sales.push(result.sale || saleData);
+      localStorage.setItem("salesTracker_sales", JSON.stringify(sales));
+
       return { success: true, synced: true };
     } catch (_error) {
       console.error("API Error:", _error);
+
+      const stored = localStorage.getItem("salesTracker_sales");
+      const sales = stored ? JSON.parse(stored) : [];
+      sales.push(saleData);
+      localStorage.setItem("salesTracker_sales", JSON.stringify(sales));
+
       return { success: true, offline: true };
     }
   },
@@ -168,10 +182,12 @@ const api = {
       const res = await fetch(`${API_URL}/api/leaves?${params}`);
       if (!res.ok) throw new Error("Failed to fetch leaves");
       const leaves = await res.json();
+
       localStorage.setItem("salesTracker_leaves", JSON.stringify(leaves));
       return leaves;
     } catch (_error) {
       console.error("API Error:", _error);
+
       let leaves = localStorage.getItem("salesTracker_leaves")
         ? JSON.parse(localStorage.getItem("salesTracker_leaves"))
         : [];
@@ -185,11 +201,6 @@ const api = {
   },
 
   async addLeave(leaveData) {
-    const stored = localStorage.getItem("salesTracker_leaves");
-    const leaves = stored ? JSON.parse(stored) : [];
-    leaves.push(leaveData);
-    localStorage.setItem("salesTracker_leaves", JSON.stringify(leaves));
-
     try {
       const res = await fetch(`${API_URL}/api/leaves`, {
         method: "POST",
@@ -198,9 +209,23 @@ const api = {
       });
 
       if (!res.ok) throw new Error("Server error");
+
+      const result = await res.json();
+
+      const stored = localStorage.getItem("salesTracker_leaves");
+      const leaves = stored ? JSON.parse(stored) : [];
+      leaves.push(result.leave || leaveData);
+      localStorage.setItem("salesTracker_leaves", JSON.stringify(leaves));
+
       return { success: true, synced: true };
     } catch (_error) {
       console.error("API Error:", _error);
+
+      const stored = localStorage.getItem("salesTracker_leaves");
+      const leaves = stored ? JSON.parse(stored) : [];
+      leaves.push(leaveData);
+      localStorage.setItem("salesTracker_leaves", JSON.stringify(leaves));
+
       return { success: true, offline: true };
     }
   },
