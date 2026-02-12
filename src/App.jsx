@@ -891,6 +891,7 @@ const ManageSalesmen = ({ navigate, onLogout }) => {
 const DownloadProducts = ({ navigate, onLogout }) => {
   const [loading, setLoading] = useState(true);
   const [products, setProducts] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
     loadProducts();
@@ -907,6 +908,12 @@ const DownloadProducts = ({ navigate, onLogout }) => {
       setLoading(false);
     }
   };
+
+  const filteredProducts = products.filter(
+    (p) =>
+      p.brand?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      p.itemCode?.toString().includes(searchTerm),
+  );
 
   const downloadCSV = () => {
     let csv = "Brand,Item Code,Price\n";
@@ -956,8 +963,24 @@ const DownloadProducts = ({ navigate, onLogout }) => {
 
           <div className="card" style={styles.card}>
             <h3 style={styles.cardTitle}>
-              All Products ({products.length} items)
+              All Products ({filteredProducts.length} items)
             </h3>
+
+            {/* 🔍 SEARCH INPUT */}
+            <input
+              type="text"
+              placeholder="Search by Brand or Item Code..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              style={{
+                width: "100%",
+                padding: "10px",
+                marginBottom: "15px",
+                borderRadius: "8px",
+                border: "1px solid #ccc",
+              }}
+            />
+
             <div style={{ maxHeight: "600px", overflowY: "auto" }}>
               <table style={styles.table}>
                 <thead>
@@ -968,7 +991,7 @@ const DownloadProducts = ({ navigate, onLogout }) => {
                   </tr>
                 </thead>
                 <tbody>
-                  {products.map((p, idx) => (
+                  {filteredProducts.map((p, idx) => (
                     <tr key={idx}>
                       <td style={styles.td}>{p.brand}</td>
                       <td style={styles.td}>{p.itemCode}</td>
@@ -992,6 +1015,7 @@ const SalesmanDashboard = ({ user, navigate, onLogout }) => {
   const [selectedDate, setSelectedDate] = useState(getToday());
   const [view, setView] = useState("daily");
   const [loading, setLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState(""); // 🔍 NEW
 
   useEffect(() => {
     loadData();
@@ -1016,22 +1040,31 @@ const SalesmanDashboard = ({ user, navigate, onLogout }) => {
   const getDailySales = (date) => sales.filter((s) => s.date === date);
   const getMonthlySales = (monthYear) =>
     sales.filter((s) => s.date.startsWith(monthYear));
+
   const calculateTotal = (salesData) =>
     salesData.reduce(
       (sum, s) => sum + (s.totalAmount || s.quantity * s.price),
       0,
     );
 
-  const currentSales =
+  const rawSales =
     view === "daily"
       ? getDailySales(selectedDate)
       : getMonthlySales(selectedDate);
+
+  // 🔍 FILTERED SALES (SEARCH)
+  const filteredSales = rawSales.filter(
+    (s) =>
+      s.brand?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      s.itemCode?.toString().includes(searchTerm),
+  );
+
   const dailyLeaves = leaves.filter((l) => l.date === selectedDate);
   const monthlyLeaves = leaves.filter((l) =>
     l.date.startsWith(selectedDate.slice(0, 7)),
   );
 
-  // Prepare chart data for daily trend
+  /* ---------------- DAILY TREND ---------------- */
   const getDailyTrendData = () => {
     const last7Days = [];
     for (let i = 6; i >= 0; i--) {
@@ -1059,7 +1092,7 @@ const SalesmanDashboard = ({ user, navigate, onLogout }) => {
     <>
       <GlobalStyles />
       <div style={modernStyles.dashboardContainer}>
-        {/* Header */}
+        {/* ================= HEADER ================= */}
         <div style={modernStyles.header}>
           <div style={modernStyles.headerContent}>
             <div style={modernStyles.logoContainer}>
@@ -1069,34 +1102,22 @@ const SalesmanDashboard = ({ user, navigate, onLogout }) => {
                 <p style={modernStyles.headerSubtitle}>Salesman Dashboard</p>
               </div>
             </div>
-            <div style={{ display: "flex", gap: "12px", alignItems: "center" }}>
-              <div style={modernStyles.userBadge}>
-                <div style={modernStyles.userAvatar}>
-                  {user.name.charAt(0).toUpperCase()}
-                </div>
-                <div>
-                  <div style={modernStyles.userName}>{user.name}</div>
-                  <div style={{ fontSize: "11px", color: "#565959" }}>
-                    {user.salesmanId}
-                  </div>
-                </div>
-              </div>
-              <button onClick={onLogout} style={modernStyles.logoutButton}>
-                Logout
-              </button>
-            </div>
+            <button onClick={onLogout} style={modernStyles.logoutButton}>
+              Logout
+            </button>
           </div>
         </div>
 
-        {/* Main Content */}
+        {/* ================= MAIN ================= */}
         <div style={modernStyles.mainContent}>
-          {/* Control Bar */}
+          {/* VIEW TOGGLE */}
           <div style={modernStyles.controlBar}>
             <div style={modernStyles.viewToggle}>
               <button
                 onClick={() => {
                   setView("daily");
                   setSelectedDate(getToday());
+                  setSearchTerm("");
                 }}
                 style={{
                   ...modernStyles.toggleButton,
@@ -1109,6 +1130,7 @@ const SalesmanDashboard = ({ user, navigate, onLogout }) => {
                 onClick={() => {
                   setView("monthly");
                   setSelectedDate(getMonthYear());
+                  setSearchTerm("");
                 }}
                 style={{
                   ...modernStyles.toggleButton,
@@ -1128,92 +1150,42 @@ const SalesmanDashboard = ({ user, navigate, onLogout }) => {
             />
           </div>
 
-          {/* Stats Cards */}
+          {/* STATS */}
           <div style={modernStyles.statsGrid}>
             <div style={modernStyles.statsCard}>
-              <div style={modernStyles.statsIcon}>📊</div>
-              <div>
-                <p style={modernStyles.statsLabel}>Total Sales</p>
-                <h2 style={modernStyles.statsValue}>
-                  {money(calculateTotal(currentSales))}
-                </h2>
-              </div>
+              <p>Total Sales</p>
+              <h2>{money(calculateTotal(rawSales))}</h2>
             </div>
             <div style={modernStyles.statsCard}>
-              <div style={modernStyles.statsIcon}>🛍️</div>
-              <div>
-                <p style={modernStyles.statsLabel}>Transactions</p>
-                <h2 style={modernStyles.statsValue}>{currentSales.length}</h2>
-              </div>
-            </div>
-            <div style={modernStyles.statsCard}>
-              <div style={modernStyles.statsIcon}>📅</div>
-              <div>
-                <p style={modernStyles.statsLabel}>Leave Days</p>
-                <h2 style={modernStyles.statsValue}>
-                  {view === "daily" ? dailyLeaves.length : monthlyLeaves.length}
-                </h2>
-              </div>
+              <p>Transactions</p>
+              <h2>{rawSales.length}</h2>
             </div>
           </div>
 
-          {/* Sales Trend Chart */}
-          {view === "daily" && (
-            <div style={modernStyles.chartCard}>
-              <h3 style={modernStyles.chartTitle}>
-                Last 7 Days Sales Trend
-                <span style={modernStyles.chartSubtitle}>
-                  Daily performance overview
-                </span>
-              </h3>
-              <ResponsiveContainer width="100%" height={250}>
-                <LineChart data={dailyTrendData}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="date" />
-                  <YAxis />
-                  <Tooltip formatter={(value) => money(value)} />
-                  <Legend />
-                  <Line
-                    type="monotone"
-                    dataKey="sales"
-                    stroke="#d32f2f"
-                    strokeWidth={2}
-                    name="Sales (AED)"
-                  />
-                </LineChart>
-              </ResponsiveContainer>
-            </div>
-          )}
+          {/* SEARCH INPUT */}
+          <input
+            type="text"
+            placeholder="Search by Brand or Item Code..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            style={{
+              width: "100%",
+              padding: "10px",
+              marginBottom: "12px",
+              borderRadius: "8px",
+              border: "1px solid #ccc",
+            }}
+          />
 
-          {/* Action Buttons */}
-          <div style={{ display: "flex", gap: "12px", marginBottom: "24px" }}>
-            <button
-              onClick={() => navigate("add-sale")}
-              style={{ ...styles.button, width: "auto" }}
-            >
-              Add New Sale
-            </button>
-            <button
-              onClick={() => navigate("apply-leave")}
-              style={{
-                ...styles.button,
-                width: "auto",
-                background: "#ff9800",
-              }}
-            >
-              Apply for Leave
-            </button>
-          </div>
-
-          {/* Sales Table */}
+          {/* SALES TABLE */}
           <div className="card" style={styles.card}>
             <h3 style={styles.cardTitle}>
-              Sales (
-              {view === "daily" ? formatDate(selectedDate) : selectedDate})
+              Sales ({view === "daily" ? selectedDate : selectedDate})
             </h3>
-            {currentSales.length === 0 ? (
-              <p style={{ color: "#565959", textAlign: "center" }}>
-                No sales recorded for this {view === "daily" ? "day" : "month"}
+
+            {filteredSales.length === 0 ? (
+              <p style={{ textAlign: "center", color: "#777" }}>
+                No matching sales found
               </p>
             ) : (
               <div style={{ maxHeight: "400px", overflowY: "auto" }}>
@@ -1223,29 +1195,21 @@ const SalesmanDashboard = ({ user, navigate, onLogout }) => {
                       <th style={styles.th}>Date</th>
                       <th style={styles.th}>Brand</th>
                       <th style={styles.th}>Item Code</th>
-                      <th style={styles.th}>Quantity</th>
+                      <th style={styles.th}>Qty</th>
                       <th style={styles.th}>Price</th>
                       <th style={styles.th}>Total</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {currentSales.map((sale, idx) => (
-                      <tr key={idx}>
-                        <td style={styles.td}>{formatDate(sale.date)}</td>
-                        <td style={styles.td}>{sale.brand}</td>
-                        <td style={styles.td}>{sale.itemCode}</td>
-                        <td style={styles.td}>{sale.quantity}</td>
-                        <td style={styles.td}>{money(sale.price)}</td>
-                        <td
-                          style={{
-                            ...styles.td,
-                            fontWeight: "700",
-                            color: "#d32f2f",
-                          }}
-                        >
-                          {money(
-                            sale.totalAmount || sale.quantity * sale.price,
-                          )}
+                    {filteredSales.map((s, i) => (
+                      <tr key={i}>
+                        <td style={styles.td}>{formatDate(s.date)}</td>
+                        <td style={styles.td}>{s.brand}</td>
+                        <td style={styles.td}>{s.itemCode}</td>
+                        <td style={styles.td}>{s.quantity}</td>
+                        <td style={styles.td}>{money(s.price)}</td>
+                        <td style={{ ...styles.td, fontWeight: 700 }}>
+                          {money(s.totalAmount || s.quantity * s.price)}
                         </td>
                       </tr>
                     ))}
@@ -1254,55 +1218,6 @@ const SalesmanDashboard = ({ user, navigate, onLogout }) => {
               </div>
             )}
           </div>
-
-          {/* Leave Records */}
-          {view === "daily" && dailyLeaves.length > 0 && (
-            <div className="card" style={styles.card}>
-              <h3 style={styles.cardTitle}>Leave Today</h3>
-              <table style={styles.table}>
-                <thead>
-                  <tr>
-                    <th style={styles.th}>Date</th>
-                    <th style={styles.th}>Reason</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {dailyLeaves.map((leave, idx) => (
-                    <tr key={idx}>
-                      <td style={styles.td}>{formatDate(leave.date)}</td>
-                      <td style={styles.td}>{leave.reason}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          )}
-
-          {view === "monthly" && monthlyLeaves.length > 0 && (
-            <div className="card" style={styles.card}>
-              <h3 style={styles.cardTitle}>
-                Monthly Leave Report ({monthlyLeaves.length} days)
-              </h3>
-              <div style={{ maxHeight: "300px", overflowY: "auto" }}>
-                <table style={styles.table}>
-                  <thead>
-                    <tr>
-                      <th style={styles.th}>Date</th>
-                      <th style={styles.th}>Reason</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {monthlyLeaves.map((leave, idx) => (
-                      <tr key={idx}>
-                        <td style={styles.td}>{formatDate(leave.date)}</td>
-                        <td style={styles.td}>{leave.reason}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          )}
         </div>
       </div>
     </>
@@ -1320,6 +1235,7 @@ const AddSale = ({ user, navigate, onLogout }) => {
   const [showToast, setShowToast] = useState(false);
   const [products, setProducts] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
+  const [productSearch, setProductSearch] = useState("");
 
   useEffect(() => {
     loadProducts();
@@ -1334,16 +1250,24 @@ const AddSale = ({ user, navigate, onLogout }) => {
     }
   };
 
+  // 🔍 FILTER LOGIC
   useEffect(() => {
+    let list = products;
+
     if (brand) {
-      const filtered = products.filter(
-        (p) => p.brand.toLowerCase() === brand.toLowerCase(),
-      );
-      setFilteredProducts(filtered);
-    } else {
-      setFilteredProducts([]);
+      list = list.filter((p) => p.brand.toLowerCase() === brand.toLowerCase());
     }
-  }, [brand, products]);
+
+    if (productSearch) {
+      list = list.filter(
+        (p) =>
+          p.itemCode.toString().includes(productSearch) ||
+          p.brand.toLowerCase().includes(productSearch.toLowerCase()),
+      );
+    }
+
+    setFilteredProducts(list);
+  }, [brand, productSearch, products]);
 
   const handleItemCodeSelect = (e) => {
     const selectedCode = e.target.value;
@@ -1361,6 +1285,7 @@ const AddSale = ({ user, navigate, onLogout }) => {
     }
 
     setSubmitting(true);
+
     try {
       const sale = {
         salesmanId: user.salesmanId,
@@ -1380,6 +1305,7 @@ const AddSale = ({ user, navigate, onLogout }) => {
       setItemCode("");
       setQuantity("");
       setPrice("");
+      setProductSearch("");
       setShowToast(true);
 
       setTimeout(() => {
@@ -1431,6 +1357,8 @@ const AddSale = ({ user, navigate, onLogout }) => {
             style={{ ...styles.card, maxWidth: "700px", margin: "0 auto" }}
           >
             <h3 style={styles.cardTitle}>Sale Details</h3>
+
+            {/* DATE */}
             <div style={styles.formGroup}>
               <label style={styles.label}>Date</label>
               <input
@@ -1441,6 +1369,8 @@ const AddSale = ({ user, navigate, onLogout }) => {
                 style={styles.dateInput}
               />
             </div>
+
+            {/* BRAND */}
             <div style={styles.formGroup}>
               <label style={styles.label}>Brand</label>
               <select
@@ -1449,6 +1379,7 @@ const AddSale = ({ user, navigate, onLogout }) => {
                   setBrand(e.target.value);
                   setItemCode("");
                   setPrice("");
+                  setProductSearch("");
                 }}
                 disabled={submitting}
                 style={styles.select}
@@ -1461,6 +1392,21 @@ const AddSale = ({ user, navigate, onLogout }) => {
                 ))}
               </select>
             </div>
+
+            {/* 🔍 SEARCH PRODUCT */}
+            <div style={styles.formGroup}>
+              <label style={styles.label}>Search Product</label>
+              <input
+                type="text"
+                placeholder="Type item code..."
+                value={productSearch}
+                onChange={(e) => setProductSearch(e.target.value)}
+                disabled={submitting}
+                style={styles.input}
+              />
+            </div>
+
+            {/* ITEM CODE */}
             <div style={styles.formGroup}>
               <label style={styles.label}>Item Code</label>
               <select
@@ -1472,11 +1418,13 @@ const AddSale = ({ user, navigate, onLogout }) => {
                 <option value="">Select Item Code</option>
                 {filteredProducts.map((p) => (
                   <option key={p.itemCode} value={p.itemCode}>
-                    {p.itemCode}
+                    {p.itemCode} – AED {p.price}
                   </option>
                 ))}
               </select>
             </div>
+
+            {/* QUANTITY */}
             <div style={styles.formGroup}>
               <label style={styles.label}>Quantity</label>
               <input
@@ -1485,10 +1433,11 @@ const AddSale = ({ user, navigate, onLogout }) => {
                 onChange={(e) => setQuantity(e.target.value)}
                 disabled={submitting}
                 style={styles.input}
-                placeholder="Enter quantity"
                 min="1"
               />
             </div>
+
+            {/* PRICE */}
             <div style={styles.formGroup}>
               <label style={styles.label}>Price (AED)</label>
               <input
@@ -1496,9 +1445,10 @@ const AddSale = ({ user, navigate, onLogout }) => {
                 value={price}
                 disabled
                 style={styles.input}
-                placeholder="Auto-filled from product"
               />
             </div>
+
+            {/* TOTAL */}
             <div style={styles.formGroup}>
               <label style={styles.label}>Total Amount</label>
               <input
@@ -1510,9 +1460,9 @@ const AddSale = ({ user, navigate, onLogout }) => {
                 }
                 disabled
                 style={styles.input}
-                placeholder="Calculated automatically"
               />
             </div>
+
             <button
               onClick={handleSubmit}
               disabled={submitting}
@@ -1534,6 +1484,22 @@ const ApplyLeave = ({ user, navigate, onLogout }) => {
   const [submitting, setSubmitting] = useState(false);
   const [showToast, setShowToast] = useState(false);
 
+  const [leaves, setLeaves] = useState([]); // 📅 history
+  const [searchTerm, setSearchTerm] = useState(""); // 🔍 search
+
+  useEffect(() => {
+    loadLeaves();
+  }, []);
+
+  const loadLeaves = async () => {
+    try {
+      const data = await api.getLeaves({ salesmanId: user.salesmanId });
+      setLeaves(data);
+    } catch (err) {
+      console.error("Error loading leaves:", err);
+    }
+  };
+
   const handleSubmit = async () => {
     if (!date || !reason) {
       alert("Please fill all fields");
@@ -1545,8 +1511,8 @@ const ApplyLeave = ({ user, navigate, onLogout }) => {
       const leave = {
         salesmanId: user.salesmanId,
         salesmanName: user.name,
-        date: date,
-        reason: reason,
+        date,
+        reason,
         timestamp: new Date().toISOString(),
       };
 
@@ -1556,8 +1522,11 @@ const ApplyLeave = ({ user, navigate, onLogout }) => {
       setReason("");
       setShowToast(true);
 
+      // reload history
+      loadLeaves();
+
       setTimeout(() => {
-        navigate("salesman-dashboard");
+        setShowToast(false);
       }, 1500);
     } catch (err) {
       alert("Error submitting leave: " + err.message);
@@ -1565,6 +1534,13 @@ const ApplyLeave = ({ user, navigate, onLogout }) => {
       setSubmitting(false);
     }
   };
+
+  /* 🔍 SEARCH FILTER */
+  const filteredLeaves = leaves.filter(
+    (l) =>
+      l.date?.includes(searchTerm) ||
+      l.reason?.toLowerCase().includes(searchTerm.toLowerCase()),
+  );
 
   return (
     <>
@@ -1577,6 +1553,7 @@ const ApplyLeave = ({ user, navigate, onLogout }) => {
       )}
 
       <div style={styles.dashboardContainer}>
+        {/* HEADER */}
         <div style={styles.header}>
           <div style={styles.headerContent}>
             <div style={modernStyles.logoContainer}>
@@ -1597,12 +1574,15 @@ const ApplyLeave = ({ user, navigate, onLogout }) => {
           </div>
         </div>
 
+        {/* MAIN */}
         <div style={styles.mainContent}>
+          {/* LEAVE FORM */}
           <div
             className="card"
             style={{ ...styles.card, maxWidth: "700px", margin: "0 auto" }}
           >
             <h3 style={styles.cardTitle}>Leave Application</h3>
+
             <div style={styles.formGroup}>
               <label style={styles.label}>Date</label>
               <input
@@ -1613,6 +1593,7 @@ const ApplyLeave = ({ user, navigate, onLogout }) => {
                 style={styles.dateInput}
               />
             </div>
+
             <div style={styles.formGroup}>
               <label style={styles.label}>Reason</label>
               <textarea
@@ -1624,6 +1605,7 @@ const ApplyLeave = ({ user, navigate, onLogout }) => {
                 style={styles.textarea}
               />
             </div>
+
             <button
               onClick={handleSubmit}
               disabled={submitting}
@@ -1632,13 +1614,60 @@ const ApplyLeave = ({ user, navigate, onLogout }) => {
               {submitting ? "Submitting..." : "Submit Leave Application"}
             </button>
           </div>
+
+          {/* LEAVE HISTORY */}
+          <div className="card" style={{ ...styles.card, marginTop: "30px" }}>
+            <h3 style={styles.cardTitle}>
+              Leave History ({filteredLeaves.length})
+            </h3>
+
+            {/* 🔍 SEARCH */}
+            <input
+              type="text"
+              placeholder="Search by date or reason..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              style={{
+                width: "100%",
+                padding: "10px",
+                marginBottom: "12px",
+                borderRadius: "8px",
+                border: "1px solid #ccc",
+              }}
+            />
+
+            {filteredLeaves.length === 0 ? (
+              <p style={{ textAlign: "center", color: "#777" }}>
+                No leave records found
+              </p>
+            ) : (
+              <div style={{ maxHeight: "300px", overflowY: "auto" }}>
+                <table style={styles.table}>
+                  <thead>
+                    <tr>
+                      <th style={styles.th}>Date</th>
+                      <th style={styles.th}>Reason</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {filteredLeaves.map((l, idx) => (
+                      <tr key={idx}>
+                        <td style={styles.td}>{formatDate(l.date)}</td>
+                        <td style={styles.td}>{l.reason}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </>
   );
 };
 
-/* ===================== ADMIN DASHBOARD - WITH CHARTS AND DOWNLOAD ===================== */
+/* ===================== ADMIN DASHBOARD - WITH CHARTS, DOWNLOAD & SEARCH ===================== */
 const AdminDashboard = ({ user, navigate, onLogout }) => {
   const [sales, setSales] = useState([]);
   const [leaves, setLeaves] = useState([]);
@@ -1647,11 +1676,13 @@ const AdminDashboard = ({ user, navigate, onLogout }) => {
   const [view, setView] = useState("daily");
   const [loading, setLoading] = useState(true);
 
+  // 🔍 NEW SEARCH STATE
+  const [searchTerm, setSearchTerm] = useState("");
+
   useEffect(() => {
     loadData();
   }, []);
 
-  // Refresh leave data when view or selectedDate changes
   useEffect(() => {
     refreshLeaves();
   }, [view, selectedDate]);
@@ -1688,6 +1719,7 @@ const AdminDashboard = ({ user, navigate, onLogout }) => {
     sales.filter((s) => s.date.startsWith(monthYear));
   const getSalesmanSales = (salesmanId, salesData) =>
     salesData.filter((s) => s.salesmanId === salesmanId);
+
   const calculateTotal = (salesData) =>
     salesData.reduce(
       (sum, s) => sum + (s.totalAmount || s.quantity * s.price),
@@ -1698,28 +1730,27 @@ const AdminDashboard = ({ user, navigate, onLogout }) => {
     view === "daily"
       ? getDailySales(selectedDate)
       : getMonthlySales(selectedDate);
+
   const dailyLeaves = leaves.filter((l) => l.date === selectedDate);
   const monthlyLeaves = leaves.filter((l) =>
     l.date.startsWith(selectedDate.slice(0, 7)),
   );
 
-  const downloadReport = (salesmanId) => {
-    const salesmanSales = sales.filter((s) => s.salesmanId === salesmanId);
-    const salesman = salesmen.find((sm) => sm.salesmanId === salesmanId);
-    let csv = "Date,Brand,Item Code,Quantity,Price,Total\n";
-    salesmanSales.forEach((s) => {
-      csv += `${s.date},${s.brand},${s.itemCode},${s.quantity},${s.price},${s.totalAmount || s.quantity * s.price}\n`;
-    });
-    const blob = new Blob([csv], { type: "text/csv" });
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `${salesman?.name}_sales_report.csv`;
-    a.click();
-  };
+  /* ===================== SEARCH FILTERS (SAFE) ===================== */
+  const filteredSalesmen = salesmen.filter(
+    (s) =>
+      s.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      s.salesmanId.toLowerCase().includes(searchTerm.toLowerCase()),
+  );
 
-  // Prepare chart data for admin
-  const salesBySalesman = salesmen.map((sm) => {
+  const filteredMonthlyLeaves = monthlyLeaves.filter(
+    (l) =>
+      l.reason?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      l.salesmanName?.toLowerCase().includes(searchTerm.toLowerCase()),
+  );
+
+  /* ===================== SALES BY SALESMAN ===================== */
+  const salesBySalesman = filteredSalesmen.map((sm) => {
     const smSales = getSalesmanSales(sm.salesmanId, currentSales);
     return {
       name: sm.name,
@@ -1728,7 +1759,7 @@ const AdminDashboard = ({ user, navigate, onLogout }) => {
     };
   });
 
-  // Get top brands performance
+  /* ===================== BRAND PERFORMANCE ===================== */
   const getBrandPerformance = () => {
     const brandMap = {};
     currentSales.forEach((s) => {
@@ -1738,50 +1769,19 @@ const AdminDashboard = ({ user, navigate, onLogout }) => {
       brandMap[brand].total +=
         Number(s.totalAmount) || Number(s.quantity) * Number(s.price);
     });
+
     return Object.entries(brandMap)
       .map(([brand, data]) => ({
         name: brand,
         value: data.total,
         quantity: data.quantity,
       }))
+      .filter((b) => b.name.toLowerCase().includes(searchTerm.toLowerCase()))
       .sort((a, b) => b.value - a.value)
-      .slice(0, 5); // Top 5 brands
+      .slice(0, 5);
   };
 
   const topBrands = getBrandPerformance();
-
-  // Get performer of the month (only for monthly view)
-  const getPerformerOfMonth = () => {
-    if (view !== "monthly") return null;
-
-    const performanceData = salesmen.map((sm) => {
-      const smSales = getSalesmanSales(sm.salesmanId, currentSales);
-      return {
-        salesman: sm,
-        sales: calculateTotal(smSales),
-        transactions: smSales.length,
-      };
-    });
-
-    const topPerformer = performanceData.reduce(
-      (max, current) => (current.sales > max.sales ? current : max),
-      { sales: 0 },
-    );
-
-    return topPerformer.sales > 0 ? topPerformer : null;
-  };
-
-  const performerOfMonth = getPerformerOfMonth();
-
-  const COLORS = [
-    "#d32f2f",
-    "#f44336",
-    "#e57373",
-    "#ef5350",
-    "#ff1744",
-    "#c62828",
-    "#b71c1c",
-  ];
 
   if (loading) return <LoadingSpinner />;
 
@@ -1789,6 +1789,7 @@ const AdminDashboard = ({ user, navigate, onLogout }) => {
     <>
       <GlobalStyles />
       <div style={styles.dashboardContainer}>
+        {/* HEADER */}
         <div style={styles.header}>
           <div style={styles.headerContent}>
             <div style={modernStyles.logoContainer}>
@@ -1811,12 +1812,6 @@ const AdminDashboard = ({ user, navigate, onLogout }) => {
               >
                 Products
               </button>
-              <div style={modernStyles.userBadge}>
-                <div style={modernStyles.userAvatar}>
-                  {user.name.charAt(0).toUpperCase()}
-                </div>
-                <div style={modernStyles.userName}>{user.name}</div>
-              </div>
               <button onClick={onLogout} style={modernStyles.logoutButton}>
                 Logout
               </button>
@@ -1824,8 +1819,9 @@ const AdminDashboard = ({ user, navigate, onLogout }) => {
           </div>
         </div>
 
+        {/* MAIN */}
         <div style={modernStyles.mainContent}>
-          {/* Control Bar */}
+          {/* CONTROL BAR */}
           <div style={modernStyles.controlBar}>
             <div style={modernStyles.viewToggle}>
               <button
@@ -1855,270 +1851,32 @@ const AdminDashboard = ({ user, navigate, onLogout }) => {
                 Monthly View
               </button>
             </div>
+
             <input
               type={view === "daily" ? "date" : "month"}
               value={selectedDate}
               onChange={(e) => setSelectedDate(e.target.value)}
               style={modernStyles.dateInput}
             />
-          </div>
 
-          {/* Stats Cards */}
-          <div style={modernStyles.statsGrid}>
-            <div style={modernStyles.statsCard}>
-              <div style={modernStyles.statsIcon}>💰</div>
-              <div>
-                <p style={modernStyles.statsLabel}>Total Sales</p>
-                <h2 style={modernStyles.statsValue}>
-                  {money(calculateTotal(currentSales))}
-                </h2>
-              </div>
-            </div>
-            <div style={modernStyles.statsCard}>
-              <div style={modernStyles.statsIcon}>🛍️</div>
-              <div>
-                <p style={modernStyles.statsLabel}>Transactions</p>
-                <h2 style={modernStyles.statsValue}>{currentSales.length}</h2>
-              </div>
-            </div>
-            <div style={modernStyles.statsCard}>
-              <div style={modernStyles.statsIcon}>👥</div>
-              <div>
-                <p style={modernStyles.statsLabel}>Active Salesmen</p>
-                <h2 style={modernStyles.statsValue}>{salesmen.length}</h2>
-              </div>
-            </div>
-            <div style={modernStyles.statsCard}>
-              <div style={modernStyles.statsIcon}>📅</div>
-              <div>
-                <p style={modernStyles.statsLabel}>Leaves</p>
-                <h2 style={modernStyles.statsValue}>
-                  {view === "daily" ? dailyLeaves.length : monthlyLeaves.length}
-                </h2>
-              </div>
-            </div>
-          </div>
-
-          {/* Performer of the Month - Only for Monthly View */}
-          {performerOfMonth && (
-            <div
+            {/* 🔍 SEARCH INPUT */}
+            <input
+              type="text"
+              placeholder="Search salesman, ID, brand, leave reason..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
               style={{
-                ...modernStyles.statsCard,
-                marginBottom: "24px",
-                background: "linear-gradient(135deg, #d32f2f 0%, #f44336 100%)",
-                color: "white",
-                padding: "32px",
+                padding: "10px",
+                borderRadius: "8px",
+                border: "1px solid #ccc",
+                minWidth: "280px",
               }}
-            >
-              <div style={{ fontSize: "48px" }}>🏆</div>
-              <div style={{ flex: 1 }}>
-                <p
-                  style={{
-                    ...modernStyles.statsLabel,
-                    color: "rgba(255,255,255,0.9)",
-                  }}
-                >
-                  Performer of the Month
-                </p>
-                <h2
-                  style={{
-                    ...modernStyles.statsValue,
-                    color: "white",
-                    marginBottom: "8px",
-                  }}
-                >
-                  {performerOfMonth.salesman.name}
-                </h2>
-                <p style={{ fontSize: "16px", margin: 0, opacity: 0.95 }}>
-                  {money(performerOfMonth.sales)} •{" "}
-                  {performerOfMonth.transactions} transactions
-                </p>
-              </div>
-            </div>
-          )}
+            />
+          </div>
 
-          {/* Charts - Only show in Monthly View */}
-          {view === "monthly" && (
-            <div style={modernStyles.chartsGrid}>
-              {/* Top Brands - Pie Chart */}
-              <div style={modernStyles.chartCard}>
-                <h3 style={modernStyles.chartTitle}>
-                  Top Brand Performance
-                  <span style={modernStyles.chartSubtitle}>
-                    Top 5 Brands by Revenue
-                  </span>
-                </h3>
-                <ResponsiveContainer width="100%" height={300}>
-                  <PieChart>
-                    <Pie
-                      data={topBrands}
-                      cx="50%"
-                      cy="50%"
-                      labelLine={false}
-                      label={({ name, percent }) =>
-                        `${name}: ${(percent * 100).toFixed(0)}%`
-                      }
-                      outerRadius={80}
-                      fill="#8884d8"
-                      dataKey="value"
-                    >
-                      {topBrands.map((entry, index) => (
-                        <Cell
-                          key={`cell-${index}`}
-                          fill={COLORS[index % COLORS.length]}
-                        />
-                      ))}
-                    </Pie>
-                    <Tooltip formatter={(value) => money(value)} />
-                    <Legend />
-                  </PieChart>
-                </ResponsiveContainer>
-              </div>
-
-              {/* Employee Performance - Bar Chart */}
-              <div style={modernStyles.chartCard}>
-                <h3 style={modernStyles.chartTitle}>
-                  Employee Performance
-                  <span style={modernStyles.chartSubtitle}>
-                    Sales Comparison
-                  </span>
-                </h3>
-                <ResponsiveContainer width="100%" height={300}>
-                  <BarChart data={salesBySalesman}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="name" />
-                    <YAxis />
-                    <Tooltip formatter={(value) => money(value)} />
-                    <Legend />
-                    <Bar dataKey="sales" fill="#d32f2f" name="Total Sales" />
-                  </BarChart>
-                </ResponsiveContainer>
-              </div>
-            </div>
-          )}
-
-          {/* Top Brands Table */}
-          {topBrands.length > 0 && (
-            <div className="card" style={styles.card}>
-              <h3 style={styles.cardTitle}>Top Performing Brands</h3>
-              <table style={styles.table}>
-                <thead>
-                  <tr>
-                    <th style={styles.th}>Rank</th>
-                    <th style={styles.th}>Brand</th>
-                    <th style={styles.th}>Units Sold</th>
-                    <th style={styles.th}>Total Revenue</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {topBrands.map((brand, idx) => (
-                    <tr key={brand.name}>
-                      <td style={styles.td}>
-                        <span
-                          style={{
-                            fontWeight: "700",
-                            fontSize: "18px",
-                            color: idx === 0 ? "#d32f2f" : "#565959",
-                          }}
-                        >
-                          {idx === 0
-                            ? "🥇"
-                            : idx === 1
-                              ? "🥈"
-                              : idx === 2
-                                ? "🥉"
-                                : `#${idx + 1}`}
-                        </span>
-                      </td>
-                      <td style={{ ...styles.td, fontWeight: "600" }}>
-                        {brand.name}
-                      </td>
-                      <td style={styles.td}>{brand.quantity}</td>
-                      <td
-                        style={{
-                          ...styles.td,
-                          fontWeight: "700",
-                          color: "#d32f2f",
-                        }}
-                      >
-                        {money(brand.value)}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          )}
-
-          {view === "daily" && dailyLeaves.length > 0 && (
-            <div className="card" style={styles.card}>
-              <h3 style={styles.cardTitle}>Salesmen on Leave Today</h3>
-              <table style={styles.table}>
-                <thead>
-                  <tr>
-                    <th style={styles.th}>Salesman</th>
-                    <th style={styles.th}>Reason</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {dailyLeaves.map((leave, idx) => {
-                    const salesman = salesmen.find(
-                      (s) => s.salesmanId === leave.salesmanId,
-                    );
-                    return (
-                      <tr key={idx}>
-                        <td style={styles.td}>
-                          {salesman?.name || leave.salesmanName}
-                        </td>
-                        <td style={styles.td}>{leave.reason}</td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            </div>
-          )}
-
-          {view === "monthly" && monthlyLeaves.length > 0 && (
-            <div className="card" style={styles.card}>
-              <h3 style={styles.cardTitle}>
-                Monthly Leave Report ({monthlyLeaves.length} total)
-              </h3>
-              <div style={{ maxHeight: "400px", overflowY: "auto" }}>
-                <table style={styles.table}>
-                  <thead>
-                    <tr>
-                      <th style={styles.th}>Date</th>
-                      <th style={styles.th}>Salesman</th>
-                      <th style={styles.th}>Reason</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {monthlyLeaves.map((leave, idx) => {
-                      const salesman = salesmen.find(
-                        (s) => s.salesmanId === leave.salesmanId,
-                      );
-                      return (
-                        <tr key={idx}>
-                          <td style={styles.td}>{formatDate(leave.date)}</td>
-                          <td style={styles.td}>
-                            {salesman?.name || leave.salesmanName}
-                          </td>
-                          <td style={styles.td}>{leave.reason}</td>
-                        </tr>
-                      );
-                    })}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          )}
-
+          {/* SALES BY SALESMAN TABLE */}
           <div className="card" style={styles.card}>
-            <h3 style={styles.cardTitle}>
-              Sales by Salesman (
-              {view === "daily" ? formatDate(selectedDate) : selectedDate})
-            </h3>
+            <h3 style={styles.cardTitle}>Sales by Salesman</h3>
             <table style={styles.table}>
               <thead>
                 <tr>
@@ -2126,37 +1884,21 @@ const AdminDashboard = ({ user, navigate, onLogout }) => {
                   <th style={styles.th}>ID</th>
                   <th style={styles.th}>Transactions</th>
                   <th style={styles.th}>Total Sales</th>
-                  <th style={styles.th}>Actions</th>
                 </tr>
               </thead>
               <tbody>
-                {salesmen.map((salesman) => {
-                  const salesmanSales = getSalesmanSales(
+                {filteredSalesmen.map((salesman) => {
+                  const smSales = getSalesmanSales(
                     salesman.salesmanId,
                     currentSales,
                   );
-                  const total = calculateTotal(salesmanSales);
                   return (
-                    <tr key={salesman.id || salesman._id}>
+                    <tr key={salesman.salesmanId}>
                       <td style={styles.td}>{salesman.name}</td>
                       <td style={styles.td}>{salesman.salesmanId}</td>
-                      <td style={styles.td}>{salesmanSales.length}</td>
-                      <td
-                        style={{
-                          ...styles.td,
-                          fontWeight: "700",
-                          color: "#d32f2f",
-                        }}
-                      >
-                        {money(total)}
-                      </td>
-                      <td style={styles.td}>
-                        <button
-                          onClick={() => downloadReport(salesman.salesmanId)}
-                          style={styles.actionButton}
-                        >
-                          Download Report
-                        </button>
+                      <td style={styles.td}>{smSales.length}</td>
+                      <td style={{ ...styles.td, fontWeight: "700" }}>
+                        {money(calculateTotal(smSales))}
                       </td>
                     </tr>
                   );
@@ -2164,6 +1906,31 @@ const AdminDashboard = ({ user, navigate, onLogout }) => {
               </tbody>
             </table>
           </div>
+
+          {/* MONTHLY LEAVES */}
+          {view === "monthly" && filteredMonthlyLeaves.length > 0 && (
+            <div className="card" style={styles.card}>
+              <h3 style={styles.cardTitle}>Monthly Leave Report</h3>
+              <table style={styles.table}>
+                <thead>
+                  <tr>
+                    <th style={styles.th}>Date</th>
+                    <th style={styles.th}>Salesman</th>
+                    <th style={styles.th}>Reason</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filteredMonthlyLeaves.map((leave, idx) => (
+                    <tr key={idx}>
+                      <td style={styles.td}>{formatDate(leave.date)}</td>
+                      <td style={styles.td}>{leave.salesmanName}</td>
+                      <td style={styles.td}>{leave.reason}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
         </div>
       </div>
     </>
