@@ -1435,13 +1435,12 @@ const AddSale = ({ user, navigate }) => {
       const sale = {
         salesmanId: user.salesmanId,
         salesmanName: user.name,
-        date,
-        brand,
-        itemCode,
+        date: date,
+        brand: brand,
+        itemCode: itemCode,
         quantity: Number(quantity),
-        price: Number(price),
+        price: Number(price), //
         totalAmount: Number(quantity) * Number(price),
-        timestamp: new Date().toISOString(),
       };
 
       await api.addSale(sale);
@@ -1571,8 +1570,7 @@ const ApplyLeave = ({ user, navigate }) => {
       const leave = {
         salesmanId: user.salesmanId,
         salesmanName: user.name,
-        date,
-        reason,
+        date: date,
         timestamp: new Date().toISOString(),
       };
 

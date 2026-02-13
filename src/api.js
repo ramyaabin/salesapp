@@ -169,14 +169,7 @@ const api = {
       return { success: true, synced: true };
     } catch (error) {
       console.error("API Error:", error);
-
-      const sales = JSON.parse(
-        localStorage.getItem("salesTracker_sales") || "[]",
-      );
-      sales.push(saleData);
-      localStorage.setItem("salesTracker_sales", JSON.stringify(sales));
-
-      return { success: true, offline: true };
+      throw error; // ❗ Do NOT fake success
     }
   },
 
@@ -225,14 +218,7 @@ const api = {
       return { success: true, synced: true };
     } catch (error) {
       console.error("API Error:", error);
-
-      const leaves = JSON.parse(
-        localStorage.getItem("salesTracker_leaves") || "[]",
-      );
-      leaves.push(leaveData);
-      localStorage.setItem("salesTracker_leaves", JSON.stringify(leaves));
-
-      return { success: true, offline: true };
+      throw error; // ❗ Do NOT fake success
     }
   },
 };
