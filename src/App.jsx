@@ -16,171 +16,168 @@ import {
   ResponsiveContainer,
   Legend,
 } from "recharts";
-import { money, getToday } from "./utils";
-
-/* ===================== CONFIG ===================== */
-
-/* ===================== INITIAL DATA (FALLBACK) ===================== */
-const INITIAL_USERS = [
-  {
-    id: 1,
-    username: "gokul",
-    password: "admin123",
-    name: "Gokul",
-    role: "admin",
-  },
-  {
-    id: 2,
-    username: "ravi",
-    password: "sales123",
-    name: "Ravi Kumar",
-    role: "salesman",
-    salesmanId: "SM001",
-  },
-  {
-    id: 3,
-    username: "priya",
-    password: "sales123",
-    name: "Priya Sharma",
-    role: "salesman",
-    salesmanId: "SM002",
-  },
-];
 
 /* ===================== HELPERS ===================== */
+const money = (n) =>
+  "AED " +
+  Number(n || 0).toLocaleString("en-AE", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  });
+
 const formatDate = (date) =>
   new Date(date).toLocaleDateString("en-AE", {
     day: "2-digit",
     month: "short",
     year: "numeric",
   });
+
+const getToday = () => new Date().toISOString().split("T")[0];
+
 const getMonthYear = () => {
   const d = new Date();
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
 };
 
-/* ===================== STYLES ===================== */
+/* ===================== PROFESSIONAL AMAZON-STYLE THEME ===================== */
+const theme = {
+  colors: {
+    primary: "#e53935", // Red
+    primaryDark: "#c62828",
+    primaryLight: "#ef5350",
+    grey50: "#fafafa",
+    grey100: "#f5f5f5",
+    grey200: "#eeeeee",
+    grey300: "#e0e0e0",
+    grey400: "#bdbdbd",
+    grey500: "#9e9e9e",
+    grey600: "#757575",
+    grey700: "#616161",
+    grey800: "#424242",
+    grey900: "#212121",
+    white: "#ffffff",
+    black: "#000000",
+    success: "#4caf50",
+    warning: "#ff9800",
+    text: "#212121",
+    textSecondary: "#616161",
+  },
+};
+
 const modernStyles = {
   dashboardContainer: {
     minHeight: "100vh",
-    background: "#f8f9fa",
-    fontFamily: "'Amazon Ember', 'Helvetica Neue', Arial, sans-serif",
-    color: "#232f3e",
+    background: theme.colors.grey100,
+    fontFamily: "'Segoe UI', 'Helvetica Neue', Arial, sans-serif",
+    color: theme.colors.text,
   },
   header: {
-    background: "#ffffff",
-    borderBottom: "1px solid #ddd",
-    boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
+    background: theme.colors.white,
+    borderBottom: `1px solid ${theme.colors.grey300}`,
+    boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
     position: "sticky",
     top: 0,
     zIndex: 100,
   },
   headerContent: {
-    maxWidth: "1600px",
+    maxWidth: "1400px",
     margin: "0 auto",
-    padding: "16px 40px",
+    padding: "16px 32px",
     display: "flex",
     alignItems: "center",
     justifyContent: "space-between",
   },
   logoContainer: { display: "flex", alignItems: "center", gap: "16px" },
-  logo: { height: "50px", width: "auto", objectFit: "contain" },
+  logo: { height: "45px", width: "auto", objectFit: "contain" },
   headerTitle: {
-    fontSize: "24px",
-    fontWeight: "700",
-    color: "#232f3e",
+    fontSize: "22px",
+    fontWeight: "600",
+    color: theme.colors.text,
     margin: 0,
-    letterSpacing: "-0.5px",
   },
   headerSubtitle: {
     fontSize: "13px",
-    color: "#565959",
+    color: theme.colors.textSecondary,
     margin: "4px 0 0 0",
     fontWeight: "400",
   },
   headerButton: {
-    padding: "8px 16px",
-    background: "#ffffff",
-    border: "1px solid #d5d9d9",
-    borderRadius: "8px",
-    color: "#0f1111",
-    fontSize: "13px",
+    padding: "10px 20px",
+    background: theme.colors.white,
+    border: `1px solid ${theme.colors.grey300}`,
+    borderRadius: "4px",
+    color: theme.colors.text,
+    fontSize: "14px",
     fontWeight: "500",
     cursor: "pointer",
-    transition: "all 0.2s ease",
+    transition: "all 0.2s",
   },
   userBadge: {
     display: "flex",
     alignItems: "center",
     gap: "10px",
-    padding: "6px 12px",
-    background: "#f7f8f8",
-    borderRadius: "8px",
-    border: "1px solid #d5d9d9",
+    padding: "8px 16px",
+    background: theme.colors.grey100,
+    borderRadius: "4px",
+    border: `1px solid ${theme.colors.grey300}`,
   },
   userAvatar: {
     width: "32px",
     height: "32px",
     borderRadius: "50%",
-    background: "#d32f2f",
+    background: theme.colors.primary,
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
     fontSize: "14px",
-    fontWeight: "700",
-    color: "white",
+    fontWeight: "600",
+    color: theme.colors.white,
   },
-  userName: { fontSize: "13px", fontWeight: "500", color: "#0f1111" },
+  userName: { fontSize: "14px", fontWeight: "500", color: theme.colors.text },
   logoutButton: {
-    padding: "8px 16px",
-    background: "#d32f2f",
+    padding: "10px 20px",
+    background: theme.colors.primary,
     border: "none",
-    borderRadius: "8px",
-    color: "white",
-    fontSize: "13px",
+    borderRadius: "4px",
+    color: theme.colors.white,
+    fontSize: "14px",
     fontWeight: "500",
     cursor: "pointer",
-    transition: "all 0.2s ease",
+    transition: "all 0.2s",
   },
-  mainContent: { maxWidth: "1600px", margin: "0 auto", padding: "24px 40px" },
+  mainContent: { maxWidth: "1400px", margin: "0 auto", padding: "24px 32px" },
   controlBar: {
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
     marginBottom: "24px",
-    padding: "16px",
-    background: "#ffffff",
-    borderRadius: "8px",
-    border: "1px solid #ddd",
+    padding: "16px 20px",
+    background: theme.colors.white,
+    borderRadius: "4px",
+    border: `1px solid ${theme.colors.grey300}`,
+    boxShadow: "0 1px 2px rgba(0,0,0,0.05)",
   },
   viewToggle: {
     display: "flex",
-    gap: "8px",
+    gap: "0",
+    background: theme.colors.grey100,
+    borderRadius: "4px",
     padding: "4px",
-    background: "#f7f8f8",
-    borderRadius: "8px",
   },
   toggleButton: {
-    padding: "8px 20px",
+    padding: "10px 24px",
     background: "transparent",
     border: "none",
-    borderRadius: "6px",
-    color: "#565959",
-    fontSize: "13px",
+    borderRadius: "4px",
+    color: theme.colors.textSecondary,
+    fontSize: "14px",
     fontWeight: "500",
     cursor: "pointer",
-    transition: "all 0.2s ease",
+    transition: "all 0.2s",
   },
-  toggleButtonActive: { background: "#d32f2f", color: "white" },
-  dateInput: {
-    padding: "8px 12px",
-    background: "#ffffff",
-    border: "1px solid #d5d9d9",
-    borderRadius: "8px",
-    color: "#0f1111",
-    fontSize: "13px",
-    fontWeight: "400",
-    cursor: "pointer",
+  toggleButtonActive: {
+    background: theme.colors.primary,
+    color: theme.colors.white,
   },
   statsGrid: {
     display: "grid",
@@ -190,30 +187,29 @@ const modernStyles = {
   },
   statsCard: {
     padding: "24px",
-    borderRadius: "8px",
-    boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
+    borderRadius: "4px",
+    boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
     display: "flex",
     alignItems: "center",
     gap: "16px",
-    transition: "all 0.2s ease",
-    background: "#ffffff",
-    border: "1px solid #ddd",
+    background: theme.colors.white,
+    border: `1px solid ${theme.colors.grey300}`,
+    transition: "all 0.2s",
   },
-  statsIcon: { fontSize: "40px" },
+  statsIcon: { fontSize: "36px" },
   statsLabel: {
-    fontSize: "13px",
-    color: "#565959",
-    margin: "0 0 6px 0",
+    fontSize: "12px",
+    color: theme.colors.textSecondary,
+    margin: "0 0 8px 0",
     fontWeight: "500",
     textTransform: "uppercase",
     letterSpacing: "0.5px",
   },
   statsValue: {
     fontSize: "28px",
-    fontWeight: "700",
-    color: "#0f1111",
+    fontWeight: "600",
+    color: theme.colors.text,
     margin: 0,
-    letterSpacing: "-0.5px",
   },
   chartsGrid: {
     display: "grid",
@@ -222,42 +218,46 @@ const modernStyles = {
     marginBottom: "24px",
   },
   chartCard: {
-    background: "#ffffff",
-    borderRadius: "8px",
-    boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
-    border: "1px solid #ddd",
+    background: theme.colors.white,
+    borderRadius: "4px",
+    boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
+    border: `1px solid ${theme.colors.grey300}`,
     padding: "24px",
   },
   chartTitle: {
     fontSize: "16px",
-    fontWeight: "700",
-    color: "#0f1111",
+    fontWeight: "600",
+    color: theme.colors.text,
     margin: "0 0 16px 0",
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
   },
-  chartSubtitle: { fontSize: "12px", color: "#565959", fontWeight: "400" },
+  chartSubtitle: {
+    fontSize: "12px",
+    color: theme.colors.textSecondary,
+    fontWeight: "400",
+  },
 };
 
 const styles = {
   loginContainer: {
     minHeight: "100vh",
-    background: "#f8f9fa",
+    background: theme.colors.grey100,
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
     padding: "20px",
-    fontFamily: "'Amazon Ember', 'Helvetica Neue', Arial, sans-serif",
+    fontFamily: "'Segoe UI', 'Helvetica Neue', Arial, sans-serif",
   },
   loginCard: {
-    background: "#ffffff",
-    borderRadius: "8px",
-    boxShadow: "0 2px 8px rgba(0,0,0,0.12)",
+    background: theme.colors.white,
+    borderRadius: "4px",
+    boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
     padding: "40px",
     maxWidth: "400px",
     width: "100%",
-    border: "1px solid #ddd",
+    border: `1px solid ${theme.colors.grey300}`,
   },
   logoContainer: {
     textAlign: "center",
@@ -270,14 +270,14 @@ const styles = {
   },
   loginTitle: {
     fontSize: "24px",
-    fontWeight: "700",
-    color: "#232f3e",
+    fontWeight: "600",
+    color: theme.colors.text,
     marginBottom: "8px",
     textAlign: "center",
   },
   loginSubtitle: {
     fontSize: "14px",
-    color: "#565959",
+    color: theme.colors.textSecondary,
     marginBottom: "32px",
     textAlign: "center",
   },
@@ -286,99 +286,100 @@ const styles = {
   },
   label: {
     display: "block",
-    fontSize: "13px",
-    fontWeight: "600",
-    color: "#0f1111",
-    marginBottom: "6px",
+    fontSize: "14px",
+    fontWeight: "500",
+    color: theme.colors.text,
+    marginBottom: "8px",
   },
   input: {
     width: "100%",
-    padding: "10px 12px",
+    padding: "12px",
     fontSize: "14px",
-    border: "1px solid #d5d9d9",
-    borderRadius: "8px",
+    border: `1px solid ${theme.colors.grey300}`,
+    borderRadius: "4px",
     outline: "none",
-    transition: "all 0.2s ease",
+    transition: "all 0.2s",
     boxSizing: "border-box",
+    fontFamily: "inherit",
   },
   button: {
     width: "100%",
-    padding: "12px",
-    background: "#d32f2f",
-    color: "white",
+    padding: "12px 24px",
+    background: theme.colors.primary,
+    color: theme.colors.white,
     border: "none",
-    borderRadius: "8px",
+    borderRadius: "4px",
     fontSize: "14px",
-    fontWeight: "600",
+    fontWeight: "500",
     cursor: "pointer",
-    transition: "all 0.2s ease",
+    transition: "all 0.2s",
   },
   dashboardContainer: {
     minHeight: "100vh",
-    background: "#f8f9fa",
-    fontFamily: "'Amazon Ember', 'Helvetica Neue', Arial, sans-serif",
+    background: theme.colors.grey100,
+    fontFamily: "'Segoe UI', 'Helvetica Neue', Arial, sans-serif",
   },
   header: {
-    background: "#ffffff",
-    borderBottom: "1px solid #ddd",
-    boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
+    background: theme.colors.white,
+    borderBottom: `1px solid ${theme.colors.grey300}`,
+    boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
     position: "sticky",
     top: 0,
     zIndex: 100,
   },
   headerContent: {
-    maxWidth: "1600px",
+    maxWidth: "1400px",
     margin: "0 auto",
-    padding: "16px 40px",
+    padding: "16px 32px",
     display: "flex",
     alignItems: "center",
     justifyContent: "space-between",
   },
   headerTitle: {
-    fontSize: "24px",
-    fontWeight: "700",
-    color: "#232f3e",
+    fontSize: "22px",
+    fontWeight: "600",
+    color: theme.colors.text,
     margin: 0,
   },
   headerButton: {
-    padding: "8px 16px",
-    background: "#ffffff",
-    border: "1px solid #d5d9d9",
-    borderRadius: "8px",
-    color: "#0f1111",
-    fontSize: "13px",
+    padding: "10px 20px",
+    background: theme.colors.white,
+    border: `1px solid ${theme.colors.grey300}`,
+    borderRadius: "4px",
+    color: theme.colors.text,
+    fontSize: "14px",
     fontWeight: "500",
     cursor: "pointer",
-    transition: "all 0.2s ease",
+    transition: "all 0.2s",
   },
   logoutButton: {
-    padding: "8px 16px",
-    background: "#d32f2f",
+    padding: "10px 20px",
+    background: theme.colors.primary,
     border: "none",
-    borderRadius: "8px",
-    color: "white",
-    fontSize: "13px",
+    borderRadius: "4px",
+    color: theme.colors.white,
+    fontSize: "14px",
     fontWeight: "500",
     cursor: "pointer",
-    transition: "all 0.2s ease",
+    transition: "all 0.2s",
   },
   mainContent: {
-    maxWidth: "1600px",
+    maxWidth: "1400px",
     margin: "0 auto",
-    padding: "24px 40px",
+    padding: "24px 32px",
   },
   card: {
-    background: "#ffffff",
-    borderRadius: "8px",
-    boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
-    border: "1px solid #ddd",
+    background: theme.colors.white,
+    borderRadius: "4px",
+    boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
+    border: `1px solid ${theme.colors.grey300}`,
     padding: "24px",
     marginBottom: "20px",
   },
   cardTitle: {
     fontSize: "18px",
-    fontWeight: "700",
-    color: "#232f3e",
+    fontWeight: "600",
+    color: theme.colors.text,
     marginBottom: "20px",
   },
   table: {
@@ -388,36 +389,37 @@ const styles = {
   th: {
     textAlign: "left",
     padding: "12px",
-    borderBottom: "2px solid #ddd",
-    fontSize: "13px",
+    borderBottom: `2px solid ${theme.colors.grey300}`,
+    fontSize: "12px",
     fontWeight: "600",
-    color: "#565959",
+    color: theme.colors.textSecondary,
     textTransform: "uppercase",
     letterSpacing: "0.5px",
+    background: theme.colors.grey50,
   },
   td: {
     padding: "12px",
-    borderBottom: "1px solid #f0f0f0",
+    borderBottom: `1px solid ${theme.colors.grey200}`,
     fontSize: "14px",
-    color: "#232f3e",
+    color: theme.colors.text,
   },
   actionButton: {
-    padding: "6px 12px",
-    background: "#d32f2f",
-    color: "white",
+    padding: "8px 16px",
+    background: theme.colors.primary,
+    color: theme.colors.white,
     border: "none",
-    borderRadius: "6px",
-    fontSize: "12px",
+    borderRadius: "4px",
+    fontSize: "13px",
     fontWeight: "500",
     cursor: "pointer",
-    transition: "all 0.2s ease",
+    transition: "all 0.2s",
   },
   textarea: {
     width: "100%",
-    padding: "10px 12px",
+    padding: "12px",
     fontSize: "14px",
-    border: "1px solid #d5d9d9",
-    borderRadius: "8px",
+    border: `1px solid ${theme.colors.grey300}`,
+    borderRadius: "4px",
     outline: "none",
     fontFamily: "inherit",
     resize: "vertical",
@@ -425,23 +427,23 @@ const styles = {
   },
   dateInput: {
     width: "100%",
-    padding: "10px 12px",
+    padding: "12px",
     fontSize: "14px",
-    border: "1px solid #d5d9d9",
-    borderRadius: "8px",
+    border: `1px solid ${theme.colors.grey300}`,
+    borderRadius: "4px",
     outline: "none",
     cursor: "pointer",
     boxSizing: "border-box",
   },
   select: {
     width: "100%",
-    padding: "10px 12px",
+    padding: "12px",
     fontSize: "14px",
-    border: "1px solid #d5d9d9",
-    borderRadius: "8px",
+    border: `1px solid ${theme.colors.grey300}`,
+    borderRadius: "4px",
     outline: "none",
     cursor: "pointer",
-    background: "white",
+    background: theme.colors.white,
     boxSizing: "border-box",
   },
 };
@@ -457,24 +459,30 @@ const GlobalStyles = () => {
       body {
         margin: 0;
         padding: 0;
-        font-family: 'Amazon Ember', 'Helvetica Neue', Arial, sans-serif;
+        font-family: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
       }
       button:hover {
         opacity: 0.9;
         transform: translateY(-1px);
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
       }
       button:active {
         transform: translateY(0);
       }
+      button:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        transform: none !important;
+      }
       input:focus, textarea:focus, select:focus {
-        border-color: #d32f2f;
-        box-shadow: 0 0 0 3px rgba(211, 47, 47, 0.1);
+        border-color: ${theme.colors.primary};
+        box-shadow: 0 0 0 3px rgba(229, 57, 53, 0.1);
       }
       table tr:hover {
-        background: #f8f9fa;
+        background: ${theme.colors.grey50};
       }
       .card:hover {
-        box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+        box-shadow: 0 2px 8px rgba(0,0,0,0.15);
       }
     `;
     document.head.appendChild(style);
@@ -491,13 +499,13 @@ const LoadingSpinner = () => (
       display: "flex",
       alignItems: "center",
       justifyContent: "center",
-      background: "#f8f9fa",
+      background: theme.colors.grey100,
     }}
   >
     <div
       style={{
-        fontSize: "18px",
-        color: "#565959",
+        fontSize: "16px",
+        color: theme.colors.textSecondary,
         display: "flex",
         alignItems: "center",
         gap: "12px",
@@ -507,8 +515,8 @@ const LoadingSpinner = () => (
         style={{
           width: "32px",
           height: "32px",
-          border: "3px solid #f0f0f0",
-          borderTop: "3px solid #d32f2f",
+          border: `3px solid ${theme.colors.grey300}`,
+          borderTop: `3px solid ${theme.colors.primary}`,
           borderRadius: "50%",
           animation: "spin 1s linear infinite",
         }}
@@ -539,11 +547,11 @@ const SuccessToast = ({ message, onClose }) => {
         position: "fixed",
         top: "20px",
         right: "20px",
-        background: "#4caf50",
-        color: "white",
+        background: theme.colors.success,
+        color: theme.colors.white,
         padding: "16px 24px",
-        borderRadius: "8px",
-        boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
+        borderRadius: "4px",
+        boxShadow: "0 4px 12px rgba(0,0,0,0.2)",
         zIndex: 1000,
         display: "flex",
         alignItems: "center",
@@ -551,7 +559,7 @@ const SuccessToast = ({ message, onClose }) => {
         animation: "slideIn 0.3s ease",
       }}
     >
-      <span style={{ fontSize: "24px" }}>✓</span>
+      <span style={{ fontSize: "20px" }}>✓</span>
       <span style={{ fontSize: "14px", fontWeight: "500" }}>{message}</span>
       <style>
         {`
@@ -734,20 +742,23 @@ const ManageSalesmen = ({ navigate, onLogout }) => {
         </div>
 
         <div style={styles.mainContent}>
-          <div style={{ marginBottom: "20px" }}>
+          <div style={{ marginBottom: "20px", display: "flex", gap: "12px" }}>
             <button
               onClick={() => setShowForm(!showForm)}
               style={{
                 ...styles.button,
                 width: "auto",
-                marginRight: "10px",
               }}
             >
               {showForm ? "Cancel" : "Add New Salesman"}
             </button>
             <button
               onClick={() => setShowResetForm(!showResetForm)}
-              style={{ ...styles.button, width: "auto" }}
+              style={{
+                ...styles.button,
+                width: "auto",
+                background: theme.colors.grey600,
+              }}
             >
               {showResetForm ? "Cancel" : "Reset Password"}
             </button>
@@ -856,24 +867,26 @@ const ManageSalesmen = ({ navigate, onLogout }) => {
 
           <div className="card" style={styles.card}>
             <h3 style={styles.cardTitle}>Current Salesmen</h3>
-            <table style={styles.table}>
-              <thead>
-                <tr>
-                  <th style={styles.th}>Name</th>
-                  <th style={styles.th}>Username</th>
-                  <th style={styles.th}>Salesman ID</th>
-                </tr>
-              </thead>
-              <tbody>
-                {salesmen.map((sm) => (
-                  <tr key={sm.id || sm._id}>
-                    <td style={styles.td}>{sm.name}</td>
-                    <td style={styles.td}>{sm.username}</td>
-                    <td style={styles.td}>{sm.salesmanId}</td>
+            <div style={{ overflowX: "auto" }}>
+              <table style={styles.table}>
+                <thead>
+                  <tr>
+                    <th style={styles.th}>Name</th>
+                    <th style={styles.th}>Username</th>
+                    <th style={styles.th}>Salesman ID</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {salesmen.map((sm) => (
+                    <tr key={sm.id || sm._id}>
+                      <td style={styles.td}>{sm.name}</td>
+                      <td style={styles.td}>{sm.username}</td>
+                      <td style={styles.td}>{sm.salesmanId}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       </div>
@@ -905,7 +918,6 @@ const DownloadProducts = ({ navigate, onLogout }) => {
     }
   };
 
-  // Filter products based on search term
   useEffect(() => {
     if (searchTerm.trim() === "") {
       setFilteredProducts(products);
@@ -965,9 +977,16 @@ const DownloadProducts = ({ navigate, onLogout }) => {
               display: "flex",
               gap: "12px",
               alignItems: "center",
+              flexWrap: "wrap",
             }}
           >
-            <button onClick={downloadCSV} style={styles.button}>
+            <button
+              onClick={downloadCSV}
+              style={{
+                ...styles.button,
+                width: "auto",
+              }}
+            >
               Download CSV
             </button>
             <input
@@ -1014,7 +1033,8 @@ const DownloadProducts = ({ navigate, onLogout }) => {
                         style={{
                           ...styles.td,
                           textAlign: "center",
-                          color: "#565959",
+                          color: theme.colors.textSecondary,
+                          padding: "40px",
                         }}
                       >
                         No products found matching "{searchTerm}"
@@ -1043,7 +1063,6 @@ const SalesmanDashboard = ({ user, navigate, onLogout }) => {
     loadData();
   }, []);
 
-  // Auto-refresh leaves when view or date changes
   useEffect(() => {
     refreshLeaves();
   }, [view, selectedDate]);
@@ -1091,7 +1110,6 @@ const SalesmanDashboard = ({ user, navigate, onLogout }) => {
     l.date.startsWith(selectedDate.slice(0, 7)),
   );
 
-  // Prepare chart data for daily trend
   const getDailyTrendData = () => {
     const last7Days = [];
     for (let i = 6; i >= 0; i--) {
@@ -1119,7 +1137,6 @@ const SalesmanDashboard = ({ user, navigate, onLogout }) => {
     <>
       <GlobalStyles />
       <div style={modernStyles.dashboardContainer}>
-        {/* Header */}
         <div style={modernStyles.header}>
           <div style={modernStyles.headerContent}>
             <div style={modernStyles.logoContainer}>
@@ -1136,7 +1153,12 @@ const SalesmanDashboard = ({ user, navigate, onLogout }) => {
                 </div>
                 <div>
                   <div style={modernStyles.userName}>{user.name}</div>
-                  <div style={{ fontSize: "11px", color: "#565959" }}>
+                  <div
+                    style={{
+                      fontSize: "11px",
+                      color: theme.colors.textSecondary,
+                    }}
+                  >
                     {user.salesmanId}
                   </div>
                 </div>
@@ -1148,9 +1170,7 @@ const SalesmanDashboard = ({ user, navigate, onLogout }) => {
           </div>
         </div>
 
-        {/* Main Content */}
         <div style={modernStyles.mainContent}>
-          {/* Control Bar */}
           <div style={modernStyles.controlBar}>
             <div style={modernStyles.viewToggle}>
               <button
@@ -1184,11 +1204,16 @@ const SalesmanDashboard = ({ user, navigate, onLogout }) => {
               type={view === "daily" ? "date" : "month"}
               value={selectedDate}
               onChange={(e) => setSelectedDate(e.target.value)}
-              style={modernStyles.dateInput}
+              style={{
+                ...modernStyles.dateInput,
+                padding: "10px 16px",
+                fontSize: "14px",
+                border: `1px solid ${theme.colors.grey300}`,
+                borderRadius: "4px",
+              }}
             />
           </div>
 
-          {/* Stats Cards */}
           <div style={modernStyles.statsGrid}>
             <div style={modernStyles.statsCard}>
               <div style={modernStyles.statsIcon}>📊</div>
@@ -1217,7 +1242,6 @@ const SalesmanDashboard = ({ user, navigate, onLogout }) => {
             </div>
           </div>
 
-          {/* Sales Trend Chart */}
           {view === "daily" && (
             <div style={modernStyles.chartCard}>
               <h3 style={modernStyles.chartTitle}>
@@ -1228,7 +1252,10 @@ const SalesmanDashboard = ({ user, navigate, onLogout }) => {
               </h3>
               <ResponsiveContainer width="100%" height={250}>
                 <LineChart data={dailyTrendData}>
-                  <CartesianGrid strokeDasharray="3 3" />
+                  <CartesianGrid
+                    strokeDasharray="3 3"
+                    stroke={theme.colors.grey300}
+                  />
                   <XAxis dataKey="date" />
                   <YAxis />
                   <Tooltip formatter={(value) => money(value)} />
@@ -1236,7 +1263,7 @@ const SalesmanDashboard = ({ user, navigate, onLogout }) => {
                   <Line
                     type="monotone"
                     dataKey="sales"
-                    stroke="#d32f2f"
+                    stroke={theme.colors.primary}
                     strokeWidth={2}
                     name="Sales (AED)"
                   />
@@ -1245,8 +1272,14 @@ const SalesmanDashboard = ({ user, navigate, onLogout }) => {
             </div>
           )}
 
-          {/* Action Buttons */}
-          <div style={{ display: "flex", gap: "12px", marginBottom: "24px" }}>
+          <div
+            style={{
+              display: "flex",
+              gap: "12px",
+              marginBottom: "24px",
+              flexWrap: "wrap",
+            }}
+          >
             <button
               onClick={() => navigate("add-sale")}
               style={{ ...styles.button, width: "auto" }}
@@ -1258,25 +1291,36 @@ const SalesmanDashboard = ({ user, navigate, onLogout }) => {
               style={{
                 ...styles.button,
                 width: "auto",
-                background: "#ff9800",
+                background: theme.colors.warning,
               }}
             >
               Apply for Leave
             </button>
           </div>
 
-          {/* Sales Table */}
           <div className="card" style={styles.card}>
             <h3 style={styles.cardTitle}>
               Sales (
               {view === "daily" ? formatDate(selectedDate) : selectedDate})
             </h3>
             {currentSales.length === 0 ? (
-              <p style={{ color: "#565959", textAlign: "center" }}>
+              <p
+                style={{
+                  color: theme.colors.textSecondary,
+                  textAlign: "center",
+                  padding: "40px",
+                }}
+              >
                 No sales recorded for this {view === "daily" ? "day" : "month"}
               </p>
             ) : (
-              <div style={{ maxHeight: "400px", overflowY: "auto" }}>
+              <div
+                style={{
+                  maxHeight: "400px",
+                  overflowY: "auto",
+                  overflowX: "auto",
+                }}
+              >
                 <table style={styles.table}>
                   <thead>
                     <tr>
@@ -1299,8 +1343,8 @@ const SalesmanDashboard = ({ user, navigate, onLogout }) => {
                         <td
                           style={{
                             ...styles.td,
-                            fontWeight: "700",
-                            color: "#d32f2f",
+                            fontWeight: "600",
+                            color: theme.colors.primary,
                           }}
                         >
                           {money(
@@ -1315,7 +1359,6 @@ const SalesmanDashboard = ({ user, navigate, onLogout }) => {
             )}
           </div>
 
-          {/* Leave Records */}
           {view === "daily" && dailyLeaves.length > 0 && (
             <div className="card" style={styles.card}>
               <h3 style={styles.cardTitle}>Leave Today</h3>
@@ -1370,7 +1413,7 @@ const SalesmanDashboard = ({ user, navigate, onLogout }) => {
 };
 
 /* ===================== ADD SALE ===================== */
-const AddSale = ({ user, navigate }) => {
+const AddSale = ({ user, navigate, onLogout }) => {
   const [date, setDate] = useState(getToday());
   const [brand, setBrand] = useState("");
   const [itemCode, setItemCode] = useState("");
@@ -1383,7 +1426,6 @@ const AddSale = ({ user, navigate }) => {
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [showDropdown, setShowDropdown] = useState(false);
 
-  // Load all products
   useEffect(() => {
     const loadProducts = async () => {
       const data = await api.getProducts();
@@ -1392,7 +1434,6 @@ const AddSale = ({ user, navigate }) => {
     loadProducts();
   }, []);
 
-  // Filter products by brand
   useEffect(() => {
     if (brand) {
       setFilteredProducts(
@@ -1403,15 +1444,14 @@ const AddSale = ({ user, navigate }) => {
     }
   }, [brand, products]);
 
-  // Type-ahead search
   useEffect(() => {
-    if (itemCodeSearch) {
+    if (itemCodeSearch && itemCodeSearch.length > 0) {
       const searchResults = products.filter((p) =>
         p.itemCode.toLowerCase().includes(itemCodeSearch.toLowerCase()),
       );
       setFilteredProducts(searchResults);
       setShowDropdown(true);
-    } else {
+    } else if (!itemCodeSearch) {
       setShowDropdown(false);
     }
   }, [itemCodeSearch, products]);
@@ -1439,13 +1479,13 @@ const AddSale = ({ user, navigate }) => {
         brand: brand,
         itemCode: itemCode,
         quantity: Number(quantity),
-        price: Number(price), //
+        price: Number(price),
         totalAmount: Number(quantity) * Number(price),
+        timestamp: new Date().toISOString(),
       };
 
       await api.addSale(sale);
 
-      // Reset form
       setBrand("");
       setItemCode("");
       setItemCodeSearch("");
@@ -1453,7 +1493,6 @@ const AddSale = ({ user, navigate }) => {
       setPrice("");
       setShowToast(true);
 
-      // Navigate back after short delay
       setTimeout(() => navigate("salesman-dashboard"), 1500);
     } catch (err) {
       alert("Error adding sale: " + err.message);
@@ -1474,86 +1513,204 @@ const AddSale = ({ user, navigate }) => {
         />
       )}
 
-      <div style={{ padding: "20px" }}>
-        <div>
-          <img src={hamaLogo} alt="HAMA" style={{ height: "50px" }} />
-          <h1>Add New Sale</h1>
+      <div style={styles.dashboardContainer}>
+        <div style={styles.header}>
+          <div style={styles.headerContent}>
+            <div style={modernStyles.logoContainer}>
+              <img src={hamaLogo} alt="HAMA" style={modernStyles.logo} />
+              <h1 style={styles.headerTitle}>Add New Sale</h1>
+            </div>
+            <div style={{ display: "flex", gap: "12px" }}>
+              <button
+                onClick={() => navigate("salesman-dashboard")}
+                style={styles.headerButton}
+              >
+                Back to Dashboard
+              </button>
+              <button onClick={onLogout} style={styles.logoutButton}>
+                Logout
+              </button>
+            </div>
+          </div>
         </div>
 
-        <div>
-          <label>Date</label>
-          <input
-            type="date"
-            value={date}
-            onChange={(e) => setDate(e.target.value)}
-            disabled={submitting}
-          />
-
-          <label>Brand</label>
-          <select
-            value={brand}
-            onChange={(e) => {
-              setBrand(e.target.value);
-              setItemCode("");
-              setPrice("");
-            }}
-            disabled={submitting}
+        <div style={styles.mainContent}>
+          <div
+            className="card"
+            style={{ ...styles.card, maxWidth: "700px", margin: "0 auto" }}
           >
-            <option value="">Select Brand</option>
-            {uniqueBrands.map((b) => (
-              <option key={b} value={b}>
-                {b}
-              </option>
-            ))}
-          </select>
-
-          <label>Item Code</label>
-          <input
-            type="text"
-            value={itemCodeSearch}
-            onChange={(e) => setItemCodeSearch(e.target.value)}
-            disabled={submitting}
-          />
-          {showDropdown && filteredProducts.length > 0 && (
-            <div>
-              {filteredProducts.slice(0, 10).map((p) => (
-                <div key={p.itemCode} onClick={() => handleItemCodeSelect(p)}>
-                  {p.itemCode} - {p.brand} - {money(p.price)}
-                </div>
-              ))}
+            <h3 style={styles.cardTitle}>Sale Details</h3>
+            <div style={styles.formGroup}>
+              <label style={styles.label}>Date</label>
+              <input
+                type="date"
+                value={date}
+                onChange={(e) => setDate(e.target.value)}
+                disabled={submitting}
+                style={styles.dateInput}
+              />
             </div>
-          )}
 
-          <label>Quantity</label>
-          <input
-            type="number"
-            min="1"
-            value={quantity}
-            onChange={(e) => setQuantity(e.target.value)}
-          />
+            <div style={styles.formGroup}>
+              <label style={styles.label}>Brand</label>
+              <select
+                value={brand}
+                onChange={(e) => {
+                  setBrand(e.target.value);
+                  setItemCode("");
+                  setItemCodeSearch("");
+                  setPrice("");
+                }}
+                disabled={submitting}
+                style={styles.select}
+              >
+                <option value="">Select Brand</option>
+                {uniqueBrands.map((b) => (
+                  <option key={b} value={b}>
+                    {b}
+                  </option>
+                ))}
+              </select>
+            </div>
 
-          <label>Price</label>
-          <input type="number" value={price} disabled />
+            <div style={styles.formGroup}>
+              <label style={styles.label}>
+                Item Code (Search or select from dropdown)
+              </label>
+              <div style={{ position: "relative" }}>
+                <input
+                  type="text"
+                  value={itemCodeSearch}
+                  onChange={(e) => setItemCodeSearch(e.target.value)}
+                  onFocus={() => itemCodeSearch && setShowDropdown(true)}
+                  disabled={submitting}
+                  style={styles.input}
+                  placeholder="Type to search item code..."
+                />
+                {showDropdown && filteredProducts.length > 0 && (
+                  <div
+                    style={{
+                      position: "absolute",
+                      top: "100%",
+                      left: 0,
+                      right: 0,
+                      maxHeight: "200px",
+                      overflowY: "auto",
+                      background: theme.colors.white,
+                      border: `1px solid ${theme.colors.grey300}`,
+                      borderRadius: "4px",
+                      marginTop: "4px",
+                      boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
+                      zIndex: 1000,
+                    }}
+                  >
+                    {filteredProducts.slice(0, 10).map((p) => (
+                      <div
+                        key={p.itemCode}
+                        onClick={() => handleItemCodeSelect(p)}
+                        style={{
+                          padding: "12px",
+                          cursor: "pointer",
+                          borderBottom: `1px solid ${theme.colors.grey200}`,
+                          transition: "background 0.2s",
+                        }}
+                        onMouseEnter={(e) =>
+                          (e.target.style.background = theme.colors.grey50)
+                        }
+                        onMouseLeave={(e) =>
+                          (e.target.style.background = theme.colors.white)
+                        }
+                      >
+                        <div
+                          style={{
+                            fontWeight: "600",
+                            fontSize: "14px",
+                            color: theme.colors.text,
+                          }}
+                        >
+                          {p.itemCode}
+                        </div>
+                        <div
+                          style={{
+                            fontSize: "12px",
+                            color: theme.colors.textSecondary,
+                            marginTop: "4px",
+                          }}
+                        >
+                          {p.brand} • {money(p.price)}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
 
-          <label>Total Amount</label>
-          <input
-            type="text"
-            value={quantity && price ? money(quantity * price) : ""}
-            disabled
-          />
+            <div style={styles.formGroup}>
+              <label style={styles.label}>Quantity</label>
+              <input
+                type="number"
+                value={quantity}
+                onChange={(e) => setQuantity(e.target.value)}
+                disabled={submitting}
+                style={styles.input}
+                placeholder="Enter quantity"
+                min="1"
+              />
+            </div>
 
-          <button onClick={handleSubmit} disabled={submitting}>
-            {submitting ? "Submitting..." : "Add Sale"}
-          </button>
+            <div style={styles.formGroup}>
+              <label style={styles.label}>Price (AED)</label>
+              <input
+                type="number"
+                value={price}
+                disabled
+                style={{
+                  ...styles.input,
+                  background: theme.colors.grey100,
+                  cursor: "not-allowed",
+                }}
+                placeholder="Auto-filled from product"
+              />
+            </div>
+
+            <div style={styles.formGroup}>
+              <label style={styles.label}>Total Amount</label>
+              <input
+                type="text"
+                value={
+                  quantity && price
+                    ? money(Number(quantity) * Number(price))
+                    : ""
+                }
+                disabled
+                style={{
+                  ...styles.input,
+                  background: theme.colors.grey100,
+                  cursor: "not-allowed",
+                  fontWeight: "600",
+                  color: theme.colors.primary,
+                }}
+                placeholder="Calculated automatically"
+              />
+            </div>
+
+            <button
+              onClick={handleSubmit}
+              disabled={submitting}
+              style={styles.button}
+            >
+              {submitting ? "Submitting..." : "Add Sale"}
+            </button>
+          </div>
         </div>
       </div>
     </>
   );
 };
 
-//* ===================== APPLY LEAVE ===================== */
-
-const ApplyLeave = ({ user, navigate }) => {
+/* ===================== APPLY LEAVE ===================== */
+const ApplyLeave = ({ user, navigate, onLogout }) => {
   const [date, setDate] = useState(getToday());
   const [reason, setReason] = useState("");
   const [submitting, setSubmitting] = useState(false);
@@ -1571,12 +1728,12 @@ const ApplyLeave = ({ user, navigate }) => {
         salesmanId: user.salesmanId,
         salesmanName: user.name,
         date: date,
+        reason: reason, // CRITICAL FIX: Include reason field
         timestamp: new Date().toISOString(),
       };
 
       await api.addLeave(leave);
 
-      // Reset form
       setDate(getToday());
       setReason("");
       setShowToast(true);
@@ -1594,44 +1751,74 @@ const ApplyLeave = ({ user, navigate }) => {
       <GlobalStyles />
       {showToast && (
         <SuccessToast
-          message="Leave applied successfully!"
+          message="Leave application submitted successfully!"
           onClose={() => setShowToast(false)}
         />
       )}
 
-      <div style={{ padding: "20px" }}>
-        <div>
-          <img src={hamaLogo} alt="HAMA" style={{ height: "50px" }} />
-          <h1>Apply for Leave</h1>
+      <div style={styles.dashboardContainer}>
+        <div style={styles.header}>
+          <div style={styles.headerContent}>
+            <div style={modernStyles.logoContainer}>
+              <img src={hamaLogo} alt="HAMA" style={modernStyles.logo} />
+              <h1 style={styles.headerTitle}>Apply for Leave</h1>
+            </div>
+            <div style={{ display: "flex", gap: "12px" }}>
+              <button
+                onClick={() => navigate("salesman-dashboard")}
+                style={styles.headerButton}
+              >
+                Back to Dashboard
+              </button>
+              <button onClick={onLogout} style={styles.logoutButton}>
+                Logout
+              </button>
+            </div>
+          </div>
         </div>
 
-        <div>
-          <label>Date</label>
-          <input
-            type="date"
-            value={date}
-            onChange={(e) => setDate(e.target.value)}
-            disabled={submitting}
-          />
-
-          <label>Reason</label>
-          <textarea
-            value={reason}
-            onChange={(e) => setReason(e.target.value)}
-            rows={4}
-            disabled={submitting}
-          />
-
-          <button onClick={handleSubmit} disabled={submitting}>
-            {submitting ? "Submitting..." : "Submit Leave Application"}
-          </button>
+        <div style={styles.mainContent}>
+          <div
+            className="card"
+            style={{ ...styles.card, maxWidth: "700px", margin: "0 auto" }}
+          >
+            <h3 style={styles.cardTitle}>Leave Application</h3>
+            <div style={styles.formGroup}>
+              <label style={styles.label}>Date</label>
+              <input
+                type="date"
+                value={date}
+                onChange={(e) => setDate(e.target.value)}
+                disabled={submitting}
+                style={styles.dateInput}
+              />
+            </div>
+            <div style={styles.formGroup}>
+              <label style={styles.label}>Reason</label>
+              <textarea
+                value={reason}
+                onChange={(e) => setReason(e.target.value)}
+                rows="4"
+                placeholder="Enter reason for leave..."
+                disabled={submitting}
+                style={styles.textarea}
+              />
+            </div>
+            <button
+              onClick={handleSubmit}
+              disabled={submitting}
+              style={styles.button}
+            >
+              {submitting ? "Submitting..." : "Submit Leave Application"}
+            </button>
+          </div>
         </div>
       </div>
     </>
   );
 };
 
-/* ===================== ADMIN DASHBOARD - WITH CHARTS AND DOWNLOAD ===================== */
+/* ===================== ADMIN DASHBOARD ===================== */
 const AdminDashboard = ({ user, navigate, onLogout }) => {
   const [sales, setSales] = useState([]);
   const [leaves, setLeaves] = useState([]);
@@ -1640,20 +1827,10 @@ const AdminDashboard = ({ user, navigate, onLogout }) => {
   const [view, setView] = useState("daily");
   const [loading, setLoading] = useState(true);
 
-  const refreshLeaves = async () => {
-    try {
-      const leavesData = await api.getLeaves();
-      setLeaves(leavesData);
-    } catch (err) {
-      console.error("Error refreshing leaves:", err);
-    }
-  };
-
   useEffect(() => {
     loadData();
   }, []);
 
-  // Refresh leave data when view or selectedDate changes
   useEffect(() => {
     refreshLeaves();
   }, [view, selectedDate]);
@@ -1673,6 +1850,15 @@ const AdminDashboard = ({ user, navigate, onLogout }) => {
       console.error("Error loading data:", err);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const refreshLeaves = async () => {
+    try {
+      const leavesData = await api.getLeaves();
+      setLeaves(leavesData);
+    } catch (err) {
+      console.error("Error refreshing leaves:", err);
     }
   };
 
@@ -1711,7 +1897,6 @@ const AdminDashboard = ({ user, navigate, onLogout }) => {
     a.click();
   };
 
-  // Prepare chart data for admin
   const salesBySalesman = salesmen.map((sm) => {
     const smSales = getSalesmanSales(sm.salesmanId, currentSales);
     return {
@@ -1721,7 +1906,6 @@ const AdminDashboard = ({ user, navigate, onLogout }) => {
     };
   });
 
-  // Get top brands performance
   const getBrandPerformance = () => {
     const brandMap = {};
     currentSales.forEach((s) => {
@@ -1738,12 +1922,11 @@ const AdminDashboard = ({ user, navigate, onLogout }) => {
         quantity: data.quantity,
       }))
       .sort((a, b) => b.value - a.value)
-      .slice(0, 5); // Top 5 brands
+      .slice(0, 5);
   };
 
   const topBrands = getBrandPerformance();
 
-  // Get performer of the month (only for monthly view)
   const getPerformerOfMonth = () => {
     if (view !== "monthly") return null;
 
@@ -1767,13 +1950,11 @@ const AdminDashboard = ({ user, navigate, onLogout }) => {
   const performerOfMonth = getPerformerOfMonth();
 
   const COLORS = [
-    "#d32f2f",
-    "#f44336",
-    "#e57373",
-    "#ef5350",
-    "#ff1744",
-    "#c62828",
-    "#b71c1c",
+    theme.colors.primary,
+    theme.colors.primaryLight,
+    theme.colors.grey600,
+    theme.colors.grey500,
+    theme.colors.grey400,
   ];
 
   if (loading) return <LoadingSpinner />;
@@ -1791,7 +1972,14 @@ const AdminDashboard = ({ user, navigate, onLogout }) => {
                 <p style={modernStyles.headerSubtitle}>Admin Dashboard</p>
               </div>
             </div>
-            <div style={{ display: "flex", gap: "12px", alignItems: "center" }}>
+            <div
+              style={{
+                display: "flex",
+                gap: "12px",
+                alignItems: "center",
+                flexWrap: "wrap",
+              }}
+            >
               <button
                 onClick={() => navigate("manage-salesmen")}
                 style={styles.headerButton}
@@ -1818,7 +2006,6 @@ const AdminDashboard = ({ user, navigate, onLogout }) => {
         </div>
 
         <div style={modernStyles.mainContent}>
-          {/* Control Bar */}
           <div style={modernStyles.controlBar}>
             <div style={modernStyles.viewToggle}>
               <button
@@ -1852,11 +2039,16 @@ const AdminDashboard = ({ user, navigate, onLogout }) => {
               type={view === "daily" ? "date" : "month"}
               value={selectedDate}
               onChange={(e) => setSelectedDate(e.target.value)}
-              style={modernStyles.dateInput}
+              style={{
+                ...modernStyles.dateInput,
+                padding: "10px 16px",
+                fontSize: "14px",
+                border: `1px solid ${theme.colors.grey300}`,
+                borderRadius: "4px",
+              }}
             />
           </div>
 
-          {/* Stats Cards */}
           <div style={modernStyles.statsGrid}>
             <div style={modernStyles.statsCard}>
               <div style={modernStyles.statsIcon}>💰</div>
@@ -1892,14 +2084,13 @@ const AdminDashboard = ({ user, navigate, onLogout }) => {
             </div>
           </div>
 
-          {/* Performer of the Month - Only for Monthly View */}
           {performerOfMonth && (
             <div
               style={{
                 ...modernStyles.statsCard,
                 marginBottom: "24px",
-                background: "linear-gradient(135deg, #d32f2f 0%, #f44336 100%)",
-                color: "white",
+                background: `linear-gradient(135deg, ${theme.colors.primary} 0%, ${theme.colors.primaryLight} 100%)`,
+                color: theme.colors.white,
                 padding: "32px",
               }}
             >
@@ -1916,7 +2107,7 @@ const AdminDashboard = ({ user, navigate, onLogout }) => {
                 <h2
                   style={{
                     ...modernStyles.statsValue,
-                    color: "white",
+                    color: theme.colors.white,
                     marginBottom: "8px",
                   }}
                 >
@@ -1930,10 +2121,8 @@ const AdminDashboard = ({ user, navigate, onLogout }) => {
             </div>
           )}
 
-          {/* Charts - Only show in Monthly View */}
           {view === "monthly" && (
             <div style={modernStyles.chartsGrid}>
-              {/* Top Brands - Pie Chart */}
               <div style={modernStyles.chartCard}>
                 <h3 style={modernStyles.chartTitle}>
                   Top Brand Performance
@@ -1968,7 +2157,6 @@ const AdminDashboard = ({ user, navigate, onLogout }) => {
                 </ResponsiveContainer>
               </div>
 
-              {/* Employee Performance - Bar Chart */}
               <div style={modernStyles.chartCard}>
                 <h3 style={modernStyles.chartTitle}>
                   Employee Performance
@@ -1978,68 +2166,79 @@ const AdminDashboard = ({ user, navigate, onLogout }) => {
                 </h3>
                 <ResponsiveContainer width="100%" height={300}>
                   <BarChart data={salesBySalesman}>
-                    <CartesianGrid strokeDasharray="3 3" />
+                    <CartesianGrid
+                      strokeDasharray="3 3"
+                      stroke={theme.colors.grey300}
+                    />
                     <XAxis dataKey="name" />
                     <YAxis />
                     <Tooltip formatter={(value) => money(value)} />
                     <Legend />
-                    <Bar dataKey="sales" fill="#d32f2f" name="Total Sales" />
+                    <Bar
+                      dataKey="sales"
+                      fill={theme.colors.primary}
+                      name="Total Sales"
+                    />
                   </BarChart>
                 </ResponsiveContainer>
               </div>
             </div>
           )}
 
-          {/* Top Brands Table */}
           {topBrands.length > 0 && (
             <div className="card" style={styles.card}>
               <h3 style={styles.cardTitle}>Top Performing Brands</h3>
-              <table style={styles.table}>
-                <thead>
-                  <tr>
-                    <th style={styles.th}>Rank</th>
-                    <th style={styles.th}>Brand</th>
-                    <th style={styles.th}>Units Sold</th>
-                    <th style={styles.th}>Total Revenue</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {topBrands.map((brand, idx) => (
-                    <tr key={brand.name}>
-                      <td style={styles.td}>
-                        <span
+              <div style={{ overflowX: "auto" }}>
+                <table style={styles.table}>
+                  <thead>
+                    <tr>
+                      <th style={styles.th}>Rank</th>
+                      <th style={styles.th}>Brand</th>
+                      <th style={styles.th}>Units Sold</th>
+                      <th style={styles.th}>Total Revenue</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {topBrands.map((brand, idx) => (
+                      <tr key={brand.name}>
+                        <td style={styles.td}>
+                          <span
+                            style={{
+                              fontWeight: "600",
+                              fontSize: "16px",
+                              color:
+                                idx === 0
+                                  ? theme.colors.primary
+                                  : theme.colors.textSecondary,
+                            }}
+                          >
+                            {idx === 0
+                              ? "🥇"
+                              : idx === 1
+                                ? "🥈"
+                                : idx === 2
+                                  ? "🥉"
+                                  : `#${idx + 1}`}
+                          </span>
+                        </td>
+                        <td style={{ ...styles.td, fontWeight: "600" }}>
+                          {brand.name}
+                        </td>
+                        <td style={styles.td}>{brand.quantity}</td>
+                        <td
                           style={{
-                            fontWeight: "700",
-                            fontSize: "18px",
-                            color: idx === 0 ? "#d32f2f" : "#565959",
+                            ...styles.td,
+                            fontWeight: "600",
+                            color: theme.colors.primary,
                           }}
                         >
-                          {idx === 0
-                            ? "🥇"
-                            : idx === 1
-                              ? "🥈"
-                              : idx === 2
-                                ? "🥉"
-                                : `#${idx + 1}`}
-                        </span>
-                      </td>
-                      <td style={{ ...styles.td, fontWeight: "600" }}>
-                        {brand.name}
-                      </td>
-                      <td style={styles.td}>{brand.quantity}</td>
-                      <td
-                        style={{
-                          ...styles.td,
-                          fontWeight: "700",
-                          color: "#d32f2f",
-                        }}
-                      >
-                        {money(brand.value)}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+                          {money(brand.value)}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             </div>
           )}
 
@@ -2112,50 +2311,52 @@ const AdminDashboard = ({ user, navigate, onLogout }) => {
               Sales by Salesman (
               {view === "daily" ? formatDate(selectedDate) : selectedDate})
             </h3>
-            <table style={styles.table}>
-              <thead>
-                <tr>
-                  <th style={styles.th}>Salesman</th>
-                  <th style={styles.th}>ID</th>
-                  <th style={styles.th}>Transactions</th>
-                  <th style={styles.th}>Total Sales</th>
-                  <th style={styles.th}>Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {salesmen.map((salesman) => {
-                  const salesmanSales = getSalesmanSales(
-                    salesman.salesmanId,
-                    currentSales,
-                  );
-                  const total = calculateTotal(salesmanSales);
-                  return (
-                    <tr key={salesman.id || salesman._id}>
-                      <td style={styles.td}>{salesman.name}</td>
-                      <td style={styles.td}>{salesman.salesmanId}</td>
-                      <td style={styles.td}>{salesmanSales.length}</td>
-                      <td
-                        style={{
-                          ...styles.td,
-                          fontWeight: "700",
-                          color: "#d32f2f",
-                        }}
-                      >
-                        {money(total)}
-                      </td>
-                      <td style={styles.td}>
-                        <button
-                          onClick={() => downloadReport(salesman.salesmanId)}
-                          style={styles.actionButton}
+            <div style={{ overflowX: "auto" }}>
+              <table style={styles.table}>
+                <thead>
+                  <tr>
+                    <th style={styles.th}>Salesman</th>
+                    <th style={styles.th}>ID</th>
+                    <th style={styles.th}>Transactions</th>
+                    <th style={styles.th}>Total Sales</th>
+                    <th style={styles.th}>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {salesmen.map((salesman) => {
+                    const salesmanSales = getSalesmanSales(
+                      salesman.salesmanId,
+                      currentSales,
+                    );
+                    const total = calculateTotal(salesmanSales);
+                    return (
+                      <tr key={salesman.id || salesman._id}>
+                        <td style={styles.td}>{salesman.name}</td>
+                        <td style={styles.td}>{salesman.salesmanId}</td>
+                        <td style={styles.td}>{salesmanSales.length}</td>
+                        <td
+                          style={{
+                            ...styles.td,
+                            fontWeight: "600",
+                            color: theme.colors.primary,
+                          }}
                         >
-                          Download Report
-                        </button>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
+                          {money(total)}
+                        </td>
+                        <td style={styles.td}>
+                          <button
+                            onClick={() => downloadReport(salesman.salesmanId)}
+                            style={styles.actionButton}
+                          >
+                            Download Report
+                          </button>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       </div>
@@ -2193,7 +2394,8 @@ export default function App() {
     return (
       <SalesmanDashboard user={user} navigate={navigate} onLogout={doLogout} />
     );
-  if (route === "add-sale") return <AddSale user={user} navigate={navigate} />;
+  if (route === "add-sale")
+    return <AddSale user={user} navigate={navigate} onLogout={doLogout} />;
   if (route === "apply-leave")
     return <ApplyLeave user={user} navigate={navigate} onLogout={doLogout} />;
 
