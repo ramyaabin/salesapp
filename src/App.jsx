@@ -16,7 +16,6 @@ import {
   ResponsiveContainer,
   Legend,
 } from "recharts";
-import { GlobalStyles, SuccessToast } from "../components/SharedComponents";
 import { money, getToday } from "../utils"; // Your existing helpers
 
 /* ===================== CONFIG ===================== */
@@ -1371,7 +1370,7 @@ const SalesmanDashboard = ({ user, navigate, onLogout }) => {
 };
 
 /* ===================== ADD SALE ===================== */
-const AddSale = ({ user, navigate, onLogout }) => {
+const AddSale = ({ user, navigate }) => {
   const [date, setDate] = useState(getToday());
   const [brand, setBrand] = useState("");
   const [itemCode, setItemCode] = useState("");
@@ -1555,7 +1554,7 @@ const AddSale = ({ user, navigate, onLogout }) => {
 
 //* ===================== APPLY LEAVE ===================== */
 
-const ApplyLeave = ({ user, navigate, onLogout }) => {
+const ApplyLeave = ({ user, navigate }) => {
   const [date, setDate] = useState(getToday());
   const [reason, setReason] = useState("");
   const [submitting, setSubmitting] = useState(false);
@@ -1643,6 +1642,15 @@ const AdminDashboard = ({ user, navigate, onLogout }) => {
   const [view, setView] = useState("daily");
   const [loading, setLoading] = useState(true);
 
+  const refreshLeaves = async () => {
+    try {
+      const leavesData = await api.getLeaves();
+      setLeaves(leavesData);
+    } catch (err) {
+      console.error("Error refreshing leaves:", err);
+    }
+  };
+
   useEffect(() => {
     loadData();
   }, []);
@@ -1667,15 +1675,6 @@ const AdminDashboard = ({ user, navigate, onLogout }) => {
       console.error("Error loading data:", err);
     } finally {
       setLoading(false);
-    }
-  };
-
-  const refreshLeaves = async () => {
-    try {
-      const leavesData = await api.getLeaves();
-      setLeaves(leavesData);
-    } catch (err) {
-      console.error("Error refreshing leaves:", err);
     }
   };
 
@@ -2196,8 +2195,7 @@ export default function App() {
     return (
       <SalesmanDashboard user={user} navigate={navigate} onLogout={doLogout} />
     );
-  if (route === "add-sale")
-    return <AddSale user={user} navigate={navigate} onLogout={doLogout} />;
+  if (route === "add-sale") return <AddSale user={user} navigate={navigate} />;
   if (route === "apply-leave")
     return <ApplyLeave user={user} navigate={navigate} onLogout={doLogout} />;
 
