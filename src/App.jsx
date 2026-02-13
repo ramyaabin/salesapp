@@ -16,6 +16,8 @@ import {
   ResponsiveContainer,
   Legend,
 } from "recharts";
+import { GlobalStyles, SuccessToast } from "../components/SharedComponents";
+import { money, getToday } from "../utils"; // Your existing helpers
 
 /* ===================== CONFIG ===================== */
 
@@ -47,19 +49,12 @@ const INITIAL_USERS = [
 ];
 
 /* ===================== HELPERS ===================== */
-const money = (n) =>
-  "AED " +
-  Number(n || 0).toLocaleString("en-AE", {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  });
 const formatDate = (date) =>
   new Date(date).toLocaleDateString("en-AE", {
     day: "2-digit",
     month: "short",
     year: "numeric",
   });
-const getToday = () => new Date().toISOString().split("T")[0];
 const getMonthYear = () => {
   const d = new Date();
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
@@ -1389,55 +1384,44 @@ const AddSale = ({ user, navigate, onLogout }) => {
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [showDropdown, setShowDropdown] = useState(false);
 
+  // Load all products
   useEffect(() => {
+    const loadProducts = async () => {
+      const data = await api.getProducts();
+      setProducts(data);
+    };
     loadProducts();
   }, []);
 
-  const loadProducts = async () => {
-    try {
-      const data = await api.getProducts();
-      setProducts(data);
-    } catch (err) {
-      console.error("Error loading products:", err);
-    }
-  };
-
+  // Filter products by brand
   useEffect(() => {
     if (brand) {
-      const filtered = products.filter(
-        (p) => p.brand.toLowerCase() === brand.toLowerCase(),
+      setFilteredProducts(
+        products.filter((p) => p.brand.toLowerCase() === brand.toLowerCase()),
       );
-      setFilteredProducts(filtered);
     } else {
       setFilteredProducts([]);
     }
   }, [brand, products]);
 
-  // Type-ahead search for item codes
+  // Type-ahead search
   useEffect(() => {
-    if (itemCodeSearch && itemCodeSearch.length > 0) {
+    if (itemCodeSearch) {
       const searchResults = products.filter((p) =>
         p.itemCode.toLowerCase().includes(itemCodeSearch.toLowerCase()),
       );
       setFilteredProducts(searchResults);
       setShowDropdown(true);
-    } else if (brand) {
-      const filtered = products.filter(
-        (p) => p.brand.toLowerCase() === brand.toLowerCase(),
-      );
-      setFilteredProducts(filtered);
-      setShowDropdown(false);
     } else {
-      setFilteredProducts([]);
       setShowDropdown(false);
     }
-  }, [itemCodeSearch, brand, products]);
+  }, [itemCodeSearch, products]);
 
-  const handleItemCodeSelect = (selectedProduct) => {
-    setItemCode(selectedProduct.itemCode);
-    setItemCodeSearch(selectedProduct.itemCode);
-    setBrand(selectedProduct.brand);
-    setPrice(selectedProduct.price);
+  const handleItemCodeSelect = (p) => {
+    setItemCode(p.itemCode);
+    setItemCodeSearch(p.itemCode);
+    setBrand(p.brand);
+    setPrice(Number(p.price));
     setShowDropdown(false);
   };
 
@@ -1452,9 +1436,9 @@ const AddSale = ({ user, navigate, onLogout }) => {
       const sale = {
         salesmanId: user.salesmanId,
         salesmanName: user.name,
-        date: date,
-        brand: brand,
-        itemCode: itemCode,
+        date,
+        brand,
+        itemCode,
         quantity: Number(quantity),
         price: Number(price),
         totalAmount: Number(quantity) * Number(price),
@@ -1463,15 +1447,16 @@ const AddSale = ({ user, navigate, onLogout }) => {
 
       await api.addSale(sale);
 
+      // Reset form
       setBrand("");
       setItemCode("");
+      setItemCodeSearch("");
       setQuantity("");
       setPrice("");
       setShowToast(true);
 
-      setTimeout(() => {
-        navigate("salesman-dashboard");
-      }, 1500);
+      // Navigate back after short delay
+      setTimeout(() => navigate("salesman-dashboard"), 1500);
     } catch (err) {
       alert("Error adding sale: " + err.message);
     } finally {
@@ -1491,180 +1476,85 @@ const AddSale = ({ user, navigate, onLogout }) => {
         />
       )}
 
-      <div style={styles.dashboardContainer}>
-        <div style={styles.header}>
-          <div style={styles.headerContent}>
-            <div style={modernStyles.logoContainer}>
-              <img src={hamaLogo} alt="HAMA" style={modernStyles.logo} />
-              <h1 style={styles.headerTitle}>Add New Sale</h1>
-            </div>
-            <div style={{ display: "flex", gap: "12px" }}>
-              <button
-                onClick={() => navigate("salesman-dashboard")}
-                style={styles.headerButton}
-              >
-                Back to Dashboard
-              </button>
-              <button onClick={onLogout} style={styles.logoutButton}>
-                Logout
-              </button>
-            </div>
-          </div>
+      <div style={{ padding: "20px" }}>
+        <div>
+          <img src={hamaLogo} alt="HAMA" style={{ height: "50px" }} />
+          <h1>Add New Sale</h1>
         </div>
 
-        <div style={styles.mainContent}>
-          <div
-            className="card"
-            style={{ ...styles.card, maxWidth: "700px", margin: "0 auto" }}
+        <div>
+          <label>Date</label>
+          <input
+            type="date"
+            value={date}
+            onChange={(e) => setDate(e.target.value)}
+            disabled={submitting}
+          />
+
+          <label>Brand</label>
+          <select
+            value={brand}
+            onChange={(e) => {
+              setBrand(e.target.value);
+              setItemCode("");
+              setPrice("");
+            }}
+            disabled={submitting}
           >
-            <h3 style={styles.cardTitle}>Sale Details</h3>
-            <div style={styles.formGroup}>
-              <label style={styles.label}>Date</label>
-              <input
-                type="date"
-                value={date}
-                onChange={(e) => setDate(e.target.value)}
-                disabled={submitting}
-                style={styles.dateInput}
-              />
+            <option value="">Select Brand</option>
+            {uniqueBrands.map((b) => (
+              <option key={b} value={b}>
+                {b}
+              </option>
+            ))}
+          </select>
+
+          <label>Item Code</label>
+          <input
+            type="text"
+            value={itemCodeSearch}
+            onChange={(e) => setItemCodeSearch(e.target.value)}
+            disabled={submitting}
+          />
+          {showDropdown && filteredProducts.length > 0 && (
+            <div>
+              {filteredProducts.slice(0, 10).map((p) => (
+                <div key={p.itemCode} onClick={() => handleItemCodeSelect(p)}>
+                  {p.itemCode} - {p.brand} - {money(p.price)}
+                </div>
+              ))}
             </div>
-            <div style={styles.formGroup}>
-              <label style={styles.label}>Brand</label>
-              <select
-                value={brand}
-                onChange={(e) => {
-                  setBrand(e.target.value);
-                  setItemCode("");
-                  setPrice("");
-                }}
-                disabled={submitting}
-                style={styles.select}
-              >
-                <option value="">Select Brand</option>
-                {uniqueBrands.map((b) => (
-                  <option key={b} value={b}>
-                    {b}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div style={styles.formGroup}>
-              <label style={styles.label}>
-                Item Code (Search or select from dropdown)
-              </label>
-              <div style={{ position: "relative" }}>
-                <input
-                  type="text"
-                  value={itemCodeSearch}
-                  onChange={(e) => setItemCodeSearch(e.target.value)}
-                  onFocus={() => itemCodeSearch && setShowDropdown(true)}
-                  disabled={submitting}
-                  style={styles.input}
-                  placeholder="Type to search item code..."
-                />
-                {showDropdown && filteredProducts.length > 0 && (
-                  <div
-                    style={{
-                      position: "absolute",
-                      top: "100%",
-                      left: 0,
-                      right: 0,
-                      maxHeight: "200px",
-                      overflowY: "auto",
-                      background: "white",
-                      border: "1px solid #d5d9d9",
-                      borderRadius: "8px",
-                      marginTop: "4px",
-                      boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
-                      zIndex: 1000,
-                    }}
-                  >
-                    {filteredProducts.slice(0, 10).map((p) => (
-                      <div
-                        key={p.itemCode}
-                        onClick={() => handleItemCodeSelect(p)}
-                        style={{
-                          padding: "10px 12px",
-                          cursor: "pointer",
-                          borderBottom: "1px solid #f0f0f0",
-                          transition: "background 0.2s",
-                        }}
-                        onMouseEnter={(e) =>
-                          (e.target.style.background = "#f8f9fa")
-                        }
-                        onMouseLeave={(e) =>
-                          (e.target.style.background = "white")
-                        }
-                      >
-                        <div style={{ fontWeight: "600", fontSize: "14px" }}>
-                          {p.itemCode}
-                        </div>
-                        <div
-                          style={{
-                            fontSize: "12px",
-                            color: "#565959",
-                            marginTop: "2px",
-                          }}
-                        >
-                          {p.brand} • {money(p.price)}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-            </div>
-            <div style={styles.formGroup}>
-              <label style={styles.label}>Quantity</label>
-              <input
-                type="number"
-                value={quantity}
-                onChange={(e) => setQuantity(e.target.value)}
-                disabled={submitting}
-                style={styles.input}
-                placeholder="Enter quantity"
-                min="1"
-              />
-            </div>
-            <div style={styles.formGroup}>
-              <label style={styles.label}>Price (AED)</label>
-              <input
-                type="number"
-                value={price}
-                disabled
-                style={styles.input}
-                placeholder="Auto-filled from product"
-              />
-            </div>
-            <div style={styles.formGroup}>
-              <label style={styles.label}>Total Amount</label>
-              <input
-                type="text"
-                value={
-                  quantity && price
-                    ? money(Number(quantity) * Number(price))
-                    : ""
-                }
-                disabled
-                style={styles.input}
-                placeholder="Calculated automatically"
-              />
-            </div>
-            <button
-              onClick={handleSubmit}
-              disabled={submitting}
-              style={styles.button}
-            >
-              {submitting ? "Submitting..." : "Add Sale"}
-            </button>
-          </div>
+          )}
+
+          <label>Quantity</label>
+          <input
+            type="number"
+            min="1"
+            value={quantity}
+            onChange={(e) => setQuantity(e.target.value)}
+          />
+
+          <label>Price</label>
+          <input type="number" value={price} disabled />
+
+          <label>Total Amount</label>
+          <input
+            type="text"
+            value={quantity && price ? money(quantity * price) : ""}
+            disabled
+          />
+
+          <button onClick={handleSubmit} disabled={submitting}>
+            {submitting ? "Submitting..." : "Add Sale"}
+          </button>
         </div>
       </div>
     </>
   );
 };
 
-/* ===================== APPLY LEAVE ===================== */
+//* ===================== APPLY LEAVE ===================== */
+
 const ApplyLeave = ({ user, navigate, onLogout }) => {
   const [date, setDate] = useState(getToday());
   const [reason, setReason] = useState("");
@@ -1682,20 +1572,19 @@ const ApplyLeave = ({ user, navigate, onLogout }) => {
       const leave = {
         salesmanId: user.salesmanId,
         salesmanName: user.name,
-        date: date,
-        reason: reason,
+        date,
+        reason,
         timestamp: new Date().toISOString(),
       };
 
       await api.addLeave(leave);
 
+      // Reset form
       setDate(getToday());
       setReason("");
       setShowToast(true);
 
-      setTimeout(() => {
-        navigate("salesman-dashboard");
-      }, 1500);
+      setTimeout(() => navigate("salesman-dashboard"), 1500);
     } catch (err) {
       alert("Error submitting leave: " + err.message);
     } finally {
@@ -1708,67 +1597,37 @@ const ApplyLeave = ({ user, navigate, onLogout }) => {
       <GlobalStyles />
       {showToast && (
         <SuccessToast
-          message="Leave application submitted successfully!"
+          message="Leave applied successfully!"
           onClose={() => setShowToast(false)}
         />
       )}
 
-      <div style={styles.dashboardContainer}>
-        <div style={styles.header}>
-          <div style={styles.headerContent}>
-            <div style={modernStyles.logoContainer}>
-              <img src={hamaLogo} alt="HAMA" style={modernStyles.logo} />
-              <h1 style={styles.headerTitle}>Apply for Leave</h1>
-            </div>
-            <div style={{ display: "flex", gap: "12px" }}>
-              <button
-                onClick={() => navigate("salesman-dashboard")}
-                style={styles.headerButton}
-              >
-                Back to Dashboard
-              </button>
-              <button onClick={onLogout} style={styles.logoutButton}>
-                Logout
-              </button>
-            </div>
-          </div>
+      <div style={{ padding: "20px" }}>
+        <div>
+          <img src={hamaLogo} alt="HAMA" style={{ height: "50px" }} />
+          <h1>Apply for Leave</h1>
         </div>
 
-        <div style={styles.mainContent}>
-          <div
-            className="card"
-            style={{ ...styles.card, maxWidth: "700px", margin: "0 auto" }}
-          >
-            <h3 style={styles.cardTitle}>Leave Application</h3>
-            <div style={styles.formGroup}>
-              <label style={styles.label}>Date</label>
-              <input
-                type="date"
-                value={date}
-                onChange={(e) => setDate(e.target.value)}
-                disabled={submitting}
-                style={styles.dateInput}
-              />
-            </div>
-            <div style={styles.formGroup}>
-              <label style={styles.label}>Reason</label>
-              <textarea
-                value={reason}
-                onChange={(e) => setReason(e.target.value)}
-                rows="4"
-                placeholder="Enter reason for leave..."
-                disabled={submitting}
-                style={styles.textarea}
-              />
-            </div>
-            <button
-              onClick={handleSubmit}
-              disabled={submitting}
-              style={styles.button}
-            >
-              {submitting ? "Submitting..." : "Submit Leave Application"}
-            </button>
-          </div>
+        <div>
+          <label>Date</label>
+          <input
+            type="date"
+            value={date}
+            onChange={(e) => setDate(e.target.value)}
+            disabled={submitting}
+          />
+
+          <label>Reason</label>
+          <textarea
+            value={reason}
+            onChange={(e) => setReason(e.target.value)}
+            rows={4}
+            disabled={submitting}
+          />
+
+          <button onClick={handleSubmit} disabled={submitting}>
+            {submitting ? "Submitting..." : "Submit Leave Application"}
+          </button>
         </div>
       </div>
     </>
