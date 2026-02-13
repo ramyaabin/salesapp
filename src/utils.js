@@ -1,13 +1,19 @@
 // src/utils.js
 
-// Returns current date in YYYY-MM-DD format
-export const getToday = () => {
-  const today = new Date();
-  return today.toISOString().split("T")[0];
+// Format number to AED currency
+export const money = (amount) => {
+  if (amount == null) return "";
+  return new Intl.NumberFormat("en-AE", {
+    style: "currency",
+    currency: "AED",
+  }).format(amount);
 };
 
-// Formats a number to 2 decimal places
-export const money = (val) => {
-  if (!val && val !== 0) return "";
-  return Number(val).toFixed(2);
+// Get today's date in YYYY-MM-DD format
+export const getToday = () => {
+  const today = new Date();
+  const yyyy = today.getFullYear();
+  const mm = String(today.getMonth() + 1).padStart(2, "0");
+  const dd = String(today.getDate()).padStart(2, "0");
+  return `${yyyy}-${mm}-${dd}`;
 };
