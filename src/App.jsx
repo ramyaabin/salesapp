@@ -715,6 +715,24 @@ const ManageSalesmen = ({ navigate, onLogout }) => {
     }
   };
 
+  const handleDeleteSalesman = async (salesmanId, salesmanName) => {
+    if (
+      !confirm(
+        `Are you sure you want to delete ${salesmanName}?\n\nThis will also delete all their sales and leave records. This action cannot be undone.`,
+      )
+    ) {
+      return;
+    }
+
+    try {
+      await api.deleteUser(salesmanId);
+      alert(`${salesmanName} has been deleted successfully!`);
+      loadSalesmen();
+    } catch (err) {
+      alert("Error deleting salesman: " + err.message);
+    }
+  };
+
   if (loading) return <LoadingSpinner />;
 
   return (
@@ -874,6 +892,7 @@ const ManageSalesmen = ({ navigate, onLogout }) => {
                     <th style={styles.th}>Name</th>
                     <th style={styles.th}>Username</th>
                     <th style={styles.th}>Salesman ID</th>
+                    <th style={styles.th}>Actions</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -882,6 +901,19 @@ const ManageSalesmen = ({ navigate, onLogout }) => {
                       <td style={styles.td}>{sm.name}</td>
                       <td style={styles.td}>{sm.username}</td>
                       <td style={styles.td}>{sm.salesmanId}</td>
+                      <td style={styles.td}>
+                        <button
+                          onClick={() =>
+                            handleDeleteSalesman(sm.salesmanId, sm.name)
+                          }
+                          style={{
+                            ...styles.actionButton,
+                            background: theme.colors.grey700,
+                          }}
+                        >
+                          Delete
+                        </button>
+                      </td>
                     </tr>
                   ))}
                 </tbody>
