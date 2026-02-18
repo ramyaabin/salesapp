@@ -1444,6 +1444,45 @@ const SalesmanDashboard = ({ user, navigate, onLogout }) => {
   );
 };
 
+/* ===================== DROPDOWN ITEM COMPONENT ===================== */
+const DropdownItem = ({ product, onClick }) => {
+  const [isHovered, setIsHovered] = useState(false);
+
+  return (
+    <div
+      onClick={onClick}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      style={{
+        padding: "12px",
+        cursor: "pointer",
+        borderBottom: `1px solid ${theme.colors.grey200}`,
+        background: isHovered ? theme.colors.grey50 : theme.colors.white,
+        transition: "background 0.2s",
+      }}
+    >
+      <div
+        style={{
+          fontWeight: "600",
+          fontSize: "14px",
+          color: theme.colors.text,
+        }}
+      >
+        {product.itemCode}
+      </div>
+      <div
+        style={{
+          fontSize: "12px",
+          color: theme.colors.textSecondary,
+          marginTop: "4px",
+        }}
+      >
+        {product.brand} • {money(product.price)}
+      </div>
+    </div>
+  );
+};
+
 /* ===================== ADD SALE ===================== */
 const AddSale = ({ user, navigate, onLogout }) => {
   const [date, setDate] = useState(getToday());
@@ -1460,8 +1499,14 @@ const AddSale = ({ user, navigate, onLogout }) => {
 
   useEffect(() => {
     const loadProducts = async () => {
-      const data = await api.getProducts();
-      setProducts(data);
+      try {
+        const data = await api.getProducts();
+        setProducts(data || []);
+      } catch (err) {
+        console.error("Error loading products:", err);
+        setProducts([]);
+        alert("Could not load products. Please refresh the page.");
+      }
     };
     loadProducts();
   }, []);
@@ -1479,14 +1524,20 @@ const AddSale = ({ user, navigate, onLogout }) => {
   useEffect(() => {
     if (itemCodeSearch && itemCodeSearch.length > 0) {
       const searchResults = products.filter((p) =>
-        p.itemCode.toLowerCase().includes(itemCodeSearch.toLowerCase()),
+        p?.itemCode?.toLowerCase()?.includes(itemCodeSearch.toLowerCase()),
       );
-      setFilteredProducts(searchResults);
+      setFilteredProducts(searchResults || []);
       setShowDropdown(true);
     } else if (!itemCodeSearch) {
       setShowDropdown(false);
+      if (brand) {
+        const filtered = products.filter(
+          (p) => p?.brand?.toLowerCase() === brand.toLowerCase(),
+        );
+        setFilteredProducts(filtered || []);
+      }
     }
-  }, [itemCodeSearch, products]);
+  }, [itemCodeSearch, products, brand]);
 
   const handleItemCodeSelect = (p) => {
     setItemCode(p.itemCode);
@@ -1621,15 +1672,23 @@ const AddSale = ({ user, navigate, onLogout }) => {
             </div>
 
             <div style={styles.formGroup}>
-              <label style={styles.label}>
-                Item Code (Search or select from dropdown)
-              </label>
+              <label style={styles.label}>Item Code (Type to search)</label>
               <div style={{ position: "relative" }}>
                 <input
                   type="text"
                   value={itemCodeSearch}
-                  onChange={(e) => setItemCodeSearch(e.target.value)}
-                  onFocus={() => itemCodeSearch && setShowDropdown(true)}
+                  onChange={(e) => {
+                    setItemCodeSearch(e.target.value);
+                    if (e.target.value && e.target.value.length > 0) {
+                      setShowDropdown(true);
+                    } else {
+                      setShowDropdown(false);
+                    }
+                  }}
+                  onBlur={() => {
+                    // Delay hiding dropdown to allow click to register
+                    setTimeout(() => setShowDropdown(false), 200);
+                  }}
                   disabled={submitting}
                   style={styles.input}
                   placeholder="Type to search item code..."
@@ -1651,42 +1710,12 @@ const AddSale = ({ user, navigate, onLogout }) => {
                       zIndex: 1000,
                     }}
                   >
-                    {filteredProducts.slice(0, 10).map((p) => (
-                      <div
-                        key={p.itemCode}
+                    {filteredProducts.slice(0, 10).map((p, idx) => (
+                      <DropdownItem
+                        key={`${p.itemCode}-${idx}`}
+                        product={p}
                         onClick={() => handleItemCodeSelect(p)}
-                        style={{
-                          padding: "12px",
-                          cursor: "pointer",
-                          borderBottom: `1px solid ${theme.colors.grey200}`,
-                          transition: "background 0.2s",
-                        }}
-                        onMouseEnter={(e) =>
-                          (e.target.style.background = theme.colors.grey50)
-                        }
-                        onMouseLeave={(e) =>
-                          (e.target.style.background = theme.colors.white)
-                        }
-                      >
-                        <div
-                          style={{
-                            fontWeight: "600",
-                            fontSize: "14px",
-                            color: theme.colors.text,
-                          }}
-                        >
-                          {p.itemCode}
-                        </div>
-                        <div
-                          style={{
-                            fontSize: "12px",
-                            color: theme.colors.textSecondary,
-                            marginTop: "4px",
-                          }}
-                        >
-                          {p.brand} • {money(p.price)}
-                        </div>
-                      </div>
+                      />
                     ))}
                   </div>
                 )}
