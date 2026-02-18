@@ -157,18 +157,25 @@ const api = {
 
   async addSale(saleData) {
     try {
+      console.log("🔵 Attempting to add sale to:", `${API_URL}/api/sales`);
+      console.log("🔵 Sale data:", saleData);
+
       const res = await fetch(`${API_URL}/api/sales`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(saleData),
       });
 
+      console.log("🔵 Response status:", res.status);
+
       if (!res.ok) {
         const errorData = await res.json().catch(() => ({}));
+        console.error("🔴 Server error:", errorData);
         throw new Error(errorData.error || "Failed to add sale");
       }
 
       const result = await res.json();
+      console.log("✅ Sale added successfully:", result);
 
       // Save backend-confirmed sale
       const stored = localStorage.getItem("salesTracker_sales");
@@ -178,15 +185,11 @@ const api = {
 
       return { success: true, synced: true };
     } catch (error) {
-      console.error("API Error:", error);
+      console.error("🔴 API Error:", error.message);
+      console.error("🔴 Full error:", error);
 
-      // Still save locally for offline support
-      const stored = localStorage.getItem("salesTracker_sales");
-      const sales = stored ? JSON.parse(stored) : [];
-      sales.push(saleData);
-      localStorage.setItem("salesTracker_sales", JSON.stringify(sales));
-
-      return { success: true, offline: true, error: error.message };
+      // Show error to user instead of silently saving offline
+      throw error;
     }
   },
 
@@ -218,18 +221,25 @@ const api = {
 
   async addLeave(leaveData) {
     try {
+      console.log("🔵 Attempting to add leave to:", `${API_URL}/api/leaves`);
+      console.log("🔵 Leave data:", leaveData);
+
       const res = await fetch(`${API_URL}/api/leaves`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(leaveData),
       });
 
+      console.log("🔵 Response status:", res.status);
+
       if (!res.ok) {
         const errorData = await res.json().catch(() => ({}));
+        console.error("🔴 Server error:", errorData);
         throw new Error(errorData.error || "Failed to add leave");
       }
 
       const result = await res.json();
+      console.log("✅ Leave added successfully:", result);
 
       // Save backend-confirmed leave
       const stored = localStorage.getItem("salesTracker_leaves");
@@ -239,15 +249,11 @@ const api = {
 
       return { success: true, synced: true };
     } catch (error) {
-      console.error("API Error:", error);
+      console.error("🔴 API Error:", error.message);
+      console.error("🔴 Full error:", error);
 
-      // Still save locally for offline support
-      const stored = localStorage.getItem("salesTracker_leaves");
-      const leaves = stored ? JSON.parse(stored) : [];
-      leaves.push(leaveData);
-      localStorage.setItem("salesTracker_leaves", JSON.stringify(leaves));
-
-      return { success: true, offline: true, error: error.message };
+      // Show error to user instead of silently saving offline
+      throw error;
     }
   },
 };
