@@ -1501,7 +1501,19 @@ const AddSale = ({ user, navigate, onLogout }) => {
     const loadProducts = async () => {
       try {
         const data = await api.getProducts();
-        setProducts(data || []);
+        // Filter out any invalid products
+        const validProducts = (data || []).filter(
+          (p) =>
+            p &&
+            typeof p === "object" &&
+            p.itemCode &&
+            p.brand &&
+            p.price !== undefined,
+        );
+        console.log(
+          `Loaded ${validProducts.length} valid products out of ${(data || []).length} total`,
+        );
+        setProducts(validProducts);
       } catch (err) {
         console.error("Error loading products:", err);
         setProducts([]);
@@ -1513,9 +1525,10 @@ const AddSale = ({ user, navigate, onLogout }) => {
 
   useEffect(() => {
     if (brand) {
-      setFilteredProducts(
-        products.filter((p) => p.brand.toLowerCase() === brand.toLowerCase()),
+      const filtered = products.filter(
+        (p) => p?.brand?.toLowerCase() === brand?.toLowerCase(),
       );
+      setFilteredProducts(filtered || []);
     } else {
       setFilteredProducts([]);
     }
@@ -1523,27 +1536,45 @@ const AddSale = ({ user, navigate, onLogout }) => {
 
   useEffect(() => {
     if (itemCodeSearch && itemCodeSearch.length > 0) {
-      const searchResults = products.filter((p) =>
-        p?.itemCode?.toLowerCase()?.includes(itemCodeSearch.toLowerCase()),
-      );
+      const searchResults = products.filter((p) => {
+        if (!p || !p.itemCode) return false;
+        try {
+          return p.itemCode
+            .toLowerCase()
+            .includes(itemCodeSearch.toLowerCase());
+        } catch (err) {
+          console.error("Error filtering product:", p, err);
+          return false;
+        }
+      });
       setFilteredProducts(searchResults || []);
       setShowDropdown(true);
     } else if (!itemCodeSearch) {
       setShowDropdown(false);
       if (brand) {
-        const filtered = products.filter(
-          (p) => p?.brand?.toLowerCase() === brand.toLowerCase(),
-        );
+        const filtered = products.filter((p) => {
+          if (!p || !p.brand) return false;
+          try {
+            return p.brand.toLowerCase() === brand.toLowerCase();
+          } catch (err) {
+            console.error("Error filtering by brand:", p, err);
+            return false;
+          }
+        });
         setFilteredProducts(filtered || []);
       }
     }
   }, [itemCodeSearch, products, brand]);
 
   const handleItemCodeSelect = (p) => {
-    setItemCode(p.itemCode);
-    setItemCodeSearch(p.itemCode);
-    setBrand(p.brand);
-    setPrice(Number(p.price));
+    if (!p) {
+      console.error("Invalid product selected");
+      return;
+    }
+    setItemCode(p.itemCode || "");
+    setItemCodeSearch(p.itemCode || "");
+    setBrand(p.brand || "");
+    setPrice(Number(p.price) || 0);
     setShowDropdown(false);
   };
 
@@ -1599,7 +1630,9 @@ const AddSale = ({ user, navigate, onLogout }) => {
     }
   };
 
-  const uniqueBrands = [...new Set(products.map((p) => p.brand))].sort();
+  const uniqueBrands = [
+    ...new Set(products.filter((p) => p && p.brand).map((p) => p.brand)),
+  ].sort();
 
   return (
     <>
