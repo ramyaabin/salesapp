@@ -1497,12 +1497,24 @@ const AddSale = ({ user, navigate, onLogout }) => {
   };
 
   const handleSubmit = async () => {
+    console.log("🟢 ADD SALE - handleSubmit called");
+    console.log("🟢 Current values:", {
+      date,
+      brand,
+      itemCode,
+      quantity,
+      price,
+    });
+
     if (!date || !brand || !itemCode || !quantity || !price) {
+      console.log("🔴 Validation failed - missing fields");
       alert("Please fill all fields");
       return;
     }
 
+    console.log("✅ Validation passed");
     setSubmitting(true);
+
     try {
       const sale = {
         salesmanId: user.salesmanId,
@@ -1516,7 +1528,9 @@ const AddSale = ({ user, navigate, onLogout }) => {
         timestamp: new Date().toISOString(),
       };
 
-      await api.addSale(sale);
+      console.log("🟢 About to call api.addSale with:", sale);
+      const result = await api.addSale(sale);
+      console.log("✅ api.addSale returned:", result);
 
       setBrand("");
       setItemCode("");
@@ -1527,6 +1541,7 @@ const AddSale = ({ user, navigate, onLogout }) => {
 
       setTimeout(() => navigate("salesman-dashboard"), 1500);
     } catch (err) {
+      console.error("🔴 Error in handleSubmit:", err);
       alert("Error adding sale: " + err.message);
     } finally {
       setSubmitting(false);
@@ -1749,22 +1764,30 @@ const ApplyLeave = ({ user, navigate, onLogout }) => {
   const [showToast, setShowToast] = useState(false);
 
   const handleSubmit = async () => {
+    console.log("🟢 APPLY LEAVE - handleSubmit called");
+    console.log("🟢 Current values:", { date, reason });
+
     if (!date || !reason) {
+      console.log("🔴 Validation failed - missing fields");
       alert("Please fill all fields");
       return;
     }
 
+    console.log("✅ Validation passed");
     setSubmitting(true);
+
     try {
       const leave = {
         salesmanId: user.salesmanId,
         salesmanName: user.name,
         date: date,
-        reason: reason, // CRITICAL FIX: Include reason field
+        reason: reason,
         timestamp: new Date().toISOString(),
       };
 
-      await api.addLeave(leave);
+      console.log("🟢 About to call api.addLeave with:", leave);
+      const result = await api.addLeave(leave);
+      console.log("✅ api.addLeave returned:", result);
 
       setDate(getToday());
       setReason("");
@@ -1772,6 +1795,7 @@ const ApplyLeave = ({ user, navigate, onLogout }) => {
 
       setTimeout(() => navigate("salesman-dashboard"), 1500);
     } catch (err) {
+      console.error("🔴 Error in handleSubmit:", err);
       alert("Error submitting leave: " + err.message);
     } finally {
       setSubmitting(false);
