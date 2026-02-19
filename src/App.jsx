@@ -17,6 +17,17 @@ import {
   Legend,
 } from "recharts";
 
+/* ===================== MOBILE HOOK ===================== */
+const useIsMobile = () => {
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+  useEffect(() => {
+    const handle = () => setIsMobile(window.innerWidth <= 768);
+    window.addEventListener("resize", handle);
+    return () => window.removeEventListener("resize", handle);
+  }, []);
+  return isMobile;
+};
+
 /* ===================== HELPERS ===================== */
 const money = (n) =>
   "AED " +
@@ -453,36 +464,79 @@ const GlobalStyles = () => {
   useEffect(() => {
     const style = document.createElement("style");
     style.textContent = `
-      * {
-        box-sizing: border-box;
-      }
-      body {
-        margin: 0;
-        padding: 0;
-        font-family: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
-      }
-      button:hover {
-        opacity: 0.9;
-        transform: translateY(-1px);
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-      }
-      button:active {
-        transform: translateY(0);
-      }
-      button:disabled {
-        opacity: 0.6;
-        cursor: not-allowed;
-        transform: none !important;
-      }
-      input:focus, textarea:focus, select:focus {
-        border-color: ${theme.colors.primary};
-        box-shadow: 0 0 0 3px rgba(229, 57, 53, 0.1);
-      }
-      table tr:hover {
-        background: ${theme.colors.grey50};
-      }
-      .card:hover {
-        box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+      * { box-sizing: border-box; }
+      body { margin:0; padding:0; font-family:'Segoe UI','Helvetica Neue',Arial,sans-serif; }
+      button:hover { opacity:0.9; transform:translateY(-1px); box-shadow:0 2px 4px rgba(0,0,0,0.1); }
+      button:active { transform:translateY(0); }
+      button:disabled { opacity:0.6; cursor:not-allowed; transform:none !important; }
+      input:focus,textarea:focus,select:focus { border-color:${theme.colors.primary}; box-shadow:0 0 0 3px rgba(229,57,53,0.1); }
+      table tr:hover { background:${theme.colors.grey50}; }
+      .card:hover { box-shadow:0 2px 8px rgba(0,0,0,0.15); }
+      /* Mobile/Desktop toggle */
+      .mob { display:none !important; }
+      .desk { display:block; }
+      /* Hamburger nav */
+      .nav-desktop { display:flex; gap:12px; align-items:center; flex-wrap:wrap; }
+      .nav-hamburger { display:none !important; }
+      .mob-nav-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.45); z-index:9999; flex-direction:column; align-items:flex-end; }
+      .mob-nav-overlay.open { display:flex; }
+      .mob-nav-panel { background:#fff; width:260px; height:100%; padding:24px 20px; display:flex; flex-direction:column; gap:12px; box-shadow:-4px 0 16px rgba(0,0,0,0.15); overflow-y:auto; }
+      .mob-nav-panel button { width:100%; text-align:left; padding:14px 16px; border-radius:6px; font-size:15px; cursor:pointer; }
+      .mob-nav-divider { height:1px; background:#e0e0e0; margin:4px 0; }
+      @media (max-width:768px) {
+        .mob { display:block !important; }
+        .desk { display:none !important; }
+        .nav-desktop { display:none !important; }
+        .nav-hamburger { display:flex !important; align-items:center; gap:8px; }
+        /* Header */
+        .hdr { padding:10px 14px !important; }
+        .hdr-title { font-size:15px !important; }
+        .hdr-sub { display:none !important; }
+        .hdr-logo { height:32px !important; }
+        /* Content padding */
+        .pg-content { padding:12px !important; }
+        /* Control bar stacks */
+        .ctrl-bar { flex-direction:column !important; align-items:stretch !important; gap:10px !important; padding:12px !important; }
+        .view-toggle { width:100% !important; }
+        .view-toggle button { flex:1 !important; }
+        .ctrl-date { width:100% !important; }
+        /* Stats: 2 cols */
+        .stats-grid { grid-template-columns:repeat(2,1fr) !important; gap:10px !important; }
+        .stats-card { padding:14px 12px !important; gap:8px !important; }
+        .stats-icon { font-size:24px !important; }
+        .stats-val { font-size:18px !important; }
+        /* Charts stack */
+        .charts-grid { grid-template-columns:1fr !important; }
+        /* Login */
+        .login-card { padding:24px 16px !important; }
+        /* Form max-width */
+        .form-card { max-width:100% !important; margin:0 !important; }
+        /* Action btn group */
+        .act-btns { flex-direction:column !important; }
+        .act-btns button { width:100% !important; }
+        /* Mobile sale/leave row cards */
+        .row-card { background:#fff; border:1px solid #e0e0e0; border-radius:8px; padding:12px 14px; margin-bottom:8px; }
+        .row-card-head { display:flex; justify-content:space-between; align-items:center; margin-bottom:4px; }
+        .row-card-title { font-size:15px; font-weight:600; color:#212121; }
+        .row-card-amount { font-size:16px; font-weight:700; color:#e53935; }
+        .row-card-meta { font-size:12px; color:#777; margin-top:2px; }
+        /* Salesman cards */
+        .sm-row { background:#fff; border:1px solid #e0e0e0; border-radius:8px; padding:12px 14px; margin-bottom:8px; display:flex; justify-content:space-between; align-items:center; }
+        .sm-row-l .sm-name { font-size:15px; font-weight:600; }
+        .sm-row-l .sm-meta { font-size:12px; color:#888; margin-top:2px; }
+        .sm-row-r { text-align:right; }
+        .sm-row-r .sm-total { font-size:16px; font-weight:700; color:#e53935; }
+        /* Product cards */
+        .prod-row { background:#fff; border:1px solid #e0e0e0; border-radius:8px; padding:12px 14px; margin-bottom:7px; display:flex; justify-content:space-between; align-items:center; }
+        .prod-row-brand { font-size:14px; font-weight:600; }
+        .prod-row-code { font-size:12px; color:#888; margin-top:2px; }
+        .prod-row-price { font-size:15px; font-weight:700; color:#e53935; }
+        /* Manage salesmen cards */
+        .mgr-row { background:#fff; border:1px solid #e0e0e0; border-radius:8px; padding:12px 14px; margin-bottom:8px; }
+        .mgr-row-name { font-size:15px; font-weight:600; }
+        .mgr-row-meta { font-size:12px; color:#888; margin-top:2px; }
+        .mgr-row-actions { display:flex; gap:8px; margin-top:10px; }
+        .mgr-row-actions button { flex:1; font-size:12px !important; padding:8px !important; }
       }
     `;
     document.head.appendChild(style);
@@ -578,6 +632,14 @@ const LoginPage = ({ onLogin }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [fpStep, setFpStep] = useState("login");
+  const [fpUsername, setFpUsername] = useState("");
+  const [fpOtp, setFpOtp] = useState("");
+  const [fpNewPw, setFpNewPw] = useState("");
+  const [fpConfirm, setFpConfirm] = useState("");
+  const [fpEmail, setFpEmail] = useState("");
+  const [fpLoading, setFpLoading] = useState(false);
+  const [fpError, setFpError] = useState("");
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -585,13 +647,10 @@ const LoginPage = ({ onLogin }) => {
       alert("Please enter username and password");
       return;
     }
-
     setLoading(true);
     try {
       const result = await api.login(username, password);
-      if (result.success) {
-        onLogin(result.user);
-      }
+      if (result.success) onLogin(result.user);
     } catch (err) {
       alert(err.message);
     } finally {
@@ -599,43 +658,294 @@ const LoginPage = ({ onLogin }) => {
     }
   };
 
+  const handleRequestOtp = async (e) => {
+    e.preventDefault();
+    setFpError("");
+    if (!fpUsername.trim()) {
+      setFpError("Please enter your username");
+      return;
+    }
+    setFpLoading(true);
+    try {
+      const res = await api.forgotPassword(fpUsername.trim());
+      setFpEmail(res.maskedEmail);
+      setFpStep("verify");
+    } catch (err) {
+      setFpError(err.message);
+    } finally {
+      setFpLoading(false);
+    }
+  };
+
+  const handleVerifyOtp = async (e) => {
+    e.preventDefault();
+    setFpError("");
+    if (!fpOtp.trim()) {
+      setFpError("Please enter the OTP");
+      return;
+    }
+    setFpLoading(true);
+    try {
+      await api.verifyOtp(fpUsername.trim(), fpOtp.trim());
+      setFpStep("newpw");
+    } catch (err) {
+      setFpError(err.message);
+    } finally {
+      setFpLoading(false);
+    }
+  };
+
+  const handleResetPw = async (e) => {
+    e.preventDefault();
+    setFpError("");
+    if (!fpNewPw) {
+      setFpError("Please enter a new password");
+      return;
+    }
+    if (fpNewPw.length < 6) {
+      setFpError("Minimum 6 characters");
+      return;
+    }
+    if (fpNewPw !== fpConfirm) {
+      setFpError("Passwords do not match");
+      return;
+    }
+    setFpLoading(true);
+    try {
+      await api.resetPasswordWithOtp(fpUsername.trim(), fpNewPw);
+      alert("Password reset! Please sign in.");
+      setFpStep("login");
+      setFpUsername("");
+      setFpOtp("");
+      setFpNewPw("");
+      setFpConfirm("");
+      setFpEmail("");
+    } catch (err) {
+      setFpError(err.message);
+    } finally {
+      setFpLoading(false);
+    }
+  };
+
+  const errBox = fpError ? (
+    <div
+      style={{
+        background: "#fff0f0",
+        border: "1px solid #ffcdd2",
+        borderRadius: 4,
+        color: "#c62828",
+        fontSize: 13,
+        padding: "10px 12px",
+        marginBottom: 16,
+      }}
+    >
+      {fpError}
+    </div>
+  ) : null;
+
+  const infoBox = fpEmail ? (
+    <div
+      style={{
+        background: "#f0f4ff",
+        border: "1px solid #c5cae9",
+        borderRadius: 4,
+        color: "#1a237e",
+        fontSize: 13,
+        padding: "10px 12px",
+        marginBottom: 16,
+        textAlign: "center",
+      }}
+    >
+      OTP sent to <strong>{fpEmail}</strong>
+    </div>
+  ) : null;
+
+  const linkBtn = (label, onClick) => (
+    <button
+      type="button"
+      onClick={onClick}
+      style={{
+        display: "block",
+        width: "100%",
+        textAlign: "center",
+        marginTop: 14,
+        color: theme.colors.primary,
+        fontSize: 14,
+        cursor: "pointer",
+        background: "none",
+        border: "none",
+        padding: 0,
+        textDecoration: "underline",
+      }}
+    >
+      {label}
+    </button>
+  );
+
+  const renderFp = () => {
+    if (fpStep === "request")
+      return (
+        <form onSubmit={handleRequestOtp}>
+          <h2 style={styles.loginTitle}>Forgot Password</h2>
+          <p style={styles.loginSubtitle}>Enter your admin username</p>
+          {errBox}
+          <div style={styles.formGroup}>
+            <label style={styles.label}>Username</label>
+            <input
+              type="text"
+              value={fpUsername}
+              onChange={(e) => setFpUsername(e.target.value)}
+              disabled={fpLoading}
+              style={styles.input}
+              placeholder="Enter username"
+              autoFocus
+            />
+          </div>
+          <button type="submit" disabled={fpLoading} style={styles.button}>
+            {fpLoading ? "Sending…" : "Send OTP"}
+          </button>
+          {linkBtn("← Back to Sign In", () => {
+            setFpStep("login");
+            setFpError("");
+          })}
+        </form>
+      );
+    if (fpStep === "verify")
+      return (
+        <form onSubmit={handleVerifyOtp}>
+          <h2 style={styles.loginTitle}>Enter OTP</h2>
+          {infoBox}
+          {errBox}
+          <div style={styles.formGroup}>
+            <label style={styles.label}>6-Digit OTP</label>
+            <input
+              type="text"
+              value={fpOtp}
+              onChange={(e) =>
+                setFpOtp(e.target.value.replace(/\D/g, "").slice(0, 6))
+              }
+              disabled={fpLoading}
+              style={{
+                ...styles.input,
+                fontSize: 28,
+                letterSpacing: 10,
+                textAlign: "center",
+              }}
+              placeholder="000000"
+              maxLength={6}
+              autoFocus
+            />
+          </div>
+          <button
+            type="submit"
+            disabled={fpLoading || fpOtp.length < 6}
+            style={styles.button}
+          >
+            {fpLoading ? "Verifying…" : "Verify OTP"}
+          </button>
+          {linkBtn("← Resend OTP", () => {
+            setFpStep("request");
+            setFpOtp("");
+            setFpError("");
+          })}
+        </form>
+      );
+    if (fpStep === "newpw")
+      return (
+        <form onSubmit={handleResetPw}>
+          <h2 style={styles.loginTitle}>New Password</h2>
+          <p style={styles.loginSubtitle}>Choose a strong password</p>
+          {errBox}
+          <div style={styles.formGroup}>
+            <label style={styles.label}>New Password</label>
+            <input
+              type="password"
+              value={fpNewPw}
+              onChange={(e) => setFpNewPw(e.target.value)}
+              disabled={fpLoading}
+              style={styles.input}
+              placeholder="Min. 6 characters"
+              autoFocus
+            />
+          </div>
+          <div style={styles.formGroup}>
+            <label style={styles.label}>Confirm Password</label>
+            <input
+              type="password"
+              value={fpConfirm}
+              onChange={(e) => setFpConfirm(e.target.value)}
+              disabled={fpLoading}
+              style={styles.input}
+              placeholder="Repeat password"
+            />
+          </div>
+          <button type="submit" disabled={fpLoading} style={styles.button}>
+            {fpLoading ? "Resetting…" : "Reset Password"}
+          </button>
+        </form>
+      );
+  };
+
   return (
     <>
       <GlobalStyles />
       <div style={styles.loginContainer}>
-        <div style={styles.loginCard}>
+        <div style={styles.loginCard} className="login-card">
           <div style={styles.logoContainer}>
             <img src={hamaLogo} alt="HAMA" style={styles.logo} />
           </div>
-          <h2 style={styles.loginTitle}>HAMA Sales Tracker</h2>
-          <p style={styles.loginSubtitle}>Sign in to your account</p>
-          <form onSubmit={handleLogin}>
-            <div style={styles.formGroup}>
-              <label style={styles.label}>Username</label>
-              <input
-                type="text"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                disabled={loading}
-                style={styles.input}
-                placeholder="Enter your username"
-              />
-            </div>
-            <div style={styles.formGroup}>
-              <label style={styles.label}>Password</label>
-              <input
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                disabled={loading}
-                style={styles.input}
-                placeholder="Enter your password"
-              />
-            </div>
-            <button type="submit" disabled={loading} style={styles.button}>
-              {loading ? "Signing in..." : "Sign In"}
-            </button>
-          </form>
+          {fpStep !== "login" ? (
+            renderFp()
+          ) : (
+            <form onSubmit={handleLogin}>
+              <h2 style={styles.loginTitle}>HAMA Sales Tracker</h2>
+              <p style={styles.loginSubtitle}>Sign in to your account</p>
+              <div style={styles.formGroup}>
+                <label style={styles.label}>Username</label>
+                <input
+                  type="text"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  disabled={loading}
+                  style={styles.input}
+                  placeholder="Enter your username"
+                />
+              </div>
+              <div style={styles.formGroup}>
+                <label style={styles.label}>Password</label>
+                <input
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  disabled={loading}
+                  style={styles.input}
+                  placeholder="Enter your password"
+                />
+              </div>
+              <button type="submit" disabled={loading} style={styles.button}>
+                {loading ? "Signing in…" : "Sign In"}
+              </button>
+              <button
+                type="button"
+                onClick={() => setFpStep("request")}
+                style={{
+                  display: "block",
+                  width: "100%",
+                  textAlign: "center",
+                  marginTop: 14,
+                  color: theme.colors.primary,
+                  fontSize: 14,
+                  cursor: "pointer",
+                  background: "none",
+                  border: "none",
+                  padding: 0,
+                  textDecoration: "underline",
+                }}
+              >
+                Forgot Password?
+              </button>
+            </form>
+          )}
         </div>
       </div>
     </>
@@ -759,7 +1069,7 @@ const ManageSalesmen = ({ navigate, onLogout }) => {
           </div>
         </div>
 
-        <div style={styles.mainContent}>
+        <div style={styles.mainContent} className="pg-content">
           <div style={{ marginBottom: "20px", display: "flex", gap: "12px" }}>
             <button
               onClick={() => setShowForm(!showForm)}
@@ -885,7 +1195,33 @@ const ManageSalesmen = ({ navigate, onLogout }) => {
 
           <div className="card" style={styles.card}>
             <h3 style={styles.cardTitle}>Current Salesmen</h3>
-            <div style={{ overflowX: "auto" }}>
+            {/* Mobile cards */}
+            <div className="mob">
+              {salesmen.map((sm) => (
+                <div key={sm.id || sm._id} className="mgr-row">
+                  <div className="mgr-row-name">{sm.name}</div>
+                  <div className="mgr-row-meta">
+                    @{sm.username} · ID: {sm.salesmanId}
+                  </div>
+                  <div className="mgr-row-actions">
+                    <button
+                      onClick={() =>
+                        handleDeleteSalesman(sm.salesmanId, sm.name)
+                      }
+                      style={{
+                        ...styles.actionButton,
+                        background: theme.colors.grey700,
+                        flex: 1,
+                      }}
+                    >
+                      🗑 Delete
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+            {/* Desktop table */}
+            <div className="desk" style={{ overflowX: "auto" }}>
               <table style={styles.table}>
                 <thead>
                   <tr>
@@ -956,12 +1292,8 @@ const DownloadProducts = ({ navigate, onLogout }) => {
     } else {
       const filtered = products.filter(
         (p) =>
-          (p.brand &&
-            String(p.brand).toLowerCase().includes(searchTerm.toLowerCase())) ||
-          (p.itemCode &&
-            String(p.itemCode)
-              .toLowerCase()
-              .includes(searchTerm.toLowerCase())),
+          p.brand.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          p.itemCode.toLowerCase().includes(searchTerm.toLowerCase()),
       );
       setFilteredProducts(filtered);
     }
@@ -1006,7 +1338,7 @@ const DownloadProducts = ({ navigate, onLogout }) => {
           </div>
         </div>
 
-        <div style={styles.mainContent}>
+        <div style={styles.mainContent} className="pg-content">
           <div
             style={{
               marginBottom: "20px",
@@ -1044,7 +1376,32 @@ const DownloadProducts = ({ navigate, onLogout }) => {
                 ? `Search Results (${filteredProducts.length} of ${products.length} items)`
                 : `All Products (${products.length} items)`}
             </h3>
-            <div style={{ maxHeight: "600px", overflowY: "auto" }}>
+            {/* Mobile cards */}
+            <div className="mob">
+              {filteredProducts.length > 0 ? (
+                filteredProducts.map((p, i) => (
+                  <div key={i} className="prod-row">
+                    <div>
+                      <div className="prod-row-brand">{p.brand}</div>
+                      <div className="prod-row-code">{p.itemCode || "—"}</div>
+                    </div>
+                    <div className="prod-row-price">{money(p.price)}</div>
+                  </div>
+                ))
+              ) : (
+                <p
+                  style={{
+                    textAlign: "center",
+                    color: theme.colors.textSecondary,
+                    padding: 24,
+                  }}
+                >
+                  No products found
+                </p>
+              )}
+            </div>
+            {/* Desktop table */}
+            <div className="desk" style={{ maxHeight: 600, overflowY: "auto" }}>
               <table style={styles.table}>
                 <thead>
                   <tr>
@@ -1055,8 +1412,8 @@ const DownloadProducts = ({ navigate, onLogout }) => {
                 </thead>
                 <tbody>
                   {filteredProducts.length > 0 ? (
-                    filteredProducts.map((p, idx) => (
-                      <tr key={idx}>
+                    filteredProducts.map((p, i) => (
+                      <tr key={i}>
                         <td style={styles.td}>{p.brand}</td>
                         <td style={styles.td}>{p.itemCode}</td>
                         <td style={styles.td}>{money(p.price)}</td>
@@ -1070,10 +1427,9 @@ const DownloadProducts = ({ navigate, onLogout }) => {
                           ...styles.td,
                           textAlign: "center",
                           color: theme.colors.textSecondary,
-                          padding: "40px",
                         }}
                       >
-                        No products found matching "{searchTerm}"
+                        No products found
                       </td>
                     </tr>
                   )}
@@ -1094,6 +1450,7 @@ const SalesmanDashboard = ({ user, navigate, onLogout }) => {
   const [selectedDate, setSelectedDate] = useState(getToday());
   const [view, setView] = useState("daily");
   const [loading, setLoading] = useState(true);
+  const [navOpen, setNavOpen] = useState(false);
 
   useEffect(() => {
     loadData();
@@ -1174,15 +1531,25 @@ const SalesmanDashboard = ({ user, navigate, onLogout }) => {
       <GlobalStyles />
       <div style={modernStyles.dashboardContainer}>
         <div style={modernStyles.header}>
-          <div style={modernStyles.headerContent}>
+          <div style={modernStyles.headerContent} className="hdr">
             <div style={modernStyles.logoContainer}>
-              <img src={hamaLogo} alt="HAMA" style={modernStyles.logo} />
+              <img
+                src={hamaLogo}
+                alt="HAMA"
+                style={modernStyles.logo}
+                className="hdr-logo"
+              />
               <div>
-                <h1 style={modernStyles.headerTitle}>HAMA Sales Tracker</h1>
-                <p style={modernStyles.headerSubtitle}>Salesman Dashboard</p>
+                <h1 style={modernStyles.headerTitle} className="hdr-title">
+                  HAMA Sales Tracker
+                </h1>
+                <p style={modernStyles.headerSubtitle} className="hdr-sub">
+                  Salesman Dashboard
+                </p>
               </div>
             </div>
-            <div style={{ display: "flex", gap: "12px", alignItems: "center" }}>
+            {/* Desktop nav */}
+            <div className="nav-desktop">
               <div style={modernStyles.userBadge}>
                 <div style={modernStyles.userAvatar}>
                   {user.name.charAt(0).toUpperCase()}
@@ -1203,12 +1570,106 @@ const SalesmanDashboard = ({ user, navigate, onLogout }) => {
                 Logout
               </button>
             </div>
+            {/* Mobile hamburger */}
+            <div className="nav-hamburger">
+              <div style={modernStyles.userAvatar}>
+                {user.name.charAt(0).toUpperCase()}
+              </div>
+              <button
+                onClick={() => setNavOpen(true)}
+                style={{
+                  background: "none",
+                  border: `1px solid ${theme.colors.grey300}`,
+                  borderRadius: 6,
+                  padding: "7px 10px",
+                  cursor: "pointer",
+                  fontSize: 18,
+                }}
+              >
+                ☰
+              </button>
+            </div>
+          </div>
+        </div>
+        {/* Mobile nav overlay */}
+        <div
+          className={`mob-nav-overlay${navOpen ? " open" : ""}`}
+          onClick={() => setNavOpen(false)}
+        >
+          <div className="mob-nav-panel" onClick={(e) => e.stopPropagation()}>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                marginBottom: 12,
+              }}
+            >
+              <div>
+                <div style={{ fontWeight: 600 }}>{user.name}</div>
+                <div style={{ fontSize: 12, color: "#888" }}>
+                  {user.salesmanId}
+                </div>
+              </div>
+              <button
+                onClick={() => setNavOpen(false)}
+                style={{
+                  background: "none",
+                  border: "none",
+                  fontSize: 22,
+                  cursor: "pointer",
+                }}
+              >
+                ✕
+              </button>
+            </div>
+            <div className="mob-nav-divider" />
+            <button
+              onClick={() => {
+                navigate("add-sale");
+                setNavOpen(false);
+              }}
+              style={{
+                background: theme.colors.primary,
+                color: "#fff",
+                border: "none",
+              }}
+            >
+              ➕ Add New Sale
+            </button>
+            <button
+              onClick={() => {
+                navigate("apply-leave");
+                setNavOpen(false);
+              }}
+              style={{
+                background: theme.colors.warning,
+                color: "#fff",
+                border: "none",
+              }}
+            >
+              📅 Apply for Leave
+            </button>
+            <div className="mob-nav-divider" />
+            <button
+              onClick={() => {
+                onLogout();
+                setNavOpen(false);
+              }}
+              style={{
+                background: "#fff",
+                border: `1px solid ${theme.colors.grey300}`,
+                color: theme.colors.text,
+              }}
+            >
+              🚪 Logout
+            </button>
           </div>
         </div>
 
-        <div style={modernStyles.mainContent}>
-          <div style={modernStyles.controlBar}>
-            <div style={modernStyles.viewToggle}>
+        <div style={modernStyles.mainContent} className="pg-content">
+          <div style={modernStyles.controlBar} className="ctrl-bar">
+            <div style={modernStyles.viewToggle} className="view-toggle">
               <button
                 onClick={() => {
                   setView("daily");
@@ -1250,9 +1711,11 @@ const SalesmanDashboard = ({ user, navigate, onLogout }) => {
             />
           </div>
 
-          <div style={modernStyles.statsGrid}>
-            <div style={modernStyles.statsCard}>
-              <div style={modernStyles.statsIcon}>📊</div>
+          <div style={modernStyles.statsGrid} className="stats-grid">
+            <div style={modernStyles.statsCard} className="stats-card">
+              <div style={modernStyles.statsIcon} className="stats-icon">
+                📊
+              </div>
               <div>
                 <p style={modernStyles.statsLabel}>Total Sales</p>
                 <h2 style={modernStyles.statsValue}>
@@ -1260,15 +1723,19 @@ const SalesmanDashboard = ({ user, navigate, onLogout }) => {
                 </h2>
               </div>
             </div>
-            <div style={modernStyles.statsCard}>
-              <div style={modernStyles.statsIcon}>🛍️</div>
+            <div style={modernStyles.statsCard} className="stats-card">
+              <div style={modernStyles.statsIcon} className="stats-icon">
+                🛍️
+              </div>
               <div>
                 <p style={modernStyles.statsLabel}>Transactions</p>
                 <h2 style={modernStyles.statsValue}>{currentSales.length}</h2>
               </div>
             </div>
-            <div style={modernStyles.statsCard}>
-              <div style={modernStyles.statsIcon}>📅</div>
+            <div style={modernStyles.statsCard} className="stats-card">
+              <div style={modernStyles.statsIcon} className="stats-icon">
+                📅
+              </div>
               <div>
                 <p style={modernStyles.statsLabel}>Leave Days</p>
                 <h2 style={modernStyles.statsValue}>
@@ -1309,10 +1776,11 @@ const SalesmanDashboard = ({ user, navigate, onLogout }) => {
           )}
 
           <div
+            className="act-btns"
             style={{
               display: "flex",
-              gap: "12px",
-              marginBottom: "24px",
+              gap: 12,
+              marginBottom: 24,
               flexWrap: "wrap",
             }}
           >
@@ -1320,7 +1788,7 @@ const SalesmanDashboard = ({ user, navigate, onLogout }) => {
               onClick={() => navigate("add-sale")}
               style={{ ...styles.button, width: "auto" }}
             >
-              Add New Sale
+              ➕ Add New Sale
             </button>
             <button
               onClick={() => navigate("apply-leave")}
@@ -1330,7 +1798,7 @@ const SalesmanDashboard = ({ user, navigate, onLogout }) => {
                 background: theme.colors.warning,
               }}
             >
-              Apply for Leave
+              📅 Apply for Leave
             </button>
           </div>
 
@@ -1344,54 +1812,80 @@ const SalesmanDashboard = ({ user, navigate, onLogout }) => {
                 style={{
                   color: theme.colors.textSecondary,
                   textAlign: "center",
-                  padding: "40px",
+                  padding: 40,
                 }}
               >
-                No sales recorded for this {view === "daily" ? "day" : "month"}
+                No sales for this {view === "daily" ? "day" : "month"}
               </p>
             ) : (
-              <div
-                style={{
-                  maxHeight: "400px",
-                  overflowY: "auto",
-                  overflowX: "auto",
-                }}
-              >
-                <table style={styles.table}>
-                  <thead>
-                    <tr>
-                      <th style={styles.th}>Date</th>
-                      <th style={styles.th}>Brand</th>
-                      <th style={styles.th}>Item Code</th>
-                      <th style={styles.th}>Quantity</th>
-                      <th style={styles.th}>Price</th>
-                      <th style={styles.th}>Total</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {currentSales.map((sale, idx) => (
-                      <tr key={idx}>
-                        <td style={styles.td}>{formatDate(sale.date)}</td>
-                        <td style={styles.td}>{sale.brand}</td>
-                        <td style={styles.td}>{sale.itemCode}</td>
-                        <td style={styles.td}>{sale.quantity}</td>
-                        <td style={styles.td}>{money(sale.price)}</td>
-                        <td
-                          style={{
-                            ...styles.td,
-                            fontWeight: "600",
-                            color: theme.colors.primary,
-                          }}
-                        >
+              <>
+                {/* Mobile cards */}
+                <div className="mob">
+                  {currentSales.map((sale, i) => (
+                    <div key={i} className="row-card">
+                      <div className="row-card-head">
+                        <span className="row-card-title">{sale.brand}</span>
+                        <span className="row-card-amount">
                           {money(
                             sale.totalAmount || sale.quantity * sale.price,
                           )}
-                        </td>
+                        </span>
+                      </div>
+                      <div className="row-card-meta">
+                        Code: {sale.itemCode} · Qty: {sale.quantity} ·{" "}
+                        {money(sale.price)} each
+                      </div>
+                      <div className="row-card-meta">
+                        {formatDate(sale.date)}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                {/* Desktop table */}
+                <div
+                  className="desk"
+                  style={{
+                    maxHeight: 400,
+                    overflowY: "auto",
+                    overflowX: "auto",
+                  }}
+                >
+                  <table style={styles.table}>
+                    <thead>
+                      <tr>
+                        <th style={styles.th}>Date</th>
+                        <th style={styles.th}>Brand</th>
+                        <th style={styles.th}>Item Code</th>
+                        <th style={styles.th}>Qty</th>
+                        <th style={styles.th}>Price</th>
+                        <th style={styles.th}>Total</th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
+                    </thead>
+                    <tbody>
+                      {currentSales.map((sale, i) => (
+                        <tr key={i}>
+                          <td style={styles.td}>{formatDate(sale.date)}</td>
+                          <td style={styles.td}>{sale.brand}</td>
+                          <td style={styles.td}>{sale.itemCode}</td>
+                          <td style={styles.td}>{sale.quantity}</td>
+                          <td style={styles.td}>{money(sale.price)}</td>
+                          <td
+                            style={{
+                              ...styles.td,
+                              fontWeight: 600,
+                              color: theme.colors.primary,
+                            }}
+                          >
+                            {money(
+                              sale.totalAmount || sale.quantity * sale.price,
+                            )}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </>
             )}
           </div>
 
@@ -1507,7 +2001,12 @@ const AddSale = ({ user, navigate, onLogout }) => {
         const data = await api.getProducts();
         // Filter out any invalid products
         const validProducts = (data || []).filter(
-          (p) => p && typeof p === "object" && p.brand,
+          (p) =>
+            p &&
+            typeof p === "object" &&
+            p.itemCode &&
+            p.brand &&
+            p.price !== undefined,
         );
         console.log(
           `Loaded ${validProducts.length} valid products out of ${(data || []).length} total`,
@@ -1538,7 +2037,7 @@ const AddSale = ({ user, navigate, onLogout }) => {
       const searchResults = products.filter((p) => {
         if (!p || !p.itemCode) return false;
         try {
-          return String(p.itemCode || "")
+          return p.itemCode
             .toLowerCase()
             .includes(itemCodeSearch.toLowerCase());
         } catch (err) {
@@ -1664,10 +2163,11 @@ const AddSale = ({ user, navigate, onLogout }) => {
           </div>
         </div>
 
-        <div style={styles.mainContent}>
+        <div style={styles.mainContent} className="pg-content">
           <div
             className="card"
             style={{ ...styles.card, maxWidth: "700px", margin: "0 auto" }}
+            className="form-card"
           >
             <h3 style={styles.cardTitle}>Sale Details</h3>
             <div style={styles.formGroup}>
@@ -1894,10 +2394,11 @@ const ApplyLeave = ({ user, navigate, onLogout }) => {
           </div>
         </div>
 
-        <div style={styles.mainContent}>
+        <div style={styles.mainContent} className="pg-content">
           <div
             className="card"
             style={{ ...styles.card, maxWidth: "700px", margin: "0 auto" }}
+            className="form-card"
           >
             <h3 style={styles.cardTitle}>Leave Application</h3>
             <div style={styles.formGroup}>
@@ -1943,6 +2444,7 @@ const AdminDashboard = ({ user, navigate, onLogout }) => {
   const [selectedDate, setSelectedDate] = useState(getToday());
   const [view, setView] = useState("daily");
   const [loading, setLoading] = useState(true);
+  const [navOpen, setNavOpen] = useState(false);
 
   useEffect(() => {
     loadData();
@@ -2081,22 +2583,25 @@ const AdminDashboard = ({ user, navigate, onLogout }) => {
       <GlobalStyles />
       <div style={styles.dashboardContainer}>
         <div style={styles.header}>
-          <div style={styles.headerContent}>
+          <div style={styles.headerContent} className="hdr">
             <div style={modernStyles.logoContainer}>
-              <img src={hamaLogo} alt="HAMA" style={modernStyles.logo} />
+              <img
+                src={hamaLogo}
+                alt="HAMA"
+                style={modernStyles.logo}
+                className="hdr-logo"
+              />
               <div>
-                <h1 style={styles.headerTitle}>HAMA Sales Tracker</h1>
-                <p style={modernStyles.headerSubtitle}>Admin Dashboard</p>
+                <h1 style={styles.headerTitle} className="hdr-title">
+                  HAMA Sales Tracker
+                </h1>
+                <p style={modernStyles.headerSubtitle} className="hdr-sub">
+                  Admin Dashboard
+                </p>
               </div>
             </div>
-            <div
-              style={{
-                display: "flex",
-                gap: "12px",
-                alignItems: "center",
-                flexWrap: "wrap",
-              }}
-            >
+            {/* Desktop nav */}
+            <div className="nav-desktop">
               <button
                 onClick={() => navigate("manage-salesmen")}
                 style={styles.headerButton}
@@ -2119,12 +2624,97 @@ const AdminDashboard = ({ user, navigate, onLogout }) => {
                 Logout
               </button>
             </div>
+            {/* Mobile hamburger */}
+            <button
+              className="nav-hamburger"
+              onClick={() => setNavOpen(true)}
+              style={{
+                background: "none",
+                border: `1px solid ${theme.colors.grey300}`,
+                borderRadius: 6,
+                padding: "7px 10px",
+                cursor: "pointer",
+                fontSize: 18,
+              }}
+            >
+              ☰
+            </button>
+          </div>
+        </div>
+        {/* Mobile nav overlay */}
+        <div
+          className={`mob-nav-overlay${navOpen ? " open" : ""}`}
+          onClick={() => setNavOpen(false)}
+        >
+          <div className="mob-nav-panel" onClick={(e) => e.stopPropagation()}>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                marginBottom: 12,
+              }}
+            >
+              <span style={{ fontWeight: 700, fontSize: 16 }}>Admin Menu</span>
+              <button
+                onClick={() => setNavOpen(false)}
+                style={{
+                  background: "none",
+                  border: "none",
+                  fontSize: 22,
+                  cursor: "pointer",
+                }}
+              >
+                ✕
+              </button>
+            </div>
+            <div className="mob-nav-divider" />
+            <button
+              onClick={() => {
+                navigate("manage-salesmen");
+                setNavOpen(false);
+              }}
+              style={{
+                background: theme.colors.grey100,
+                border: `1px solid ${theme.colors.grey300}`,
+                color: theme.colors.text,
+              }}
+            >
+              👥 Manage Team
+            </button>
+            <button
+              onClick={() => {
+                navigate("download-products");
+                setNavOpen(false);
+              }}
+              style={{
+                background: theme.colors.grey100,
+                border: `1px solid ${theme.colors.grey300}`,
+                color: theme.colors.text,
+              }}
+            >
+              📦 Products
+            </button>
+            <div className="mob-nav-divider" />
+            <button
+              onClick={() => {
+                onLogout();
+                setNavOpen(false);
+              }}
+              style={{
+                background: "#fff",
+                border: `1px solid ${theme.colors.grey300}`,
+                color: theme.colors.text,
+              }}
+            >
+              🚪 Logout
+            </button>
           </div>
         </div>
 
-        <div style={modernStyles.mainContent}>
-          <div style={modernStyles.controlBar}>
-            <div style={modernStyles.viewToggle}>
+        <div style={modernStyles.mainContent} className="pg-content">
+          <div style={modernStyles.controlBar} className="ctrl-bar">
+            <div style={modernStyles.viewToggle} className="view-toggle">
               <button
                 onClick={() => {
                   setView("daily");
@@ -2166,9 +2756,11 @@ const AdminDashboard = ({ user, navigate, onLogout }) => {
             />
           </div>
 
-          <div style={modernStyles.statsGrid}>
-            <div style={modernStyles.statsCard}>
-              <div style={modernStyles.statsIcon}>💰</div>
+          <div style={modernStyles.statsGrid} className="stats-grid">
+            <div style={modernStyles.statsCard} className="stats-card">
+              <div style={modernStyles.statsIcon} className="stats-icon">
+                💰
+              </div>
               <div>
                 <p style={modernStyles.statsLabel}>Total Sales</p>
                 <h2 style={modernStyles.statsValue}>
@@ -2176,22 +2768,28 @@ const AdminDashboard = ({ user, navigate, onLogout }) => {
                 </h2>
               </div>
             </div>
-            <div style={modernStyles.statsCard}>
-              <div style={modernStyles.statsIcon}>🛍️</div>
+            <div style={modernStyles.statsCard} className="stats-card">
+              <div style={modernStyles.statsIcon} className="stats-icon">
+                🛍️
+              </div>
               <div>
                 <p style={modernStyles.statsLabel}>Transactions</p>
                 <h2 style={modernStyles.statsValue}>{currentSales.length}</h2>
               </div>
             </div>
-            <div style={modernStyles.statsCard}>
-              <div style={modernStyles.statsIcon}>👥</div>
+            <div style={modernStyles.statsCard} className="stats-card">
+              <div style={modernStyles.statsIcon} className="stats-icon">
+                👥
+              </div>
               <div>
                 <p style={modernStyles.statsLabel}>Active Salesmen</p>
                 <h2 style={modernStyles.statsValue}>{salesmen.length}</h2>
               </div>
             </div>
-            <div style={modernStyles.statsCard}>
-              <div style={modernStyles.statsIcon}>📅</div>
+            <div style={modernStyles.statsCard} className="stats-card">
+              <div style={modernStyles.statsIcon} className="stats-icon">
+                📅
+              </div>
               <div>
                 <p style={modernStyles.statsLabel}>Leaves</p>
                 <h2 style={modernStyles.statsValue}>
@@ -2239,7 +2837,7 @@ const AdminDashboard = ({ user, navigate, onLogout }) => {
           )}
 
           {view === "monthly" && (
-            <div style={modernStyles.chartsGrid}>
+            <div style={modernStyles.chartsGrid} className="charts-grid">
               <div style={modernStyles.chartCard}>
                 <h3 style={modernStyles.chartTitle}>
                   Top Brand Performance
@@ -2428,7 +3026,42 @@ const AdminDashboard = ({ user, navigate, onLogout }) => {
               Sales by Salesman (
               {view === "daily" ? formatDate(selectedDate) : selectedDate})
             </h3>
-            <div style={{ overflowX: "auto" }}>
+            {/* Mobile cards */}
+            <div className="mob">
+              {salesmen.map((salesman) => {
+                const smSales = getSalesmanSales(
+                  salesman.salesmanId,
+                  currentSales,
+                );
+                const total = calculateTotal(smSales);
+                return (
+                  <div key={salesman.id || salesman._id} className="sm-row">
+                    <div className="sm-row-l">
+                      <div className="sm-name">{salesman.name}</div>
+                      <div className="sm-meta">
+                        {salesman.salesmanId} · {smSales.length} txns
+                      </div>
+                    </div>
+                    <div className="sm-row-r">
+                      <div className="sm-total">{money(total)}</div>
+                      <button
+                        onClick={() => downloadReport(salesman.salesmanId)}
+                        style={{
+                          ...styles.actionButton,
+                          fontSize: 11,
+                          padding: "5px 8px",
+                          marginTop: 4,
+                        }}
+                      >
+                        ⬇ CSV
+                      </button>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+            {/* Desktop table */}
+            <div className="desk" style={{ overflowX: "auto" }}>
               <table style={styles.table}>
                 <thead>
                   <tr>
@@ -2441,20 +3074,20 @@ const AdminDashboard = ({ user, navigate, onLogout }) => {
                 </thead>
                 <tbody>
                   {salesmen.map((salesman) => {
-                    const salesmanSales = getSalesmanSales(
+                    const smSales = getSalesmanSales(
                       salesman.salesmanId,
                       currentSales,
                     );
-                    const total = calculateTotal(salesmanSales);
+                    const total = calculateTotal(smSales);
                     return (
                       <tr key={salesman.id || salesman._id}>
                         <td style={styles.td}>{salesman.name}</td>
                         <td style={styles.td}>{salesman.salesmanId}</td>
-                        <td style={styles.td}>{salesmanSales.length}</td>
+                        <td style={styles.td}>{smSales.length}</td>
                         <td
                           style={{
                             ...styles.td,
-                            fontWeight: "600",
+                            fontWeight: 600,
                             color: theme.colors.primary,
                           }}
                         >
