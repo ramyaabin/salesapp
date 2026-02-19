@@ -1501,17 +1501,15 @@ const AddSale = ({ user, navigate, onLogout }) => {
     const loadProducts = async () => {
       try {
         const data = await api.getProducts();
-        console.log("Raw products from API:", data);
-
-        // Only filter out truly invalid products
-        const validProducts = (data || []).filter((p) => {
-          const isValid = p && p.itemCode && p.brand;
-          if (!isValid) {
-            console.warn("Invalid product found:", p);
-          }
-          return isValid;
-        });
-
+        // Filter out any invalid products
+        const validProducts = (data || []).filter(
+          (p) =>
+            p &&
+            typeof p === "object" &&
+            p.itemCode &&
+            p.brand &&
+            p.price !== undefined,
+        );
         console.log(
           `Loaded ${validProducts.length} valid products out of ${(data || []).length} total`,
         );
@@ -1528,9 +1526,9 @@ const AddSale = ({ user, navigate, onLogout }) => {
   useEffect(() => {
     if (brand) {
       const filtered = products.filter(
-        (p) => p && p.brand && p.brand.toLowerCase() === brand.toLowerCase(),
+        (p) => p?.brand?.toLowerCase() === brand?.toLowerCase(),
       );
-      setFilteredProducts(filtered);
+      setFilteredProducts(filtered || []);
     } else {
       setFilteredProducts([]);
     }
@@ -1540,18 +1538,30 @@ const AddSale = ({ user, navigate, onLogout }) => {
     if (itemCodeSearch && itemCodeSearch.length > 0) {
       const searchResults = products.filter((p) => {
         if (!p || !p.itemCode) return false;
-        return p.itemCode.toLowerCase().includes(itemCodeSearch.toLowerCase());
+        try {
+          return p.itemCode
+            .toLowerCase()
+            .includes(itemCodeSearch.toLowerCase());
+        } catch (err) {
+          console.error("Error filtering product:", p, err);
+          return false;
+        }
       });
-      setFilteredProducts(searchResults);
+      setFilteredProducts(searchResults || []);
       setShowDropdown(true);
     } else if (!itemCodeSearch) {
       setShowDropdown(false);
       if (brand) {
         const filtered = products.filter((p) => {
           if (!p || !p.brand) return false;
-          return p.brand.toLowerCase() === brand.toLowerCase();
+          try {
+            return p.brand.toLowerCase() === brand.toLowerCase();
+          } catch (err) {
+            console.error("Error filtering by brand:", p, err);
+            return false;
+          }
         });
-        setFilteredProducts(filtered);
+        setFilteredProducts(filtered || []);
       }
     }
   }, [itemCodeSearch, products, brand]);
