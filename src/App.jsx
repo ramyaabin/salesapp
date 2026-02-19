@@ -956,8 +956,12 @@ const DownloadProducts = ({ navigate, onLogout }) => {
     } else {
       const filtered = products.filter(
         (p) =>
-          p.brand.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          p.itemCode.toLowerCase().includes(searchTerm.toLowerCase()),
+          (p.brand &&
+            String(p.brand).toLowerCase().includes(searchTerm.toLowerCase())) ||
+          (p.itemCode &&
+            String(p.itemCode)
+              .toLowerCase()
+              .includes(searchTerm.toLowerCase())),
       );
       setFilteredProducts(filtered);
     }
@@ -1503,12 +1507,7 @@ const AddSale = ({ user, navigate, onLogout }) => {
         const data = await api.getProducts();
         // Filter out any invalid products
         const validProducts = (data || []).filter(
-          (p) =>
-            p &&
-            typeof p === "object" &&
-            p.itemCode &&
-            p.brand &&
-            p.price !== undefined,
+          (p) => p && typeof p === "object" && p.brand,
         );
         console.log(
           `Loaded ${validProducts.length} valid products out of ${(data || []).length} total`,
@@ -1539,7 +1538,7 @@ const AddSale = ({ user, navigate, onLogout }) => {
       const searchResults = products.filter((p) => {
         if (!p || !p.itemCode) return false;
         try {
-          return p.itemCode
+          return String(p.itemCode || "")
             .toLowerCase()
             .includes(itemCodeSearch.toLowerCase());
         } catch (err) {
