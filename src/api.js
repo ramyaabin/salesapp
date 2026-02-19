@@ -38,7 +38,7 @@ const api = {
       return await res.json();
     } catch (_error) {
       console.error("API Error:", _error);
-      return { success: true, offline: true };
+      throw _error; // ✅ Throw instead of silently failing so UI can show error
     }
   },
 
@@ -79,7 +79,10 @@ const api = {
     } catch (err) {
       console.error("API Error:", err);
 
-      const users = await this.getUsers();
+      // Fallback to cached users if backend is unreachable
+      const users = JSON.parse(
+        localStorage.getItem("salesTracker_users") || "[]",
+      );
       const found = users.find(
         (u) => u.username === username && u.password === password,
       );
@@ -113,9 +116,11 @@ const api = {
   },
 
   /* -------------------- PRODUCTS -------------------- */
-  async getProducts() {
+  async getProducts(query = {}) {
     try {
-      const res = await fetch(`${API_URL}/api/products`);
+      const params = new URLSearchParams(query);
+      // ✅ Now passes search/brand/category params to backend
+      const res = await fetch(`${API_URL}/api/products?${params}`);
       if (!res.ok) throw new Error("Failed to fetch products");
       const products = await res.json();
       localStorage.setItem("salesTracker_products", JSON.stringify(products));
@@ -134,61 +139,56 @@ const api = {
       const res = await fetch(`${API_URL}/api/sales?${params}`);
       if (!res.ok) throw new Error("Failed to fetch sales");
       const sales = await res.json();
-
-      // Save backend data to localStorage
       localStorage.setItem("salesTracker_sales", JSON.stringify(sales));
       return sales;
     } catch (_error) {
       console.error("API Error:", _error);
 
-      let sales = localStorage.getItem("salesTracker_sales")
-        ? JSON.parse(localStorage.getItem("salesTracker_sales"))
-        : [];
-
+      let sales = JSON.parse(
+        localStorage.getItem("salesTracker_sales") || "[]",
+      );
       if (query.salesmanId)
         sales = sales.filter((s) => s.salesmanId === query.salesmanId);
       if (query.date) sales = sales.filter((s) => s.date === query.date);
       if (query.month)
         sales = sales.filter((s) => s.date.startsWith(query.month));
-
       return sales;
     }
   },
 
   async addSale(saleData) {
+    const res = await fetch(`${API_URL}/api/sales`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(saleData),
+    });
+
+    if (!res.ok) {
+      const errorData = await res.json().catch(() => ({}));
+      throw new Error(errorData.error || "Failed to add sale");
+    }
+
+    const result = await res.json();
+
+    // ✅ Update localStorage cache so offline fallback stays fresh
+    const stored = JSON.parse(
+      localStorage.getItem("salesTracker_sales") || "[]",
+    );
+    stored.unshift(result.sale || saleData); // newest first
+    localStorage.setItem("salesTracker_sales", JSON.stringify(stored));
+
+    return { success: true, sale: result.sale };
+  },
+
+  async deleteSale(id) {
     try {
-      console.log("🔵 Attempting to add sale to:", `${API_URL}/api/sales`);
-      console.log("🔵 Sale data:", saleData);
-
-      const res = await fetch(`${API_URL}/api/sales`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(saleData),
+      const res = await fetch(`${API_URL}/api/sales/${id}`, {
+        method: "DELETE",
       });
-
-      console.log("🔵 Response status:", res.status);
-
-      if (!res.ok) {
-        const errorData = await res.json().catch(() => ({}));
-        console.error("🔴 Server error:", errorData);
-        throw new Error(errorData.error || "Failed to add sale");
-      }
-
-      const result = await res.json();
-      console.log("✅ Sale added successfully:", result);
-
-      // Save backend-confirmed sale
-      const stored = localStorage.getItem("salesTracker_sales");
-      const sales = stored ? JSON.parse(stored) : [];
-      sales.push(result.sale || saleData);
-      localStorage.setItem("salesTracker_sales", JSON.stringify(sales));
-
-      return { success: true, synced: true };
+      if (!res.ok) throw new Error("Failed to delete sale");
+      return await res.json();
     } catch (error) {
-      console.error("🔴 API Error:", error.message);
-      console.error("🔴 Full error:", error);
-
-      // Show error to user instead of silently saving offline
+      console.error("API Error:", error);
       throw error;
     }
   },
@@ -200,59 +200,86 @@ const api = {
       const res = await fetch(`${API_URL}/api/leaves?${params}`);
       if (!res.ok) throw new Error("Failed to fetch leaves");
       const leaves = await res.json();
-
-      // Always sync backend data to localStorage
       localStorage.setItem("salesTracker_leaves", JSON.stringify(leaves));
       return leaves;
     } catch (_error) {
       console.error("API Error:", _error);
 
-      let leaves = localStorage.getItem("salesTracker_leaves")
-        ? JSON.parse(localStorage.getItem("salesTracker_leaves"))
-        : [];
-
+      let leaves = JSON.parse(
+        localStorage.getItem("salesTracker_leaves") || "[]",
+      );
       if (query.salesmanId)
         leaves = leaves.filter((l) => l.salesmanId === query.salesmanId);
       if (query.date) leaves = leaves.filter((l) => l.date === query.date);
-
       return leaves;
     }
   },
 
   async addLeave(leaveData) {
+    const res = await fetch(`${API_URL}/api/leaves`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(leaveData),
+    });
+
+    if (!res.ok) {
+      const errorData = await res.json().catch(() => ({}));
+      throw new Error(errorData.error || "Failed to add leave");
+    }
+
+    const result = await res.json();
+
+    // ✅ Update localStorage cache
+    const stored = JSON.parse(
+      localStorage.getItem("salesTracker_leaves") || "[]",
+    );
+    stored.unshift(result.leave || leaveData);
+    localStorage.setItem("salesTracker_leaves", JSON.stringify(stored));
+
+    return { success: true, leave: result.leave };
+  },
+
+  // ✅ ADDED — Approve or reject a leave (for admin dashboard)
+  async updateLeaveStatus(leaveId, status) {
     try {
-      console.log("🔵 Attempting to add leave to:", `${API_URL}/api/leaves`);
-      console.log("🔵 Leave data:", leaveData);
-
-      const res = await fetch(`${API_URL}/api/leaves`, {
-        method: "POST",
+      const res = await fetch(`${API_URL}/api/leaves/${leaveId}`, {
+        method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(leaveData),
+        body: JSON.stringify({ status }),
       });
-
-      console.log("🔵 Response status:", res.status);
 
       if (!res.ok) {
         const errorData = await res.json().catch(() => ({}));
-        console.error("🔴 Server error:", errorData);
-        throw new Error(errorData.error || "Failed to add leave");
+        throw new Error(errorData.error || "Failed to update leave status");
       }
 
       const result = await res.json();
-      console.log("✅ Leave added successfully:", result);
 
-      // Save backend-confirmed leave
-      const stored = localStorage.getItem("salesTracker_leaves");
-      const leaves = stored ? JSON.parse(stored) : [];
-      leaves.push(result.leave || leaveData);
-      localStorage.setItem("salesTracker_leaves", JSON.stringify(leaves));
+      // ✅ Sync status change to localStorage cache
+      const stored = JSON.parse(
+        localStorage.getItem("salesTracker_leaves") || "[]",
+      );
+      const updated = stored.map((l) =>
+        l._id === leaveId ? { ...l, status } : l,
+      );
+      localStorage.setItem("salesTracker_leaves", JSON.stringify(updated));
 
-      return { success: true, synced: true };
+      return result;
     } catch (error) {
-      console.error("🔴 API Error:", error.message);
-      console.error("🔴 Full error:", error);
+      console.error("API Error:", error);
+      throw error;
+    }
+  },
 
-      // Show error to user instead of silently saving offline
+  async deleteLeave(id) {
+    try {
+      const res = await fetch(`${API_URL}/api/leaves/${id}`, {
+        method: "DELETE",
+      });
+      if (!res.ok) throw new Error("Failed to delete leave");
+      return await res.json();
+    } catch (error) {
+      console.error("API Error:", error);
       throw error;
     }
   },
