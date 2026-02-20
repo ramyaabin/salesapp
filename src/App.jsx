@@ -787,22 +787,24 @@ const LoginPage = ({ onLogin }) => {
       return (
         <form onSubmit={handleRequestOtp}>
           <h2 style={styles.loginTitle}>Forgot Password</h2>
-          <p style={styles.loginSubtitle}>Enter your admin username</p>
+          <p style={styles.loginSubtitle}>
+            Admin accounts only — enter your registered email
+          </p>
           {errBox}
           <div style={styles.formGroup}>
-            <label style={styles.label}>Username</label>
+            <label style={styles.label}>Registered Email</label>
             <input
-              type="text"
+              type="email"
               value={fpUsername}
               onChange={(e) => setFpUsername(e.target.value)}
               disabled={fpLoading}
               style={styles.input}
-              placeholder="Enter username"
+              placeholder="Enter your admin email address"
               autoFocus
             />
           </div>
           <button type="submit" disabled={fpLoading} style={styles.button}>
-            {fpLoading ? "Sending…" : "Send OTP"}
+            {fpLoading ? "Sending OTP…" : "Send OTP"}
           </button>
           {linkBtn("← Back to Sign In", () => {
             setFpStep("login");
@@ -933,8 +935,8 @@ const LoginPage = ({ onLogin }) => {
                   width: "100%",
                   textAlign: "center",
                   marginTop: 14,
-                  color: theme.colors.primary,
-                  fontSize: 14,
+                  color: theme.colors.textSecondary,
+                  fontSize: 13,
                   cursor: "pointer",
                   background: "none",
                   border: "none",
@@ -942,7 +944,7 @@ const LoginPage = ({ onLogin }) => {
                   textDecoration: "underline",
                 }}
               >
-                Forgot Password?
+                Forgot password? (Admin only)
               </button>
             </form>
           )}
@@ -1945,7 +1947,6 @@ const SalesmanDashboard = ({ user, navigate, onLogout }) => {
 /* ===================== DROPDOWN ITEM COMPONENT ===================== */
 const DropdownItem = ({ product, onClick }) => {
   const [isHovered, setIsHovered] = useState(false);
-
   return (
     <div
       onClick={onClick}
@@ -1966,7 +1967,9 @@ const DropdownItem = ({ product, onClick }) => {
           color: theme.colors.text,
         }}
       >
-        {product.itemCode}
+        {String(
+          product.modelNumber || product["Model "] || product.Model || "—",
+        )}
       </div>
       <div
         style={{
@@ -1975,7 +1978,7 @@ const DropdownItem = ({ product, onClick }) => {
           marginTop: "4px",
         }}
       >
-        {product.brand} • {money(product.price)}
+        {product.brand} · Code: {product.itemCode} · {money(product.price)}
       </div>
     </div>
   );
@@ -1986,7 +1989,8 @@ const AddSale = ({ user, navigate, onLogout }) => {
   const [date, setDate] = useState(getToday());
   const [brand, setBrand] = useState("");
   const [itemCode, setItemCode] = useState("");
-  const [itemCodeSearch, setItemCodeSearch] = useState("");
+  const [modelSearch, setModelSearch] = useState(""); // NEW: search by model
+  const [selectedModel, setSelectedModel] = useState(""); // NEW: display after select
   const [quantity, setQuantity] = useState("");
   const [price, setPrice] = useState("");
   const [submitting, setSubmitting] = useState(false);
@@ -2001,12 +2005,7 @@ const AddSale = ({ user, navigate, onLogout }) => {
         const data = await api.getProducts();
         // Filter out any invalid products
         const validProducts = (data || []).filter(
-          (p) =>
-            p &&
-            typeof p === "object" &&
-            p.itemCode &&
-            p.brand &&
-            p.price !== undefined,
+          (p) => p && typeof p === "object" && p.brand,
         );
         console.log(
           `Loaded ${validProducts.length} valid products out of ${(data || []).length} total`,
@@ -2021,56 +2020,30 @@ const AddSale = ({ user, navigate, onLogout }) => {
     loadProducts();
   }, []);
 
+  // Search products by model number
   useEffect(() => {
-    if (brand) {
-      const filtered = products.filter(
-        (p) => p?.brand?.toLowerCase() === brand?.toLowerCase(),
-      );
-      setFilteredProducts(filtered || []);
+    if (modelSearch.trim().length > 0) {
+      const q = modelSearch.toLowerCase();
+      const results = products.filter((p) => {
+        const model = String(
+          p.modelNumber || p["Model "] || p.Model || "",
+        ).toLowerCase();
+        return model.includes(q);
+      });
+      setFilteredProducts(results);
+      setShowDropdown(results.length > 0);
     } else {
       setFilteredProducts([]);
-    }
-  }, [brand, products]);
-
-  useEffect(() => {
-    if (itemCodeSearch && itemCodeSearch.length > 0) {
-      const searchResults = products.filter((p) => {
-        if (!p || !p.itemCode) return false;
-        try {
-          return p.itemCode
-            .toLowerCase()
-            .includes(itemCodeSearch.toLowerCase());
-        } catch (err) {
-          console.error("Error filtering product:", p, err);
-          return false;
-        }
-      });
-      setFilteredProducts(searchResults || []);
-      setShowDropdown(true);
-    } else if (!itemCodeSearch) {
       setShowDropdown(false);
-      if (brand) {
-        const filtered = products.filter((p) => {
-          if (!p || !p.brand) return false;
-          try {
-            return p.brand.toLowerCase() === brand.toLowerCase();
-          } catch (err) {
-            console.error("Error filtering by brand:", p, err);
-            return false;
-          }
-        });
-        setFilteredProducts(filtered || []);
-      }
     }
-  }, [itemCodeSearch, products, brand]);
+  }, [modelSearch, products]);
 
-  const handleItemCodeSelect = (p) => {
-    if (!p) {
-      console.error("Invalid product selected");
-      return;
-    }
-    setItemCode(p.itemCode || "");
-    setItemCodeSearch(p.itemCode || "");
+  const handleModelSelect = (p) => {
+    if (!p) return;
+    const model = String(p.modelNumber || p["Model "] || p.Model || "");
+    setSelectedModel(model);
+    setModelSearch(model); // keep search box showing selection
+    setItemCode(String(p.itemCode || ""));
     setBrand(p.brand || "");
     setPrice(Number(p.price) || 0);
     setShowDropdown(false);
@@ -2114,7 +2087,8 @@ const AddSale = ({ user, navigate, onLogout }) => {
 
       setBrand("");
       setItemCode("");
-      setItemCodeSearch("");
+      setModelSearch("");
+      setSelectedModel("");
       setQuantity("");
       setPrice("");
       setShowToast(true);
@@ -2128,9 +2102,7 @@ const AddSale = ({ user, navigate, onLogout }) => {
     }
   };
 
-  const uniqueBrands = [
-    ...new Set(products.filter((p) => p && p.brand).map((p) => p.brand)),
-  ].sort();
+  // uniqueBrands not needed - brand is auto-filled from model selection
 
   return (
     <>
@@ -2167,7 +2139,6 @@ const AddSale = ({ user, navigate, onLogout }) => {
           <div
             className="card"
             style={{ ...styles.card, maxWidth: "700px", margin: "0 auto" }}
-            className="form-card"
           >
             <h3 style={styles.cardTitle}>Sale Details</h3>
             <div style={styles.formGroup}>
@@ -2181,49 +2152,39 @@ const AddSale = ({ user, navigate, onLogout }) => {
               />
             </div>
 
+            {/* ── Model Number Search (auto-fills Brand, Item Code, Price) ── */}
             <div style={styles.formGroup}>
-              <label style={styles.label}>Brand</label>
-              <select
-                value={brand}
-                onChange={(e) => {
-                  setBrand(e.target.value);
-                  setItemCode("");
-                  setItemCodeSearch("");
-                  setPrice("");
-                }}
-                disabled={submitting}
-                style={styles.select}
-              >
-                <option value="">Select Brand</option>
-                {uniqueBrands.map((b) => (
-                  <option key={b} value={b}>
-                    {b}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div style={styles.formGroup}>
-              <label style={styles.label}>Item Code (Type to search)</label>
+              <label style={styles.label}>
+                Model Number{" "}
+                <span
+                  style={{
+                    color: theme.colors.textSecondary,
+                    fontWeight: 400,
+                    fontSize: 12,
+                  }}
+                >
+                  (type to search)
+                </span>
+              </label>
               <div style={{ position: "relative" }}>
                 <input
                   type="text"
-                  value={itemCodeSearch}
+                  value={modelSearch}
                   onChange={(e) => {
-                    setItemCodeSearch(e.target.value);
-                    if (e.target.value && e.target.value.length > 0) {
-                      setShowDropdown(true);
-                    } else {
-                      setShowDropdown(false);
+                    setModelSearch(e.target.value);
+                    // Clear auto-filled values when user changes search
+                    if (e.target.value !== selectedModel) {
+                      setBrand("");
+                      setItemCode("");
+                      setPrice("");
+                      setSelectedModel("");
                     }
                   }}
-                  onBlur={() => {
-                    // Delay hiding dropdown to allow click to register
-                    setTimeout(() => setShowDropdown(false), 200);
-                  }}
+                  onBlur={() => setTimeout(() => setShowDropdown(false), 200)}
                   disabled={submitting}
                   style={styles.input}
-                  placeholder="Type to search item code..."
+                  placeholder="Type model number…"
+                  autoComplete="off"
                 />
                 {showDropdown && filteredProducts.length > 0 && (
                   <div
@@ -2232,7 +2193,7 @@ const AddSale = ({ user, navigate, onLogout }) => {
                       top: "100%",
                       left: 0,
                       right: 0,
-                      maxHeight: "200px",
+                      maxHeight: "220px",
                       overflowY: "auto",
                       background: theme.colors.white,
                       border: `1px solid ${theme.colors.grey300}`,
@@ -2242,16 +2203,71 @@ const AddSale = ({ user, navigate, onLogout }) => {
                       zIndex: 1000,
                     }}
                   >
-                    {filteredProducts.slice(0, 10).map((p, idx) => (
+                    {filteredProducts.slice(0, 12).map((p, i) => (
                       <DropdownItem
-                        key={`${p.itemCode}-${idx}`}
+                        key={`${p.itemCode}-${i}`}
                         product={p}
-                        onClick={() => handleItemCodeSelect(p)}
+                        onClick={() => handleModelSelect(p)}
                       />
                     ))}
                   </div>
                 )}
               </div>
+            </div>
+
+            {/* Auto-filled read-only fields */}
+            <div style={styles.formGroup}>
+              <label style={styles.label}>
+                Brand{" "}
+                <span
+                  style={{
+                    color: theme.colors.primary,
+                    fontWeight: 400,
+                    fontSize: 12,
+                  }}
+                >
+                  (auto-filled)
+                </span>
+              </label>
+              <input
+                type="text"
+                value={brand}
+                disabled
+                style={{
+                  ...styles.input,
+                  background: brand ? "#f0fff0" : theme.colors.grey100,
+                  cursor: "not-allowed",
+                  fontWeight: brand ? 600 : 400,
+                }}
+                placeholder="Auto-filled on selection"
+              />
+            </div>
+
+            <div style={styles.formGroup}>
+              <label style={styles.label}>
+                Item Code{" "}
+                <span
+                  style={{
+                    color: theme.colors.primary,
+                    fontWeight: 400,
+                    fontSize: 12,
+                  }}
+                >
+                  (auto-filled)
+                </span>
+              </label>
+              <input
+                type="text"
+                value={itemCode}
+                disabled
+                style={{
+                  ...styles.input,
+                  background: itemCode ? "#f0fff0" : theme.colors.grey100,
+                  cursor: "not-allowed",
+                  fontWeight: itemCode ? 600 : 400,
+                }}
+                placeholder="Auto-filled on selection"
+              />
             </div>
 
             <div style={styles.formGroup}>
@@ -2396,9 +2412,8 @@ const ApplyLeave = ({ user, navigate, onLogout }) => {
 
         <div style={styles.mainContent} className="pg-content">
           <div
-            className="card"
+            className="card form-card"
             style={{ ...styles.card, maxWidth: "700px", margin: "0 auto" }}
-            className="form-card"
           >
             <h3 style={styles.cardTitle}>Leave Application</h3>
             <div style={styles.formGroup}>
@@ -3118,6 +3133,32 @@ const AdminDashboard = ({ user, navigate, onLogout }) => {
 export default function App() {
   const [user, setUser] = useState(null);
   const [route, setRoute] = useState("login");
+
+  // ── Back-button guard ─────────────────────────────────────────
+  // Push a dummy history entry whenever the route changes so the
+  // browser back button triggers popstate instead of leaving the app.
+  // On popstate we intercept it and redirect to the correct dashboard.
+  useEffect(() => {
+    if (route !== "login") {
+      window.history.pushState({ route }, "", window.location.pathname);
+    }
+  }, [route]);
+
+  useEffect(() => {
+    const handlePop = (e) => {
+      // Always push a new entry so we never fall off the stack
+      window.history.pushState({ route }, "", window.location.pathname);
+      if (user) {
+        // Redirect to the right dashboard – never exit the app
+        const dashboard =
+          user.role === "admin" ? "admin-dashboard" : "salesman-dashboard";
+        setRoute(dashboard);
+      }
+    };
+    window.addEventListener("popstate", handlePop);
+    return () => window.removeEventListener("popstate", handlePop);
+  }, [user, route]);
+  // ─────────────────────────────────────────────────────────────
 
   const doLogin = (u) => {
     setUser(u);

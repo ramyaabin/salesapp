@@ -92,33 +92,33 @@ const api = {
   },
 
   /* -------------------- FORGOT PASSWORD (OTP) -------------------- */
-  async forgotPassword(username) {
+  async forgotPassword(email) {
     const res = await fetch(`${API_URL}/api/forgot-password`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ username }),
+      body: JSON.stringify({ email }),
     });
     const data = await res.json();
     if (!res.ok) throw new Error(data.error || "Failed to send OTP");
     return data; // { success, maskedEmail }
   },
 
-  async verifyOtp(username, otp) {
+  async verifyOtp(email, otp) {
     const res = await fetch(`${API_URL}/api/verify-otp`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ username, otp }),
+      body: JSON.stringify({ email, otp }),
     });
     const data = await res.json();
     if (!res.ok) throw new Error(data.error || "Invalid OTP");
     return data;
   },
 
-  async resetPasswordWithOtp(username, newPassword) {
+  async resetPasswordWithOtp(email, newPassword) {
     const res = await fetch(`${API_URL}/api/reset-password-otp`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ username, newPassword }),
+      body: JSON.stringify({ email, newPassword }),
     });
     const data = await res.json();
     if (!res.ok) throw new Error(data.error || "Failed to reset password");
