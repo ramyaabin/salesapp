@@ -1837,6 +1837,12 @@ const SalesmanDashboard = ({ user, navigate, onLogout }) => {
                         Code: {sale.itemCode} · Qty: {sale.quantity} ·{" "}
                         {money(sale.price)} each
                       </div>
+                      {sale.barcode && (
+                        <div className="row-card-meta">🔖 {sale.barcode}</div>
+                      )}
+                      {sale.location && (
+                        <div className="row-card-meta">📍 {sale.location}</div>
+                      )}
                       <div className="row-card-meta">
                         {formatDate(sale.date)}
                       </div>
@@ -1856,8 +1862,10 @@ const SalesmanDashboard = ({ user, navigate, onLogout }) => {
                     <thead>
                       <tr>
                         <th style={styles.th}>Date</th>
+                        <th style={styles.th}>Location</th>
                         <th style={styles.th}>Brand</th>
                         <th style={styles.th}>Item Code</th>
+                        <th style={styles.th}>Barcode</th>
                         <th style={styles.th}>Qty</th>
                         <th style={styles.th}>Price</th>
                         <th style={styles.th}>Total</th>
@@ -1867,8 +1875,10 @@ const SalesmanDashboard = ({ user, navigate, onLogout }) => {
                       {currentSales.map((sale, i) => (
                         <tr key={i}>
                           <td style={styles.td}>{formatDate(sale.date)}</td>
+                          <td style={styles.td}>{sale.location || "—"}</td>
                           <td style={styles.td}>{sale.brand}</td>
                           <td style={styles.td}>{sale.itemCode}</td>
+                          <td style={styles.td}>{sale.barcode || "—"}</td>
                           <td style={styles.td}>{sale.quantity}</td>
                           <td style={styles.td}>{money(sale.price)}</td>
                           <td
@@ -1987,8 +1997,11 @@ const DropdownItem = ({ product, onClick }) => {
 /* ===================== ADD SALE ===================== */
 const AddSale = ({ user, navigate, onLogout }) => {
   const [date, setDate] = useState(getToday());
+  const [location, setLocation] = useState("");
   const [brand, setBrand] = useState("");
   const [itemCode, setItemCode] = useState("");
+  const [barcode, setBarcode] = useState("");
+  const [description, setDescription] = useState("");
   const [modelSearch, setModelSearch] = useState(""); // NEW: search by model
   const [selectedModel, setSelectedModel] = useState(""); // NEW: display after select
   const [quantity, setQuantity] = useState("");
@@ -2046,6 +2059,11 @@ const AddSale = ({ user, navigate, onLogout }) => {
     setItemCode(String(p.itemCode || ""));
     setBrand(p.brand || "");
     setPrice(Number(p.price) || 0);
+    // Auto-fill barcode (EAN) and description
+    setBarcode(String(p.ean || p.EAN || ""));
+    setDescription(
+      String(p.description || p.Description || p["Item Description"] || ""),
+    );
     setShowDropdown(false);
   };
 
@@ -2059,7 +2077,7 @@ const AddSale = ({ user, navigate, onLogout }) => {
       price,
     });
 
-    if (!date || !brand || !itemCode || !quantity || !price) {
+    if (!date || !location || !brand || !itemCode || !quantity || !price) {
       console.log("🔴 Validation failed - missing fields");
       alert("Please fill all fields");
       return;
@@ -2073,8 +2091,11 @@ const AddSale = ({ user, navigate, onLogout }) => {
         salesmanId: user.salesmanId,
         salesmanName: user.name,
         date: date,
+        location: location,
         brand: brand,
         itemCode: itemCode,
+        barcode: barcode,
+        description: description,
         quantity: Number(quantity),
         price: Number(price),
         totalAmount: Number(quantity) * Number(price),
@@ -2087,6 +2108,9 @@ const AddSale = ({ user, navigate, onLogout }) => {
 
       setBrand("");
       setItemCode("");
+      setBarcode("");
+      setDescription("");
+      setLocation("");
       setModelSearch("");
       setSelectedModel("");
       setQuantity("");
@@ -2150,6 +2174,23 @@ const AddSale = ({ user, navigate, onLogout }) => {
                 disabled={submitting}
                 style={styles.dateInput}
               />
+            </div>
+
+            {/* ── Location / Outlet Name ── */}
+            <div style={styles.formGroup}>
+              <label style={styles.label}>Location / Outlet Name</label>
+              <select
+                value={location}
+                onChange={(e) => setLocation(e.target.value)}
+                disabled={submitting}
+                style={styles.select}
+              >
+                <option value="">-- Select Outlet --</option>
+                <option value="Emax - Dalma Mall">Emax - Dalma Mall</option>
+                <option value="Emax - Yas Mall">Emax - Yas Mall</option>
+                <option value="Emax - Dubai Mall">Emax - Dubai Mall</option>
+                <option value="Emax - Mcc">Emax - Mcc</option>
+              </select>
             </div>
 
             {/* ── Model Number Search (auto-fills Brand, Item Code, Price) ── */}
@@ -2265,6 +2306,62 @@ const AddSale = ({ user, navigate, onLogout }) => {
                   background: itemCode ? "#f0fff0" : theme.colors.grey100,
                   cursor: "not-allowed",
                   fontWeight: itemCode ? 600 : 400,
+                }}
+                placeholder="Auto-filled on selection"
+              />
+            </div>
+
+            {/* Auto-filled: Barcode (EAN) */}
+            <div style={styles.formGroup}>
+              <label style={styles.label}>
+                Barcode{" "}
+                <span
+                  style={{
+                    color: theme.colors.primary,
+                    fontWeight: 400,
+                    fontSize: 12,
+                  }}
+                >
+                  (auto-filled)
+                </span>
+              </label>
+              <input
+                type="text"
+                value={barcode}
+                disabled
+                style={{
+                  ...styles.input,
+                  background: barcode ? "#f0fff0" : theme.colors.grey100,
+                  cursor: "not-allowed",
+                  fontWeight: barcode ? 600 : 400,
+                }}
+                placeholder="Auto-filled on selection"
+              />
+            </div>
+
+            {/* Auto-filled: Description */}
+            <div style={styles.formGroup}>
+              <label style={styles.label}>
+                Description{" "}
+                <span
+                  style={{
+                    color: theme.colors.primary,
+                    fontWeight: 400,
+                    fontSize: 12,
+                  }}
+                >
+                  (auto-filled)
+                </span>
+              </label>
+              <input
+                type="text"
+                value={description}
+                disabled
+                style={{
+                  ...styles.input,
+                  background: description ? "#f0fff0" : theme.colors.grey100,
+                  cursor: "not-allowed",
+                  fontWeight: description ? 500 : 400,
                 }}
                 placeholder="Auto-filled on selection"
               />
@@ -2519,9 +2616,9 @@ const AdminDashboard = ({ user, navigate, onLogout }) => {
   const downloadReport = (salesmanId) => {
     const salesmanSales = sales.filter((s) => s.salesmanId === salesmanId);
     const salesman = salesmen.find((sm) => sm.salesmanId === salesmanId);
-    let csv = "Date,Brand,Item Code,Quantity,Price,Total\n";
+    let csv = "Date,Location,Brand,Item Code,Barcode,Quantity,Price,Total\n";
     salesmanSales.forEach((s) => {
-      csv += `${s.date},${s.brand},${s.itemCode},${s.quantity},${s.price},${s.totalAmount || s.quantity * s.price}\n`;
+      csv += `${s.date},${s.location || ""},${s.brand},${s.itemCode},${s.barcode || ""},${s.quantity},${s.price},${s.totalAmount || s.quantity * s.price}\n`;
     });
     const blob = new Blob([csv], { type: "text/csv" });
     const url = window.URL.createObjectURL(blob);
