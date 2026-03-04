@@ -2090,15 +2090,21 @@ const AddSale = ({ user, navigate, onLogout }) => {
     loadProducts();
   }, []);
 
-  // Search products by model number
+  // Search products by model number, brand, barcode or description
   useEffect(() => {
     if (modelSearch.trim().length > 0) {
       const q = modelSearch.toLowerCase();
       const results = products.filter((p) => {
-        const model = String(
-          p.modelNumber || p["Model "] || p.Model || "",
-        ).toLowerCase();
-        return model.includes(q);
+        const model = String(p.modelNumber || "").toLowerCase();
+        const brand = String(p.brand || "").toLowerCase();
+        const ean = String(p.ean || "").toLowerCase();
+        const desc = String(p.description || "").toLowerCase();
+        return (
+          model.includes(q) ||
+          brand.includes(q) ||
+          ean.includes(q) ||
+          desc.includes(q)
+        );
       });
       setFilteredProducts(results);
       setShowDropdown(results.length > 0);
