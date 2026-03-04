@@ -2308,33 +2308,6 @@ const AddSale = ({ user, navigate, onLogout }) => {
               />
             </div>
 
-            <div style={styles.formGroup}>
-              <label style={styles.label}>
-                Item Code{" "}
-                <span
-                  style={{
-                    color: theme.colors.primary,
-                    fontWeight: 400,
-                    fontSize: 12,
-                  }}
-                >
-                  (auto-filled)
-                </span>
-              </label>
-              <input
-                type="text"
-                value={itemCode}
-                disabled
-                style={{
-                  ...styles.input,
-                  background: itemCode ? "#f0fff0" : theme.colors.grey100,
-                  cursor: "not-allowed",
-                  fontWeight: itemCode ? 600 : 400,
-                }}
-                placeholder="Auto-filled on selection"
-              />
-            </div>
-
             {/* Auto-filled: Barcode (EAN) */}
             <div style={styles.formGroup}>
               <label style={styles.label}>
