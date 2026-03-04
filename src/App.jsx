@@ -1858,8 +1858,7 @@ const SalesmanDashboard = ({ user, navigate, onLogout }) => {
                         </span>
                       </div>
                       <div className="row-card-meta">
-                        Code: {sale.itemCode} · Qty: {sale.quantity} ·{" "}
-                        {money(sale.price)} each
+                        Qty: {sale.quantity} · {money(sale.price)} each
                       </div>
                       {sale.barcode && (
                         <div className="row-card-meta">🔖 {sale.barcode}</div>
@@ -1888,7 +1887,6 @@ const SalesmanDashboard = ({ user, navigate, onLogout }) => {
                         <th style={styles.th}>Date</th>
                         <th style={styles.th}>Location</th>
                         <th style={styles.th}>Brand</th>
-                        <th style={styles.th}>Item Code</th>
                         <th style={styles.th}>Barcode</th>
                         <th style={styles.th}>Qty</th>
                         <th style={styles.th}>Price</th>
@@ -1901,7 +1899,6 @@ const SalesmanDashboard = ({ user, navigate, onLogout }) => {
                           <td style={styles.td}>{formatDate(sale.date)}</td>
                           <td style={styles.td}>{sale.location || "—"}</td>
                           <td style={styles.td}>{sale.brand}</td>
-                          <td style={styles.td}>{sale.itemCode}</td>
                           <td style={styles.td}>{sale.barcode || "—"}</td>
                           <td style={styles.td}>{sale.quantity}</td>
                           <td style={styles.td}>{money(sale.price)}</td>
@@ -2012,7 +2009,7 @@ const DropdownItem = ({ product, onClick }) => {
           marginTop: "4px",
         }}
       >
-        {product.brand} · Code: {product.itemCode} · {money(product.price)}
+        {product.brand} · {money(product.price)}
       </div>
     </div>
   );
@@ -2613,9 +2610,9 @@ const AdminDashboard = ({ user, navigate, onLogout }) => {
   const downloadReport = (salesmanId) => {
     const salesmanSales = sales.filter((s) => s.salesmanId === salesmanId);
     const salesman = salesmen.find((sm) => sm.salesmanId === salesmanId);
-    let csv = "Date,Location,Brand,Item Code,Barcode,Quantity,Price,Total\n";
+    let csv = "Date,Location,Brand,Barcode,Quantity,Price,Total\n";
     salesmanSales.forEach((s) => {
-      csv += `${s.date},${s.location || ""},${s.brand},${s.itemCode},${s.barcode || ""},${s.quantity},${s.price},${s.totalAmount || s.quantity * s.price}\n`;
+      csv += `${s.date},${s.location || ""},${s.brand},${s.barcode || ""},${s.quantity},${s.price},${s.totalAmount || s.quantity * s.price}\n`;
     });
     const blob = new Blob([csv], { type: "text/csv" });
     const url = window.URL.createObjectURL(blob);
