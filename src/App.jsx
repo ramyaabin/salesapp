@@ -2785,11 +2785,14 @@ const AdminDashboard = ({ user, navigate, onLogout }) => {
   const performerOfMonth = getPerformerOfMonth();
 
   const COLORS = [
-    theme.colors.primary,
-    theme.colors.primaryLight,
-    theme.colors.grey600,
-    theme.colors.grey500,
-    theme.colors.grey400,
+    "#e53935", // Red
+    "#1e88e5", // Blue
+    "#43a047", // Green
+    "#fb8c00", // Orange
+    "#8e24aa", // Purple
+    "#00acc1", // Cyan
+    "#f4511e", // Deep Orange
+    "#6d4c41", // Brown
   ];
 
   if (loading) return <LoadingSpinner />;
