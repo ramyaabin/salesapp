@@ -274,12 +274,12 @@ const api = {
   },
 
   // ✅ ADDED — Approve or reject a leave (for admin dashboard)
-  async updateLeaveStatus(leaveId, status) {
+  async updateLeaveStatus(leaveId, status, adminRemark = "") {
     try {
       const res = await fetch(`${API_URL}/api/leaves/${leaveId}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ status }),
+        body: JSON.stringify({ status, adminRemark }),
       });
 
       if (!res.ok) {
@@ -294,7 +294,9 @@ const api = {
         localStorage.getItem("salesTracker_leaves") || "[]",
       );
       const updated = stored.map((l) =>
-        l._id === leaveId ? { ...l, status } : l,
+        l._id === leaveId
+          ? { ...l, status, adminRemark, actionAt: new Date().toISOString() }
+          : l,
       );
       localStorage.setItem("salesTracker_leaves", JSON.stringify(updated));
 
