@@ -2622,6 +2622,44 @@ const AdminDashboard = ({ user, navigate, onLogout }) => {
     a.click();
   };
 
+  // ✅ Download monthly leave report for a specific salesman
+  const downloadLeaveReport = (salesmanId) => {
+    const salesman = salesmen.find((sm) => sm.salesmanId === salesmanId);
+    const month = selectedDate.slice(0, 7); // e.g. "2026-03"
+    const salesmanLeaves = leaves.filter(
+      (l) => l.salesmanId === salesmanId && l.date.startsWith(month),
+    );
+    let csv = "Date,Salesman,Reason,Status\n";
+    salesmanLeaves.forEach((l) => {
+      const reason = `"${(l.reason || "").replace(/"/g, '""')}"`;
+      csv += `${l.date},${salesman?.name || l.salesmanName},${reason},${l.status || "Pending"}\n`;
+    });
+    const blob = new Blob([csv], { type: "text/csv" });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `${salesman?.name}_leave_report_${month}.csv`;
+    a.click();
+  };
+
+  // ✅ Download ALL employees leave report for selected month
+  const downloadAllLeavesReport = () => {
+    const month = selectedDate.slice(0, 7);
+    const filtered = leaves.filter((l) => l.date.startsWith(month));
+    let csv = "Date,Salesman,Reason,Status\n";
+    filtered.forEach((l) => {
+      const salesman = salesmen.find((s) => s.salesmanId === l.salesmanId);
+      const reason = `"${(l.reason || "").replace(/"/g, '""')}"`;
+      csv += `${l.date},${salesman?.name || l.salesmanName},${reason},${l.status || "Pending"}\n`;
+    });
+    const blob = new Blob([csv], { type: "text/csv" });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `all_employees_leave_report_${month}.csv`;
+    a.click();
+  };
+
   const salesBySalesman = salesmen.map((sm) => {
     const smSales = getSalesmanSales(sm.salesmanId, currentSales);
     return {
@@ -3094,9 +3132,29 @@ const AdminDashboard = ({ user, navigate, onLogout }) => {
 
           {view === "monthly" && monthlyLeaves.length > 0 && (
             <div className="card" style={styles.card}>
-              <h3 style={styles.cardTitle}>
-                Monthly Leave Report ({monthlyLeaves.length} total)
-              </h3>
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  marginBottom: 12,
+                }}
+              >
+                <h3 style={{ ...styles.cardTitle, margin: 0 }}>
+                  Monthly Leave Report ({monthlyLeaves.length} total)
+                </h3>
+                <button
+                  onClick={downloadAllLeavesReport}
+                  style={{
+                    ...styles.button,
+                    width: "auto",
+                    padding: "8px 16px",
+                    fontSize: 13,
+                  }}
+                >
+                  ⬇ Download All Leaves CSV
+                </button>
+              </div>
               <div style={{ maxHeight: "400px", overflowY: "auto" }}>
                 <table style={styles.table}>
                   <thead>
@@ -3159,7 +3217,19 @@ const AdminDashboard = ({ user, navigate, onLogout }) => {
                           marginTop: 4,
                         }}
                       >
-                        ⬇ CSV
+                        ⬇ Sales CSV
+                      </button>
+                      <button
+                        onClick={() => downloadLeaveReport(salesman.salesmanId)}
+                        style={{
+                          ...styles.actionButton,
+                          fontSize: 11,
+                          padding: "5px 8px",
+                          marginTop: 4,
+                          background: "#ff9800",
+                        }}
+                      >
+                        ⬇ Leave CSV
                       </button>
                     </div>
                   </div>
@@ -3200,12 +3270,27 @@ const AdminDashboard = ({ user, navigate, onLogout }) => {
                           {money(total)}
                         </td>
                         <td style={styles.td}>
-                          <button
-                            onClick={() => downloadReport(salesman.salesmanId)}
-                            style={styles.actionButton}
-                          >
-                            Download Report
-                          </button>
+                          <div style={{ display: "flex", gap: 6 }}>
+                            <button
+                              onClick={() =>
+                                downloadReport(salesman.salesmanId)
+                              }
+                              style={styles.actionButton}
+                            >
+                              ⬇ Sales Report
+                            </button>
+                            <button
+                              onClick={() =>
+                                downloadLeaveReport(salesman.salesmanId)
+                              }
+                              style={{
+                                ...styles.actionButton,
+                                background: "#ff9800",
+                              }}
+                            >
+                              ⬇ Leave Report
+                            </button>
+                          </div>
                         </td>
                       </tr>
                     );
