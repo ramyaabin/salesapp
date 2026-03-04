@@ -1292,19 +1292,23 @@ const DownloadProducts = ({ navigate, onLogout }) => {
     if (searchTerm.trim() === "") {
       setFilteredProducts(products);
     } else {
+      const q = searchTerm.toLowerCase();
       const filtered = products.filter(
         (p) =>
-          p.brand.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          p.itemCode.toLowerCase().includes(searchTerm.toLowerCase()),
+          (p.brand || "").toLowerCase().includes(q) ||
+          (p.modelNumber || "").toLowerCase().includes(q) ||
+          (p.description || "").toLowerCase().includes(q) ||
+          (p.ean || "").toLowerCase().includes(q),
       );
       setFilteredProducts(filtered);
     }
   }, [searchTerm, products]);
 
   const downloadCSV = () => {
-    let csv = "Brand,Item Code,Price\n";
+    let csv = "Brand,Model No.,Barcode,Description,Price\n";
     filteredProducts.forEach((p) => {
-      csv += `${p.brand},${p.itemCode},${p.price}\n`;
+      const desc = `"${(p.description || "").replace(/"/g, '""')}"`;
+      csv += `${p.brand},${p.modelNumber || ""},${p.ean || ""},${desc},${p.price}\n`;
     });
     const blob = new Blob([csv], { type: "text/csv" });
     const url = window.URL.createObjectURL(blob);
@@ -1383,9 +1387,17 @@ const DownloadProducts = ({ navigate, onLogout }) => {
               {filteredProducts.length > 0 ? (
                 filteredProducts.map((p, i) => (
                   <div key={i} className="prod-row">
-                    <div>
+                    <div style={{ flex: 1 }}>
                       <div className="prod-row-brand">{p.brand}</div>
-                      <div className="prod-row-code">{p.itemCode || "—"}</div>
+                      <div className="prod-row-code">
+                        {p.modelNumber || "—"}
+                      </div>
+                      <div className="prod-row-code" style={{ fontSize: 11 }}>
+                        🔖 {p.ean || "—"}
+                      </div>
+                      <div className="prod-row-code" style={{ fontSize: 11 }}>
+                        {p.description || ""}
+                      </div>
                     </div>
                     <div className="prod-row-price">{money(p.price)}</div>
                   </div>
@@ -1408,7 +1420,9 @@ const DownloadProducts = ({ navigate, onLogout }) => {
                 <thead>
                   <tr>
                     <th style={styles.th}>Brand</th>
-                    <th style={styles.th}>Item Code</th>
+                    <th style={styles.th}>Model No.</th>
+                    <th style={styles.th}>Barcode</th>
+                    <th style={styles.th}>Description</th>
                     <th style={styles.th}>Price (AED)</th>
                   </tr>
                 </thead>
@@ -1417,14 +1431,24 @@ const DownloadProducts = ({ navigate, onLogout }) => {
                     filteredProducts.map((p, i) => (
                       <tr key={i}>
                         <td style={styles.td}>{p.brand}</td>
-                        <td style={styles.td}>{p.itemCode}</td>
+                        <td style={styles.td}>{p.modelNumber || "—"}</td>
+                        <td style={styles.td}>{p.ean || "—"}</td>
+                        <td
+                          style={{
+                            ...styles.td,
+                            maxWidth: 300,
+                            whiteSpace: "normal",
+                          }}
+                        >
+                          {p.description || "—"}
+                        </td>
                         <td style={styles.td}>{money(p.price)}</td>
                       </tr>
                     ))
                   ) : (
                     <tr>
                       <td
-                        colSpan="3"
+                        colSpan="5"
                         style={{
                           ...styles.td,
                           textAlign: "center",
@@ -2077,7 +2101,7 @@ const AddSale = ({ user, navigate, onLogout }) => {
       price,
     });
 
-    if (!date || !location || !brand || !itemCode || !quantity || !price) {
+    if (!date || !location || !brand || !quantity || !price) {
       console.log("🔴 Validation failed - missing fields");
       alert("Please fill all fields");
       return;
