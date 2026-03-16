@@ -81,6 +81,7 @@ const modernStyles = {
     background: theme.colors.grey100,
     fontFamily: "'Segoe UI', 'Helvetica Neue', Arial, sans-serif",
     color: theme.colors.text,
+    overflowX: "hidden",
   },
   header: {
     background: theme.colors.white,
@@ -113,7 +114,7 @@ const modernStyles = {
     fontWeight: "400",
   },
   headerButton: {
-    padding: "10px 20px",
+    padding: "16px 26px",
     background: theme.colors.white,
     border: `1px solid ${theme.colors.grey300}`,
     borderRadius: "4px",
@@ -329,6 +330,7 @@ const styles = {
     minHeight: "100vh",
     background: theme.colors.grey100,
     fontFamily: "'Segoe UI', 'Helvetica Neue', Arial, sans-serif",
+    overflowX: "hidden",
   },
   header: {
     background: theme.colors.white,
@@ -465,7 +467,7 @@ const GlobalStyles = () => {
     const style = document.createElement("style");
     style.textContent = `
       * { box-sizing: border-box; }
-      body { margin:0; padding:0; font-family:'Segoe UI','Helvetica Neue',Arial,sans-serif; }
+      body { margin:0; padding:0; font-family:'Segoe UI','Helvetica Neue',Arial,sans-serif; overflow-x:hidden; }
       button:hover { opacity:0.9; transform:translateY(-1px); box-shadow:0 2px 4px rgba(0,0,0,0.1); }
       button:active { transform:translateY(0); }
       button:disabled { opacity:0.6; cursor:not-allowed; transform:none !important; }
@@ -494,7 +496,7 @@ const GlobalStyles = () => {
         .hdr-sub { display:none !important; }
         .hdr-logo { height:32px !important; }
         /* Content padding */
-        .pg-content { padding:12px !important; }
+        .pg-content { padding:12px 14px !important; }
         /* Control bar stacks */
         .ctrl-bar { flex-direction:column !important; align-items:stretch !important; gap:10px !important; padding:12px !important; }
         .view-toggle { width:100% !important; }
@@ -980,6 +982,7 @@ const LoginPage = ({ onLogin }) => {
 
 /* ===================== MANAGE SALESMEN ===================== */
 const ManageSalesmen = ({ navigate, onLogout }) => {
+  const isMobile = useIsMobile();
   const [salesmen, setSalesmen] = useState([]);
   const [showForm, setShowForm] = useState(false);
   const [formData, setFormData] = useState({
@@ -1076,11 +1079,17 @@ const ManageSalesmen = ({ navigate, onLogout }) => {
       <GlobalStyles />
       <div style={styles.dashboardContainer}>
         <div style={styles.header}>
-          <div style={styles.headerContent}>
+          <div
+            style={{
+              ...styles.headerContent,
+              padding: isMobile ? "16px 20px" : "16px 32px",
+            }}
+          >
             <div style={modernStyles.logoContainer}>
               <img src={hamaLogo} alt="HAMA" style={modernStyles.logo} />
               <h1 style={styles.headerTitle}>Manage Salesmen</h1>
             </div>
+
             <div style={{ display: "flex", gap: "12px" }}>
               <button
                 onClick={() => navigate("admin-dashboard")}
@@ -1504,11 +1513,11 @@ const SalesmanDashboard = ({ user, navigate, onLogout }) => {
 
   useEffect(() => {
     loadData();
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     refreshLeaves();
-  }, [view, selectedDate]);
+  }, [view, selectedDate]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const loadData = async () => {
     setLoading(true);
@@ -2599,11 +2608,11 @@ const AdminDashboard = ({ user, navigate, onLogout }) => {
 
   useEffect(() => {
     loadData();
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     refreshLeaves();
-  }, [view, selectedDate]);
+  }, [view, selectedDate]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const loadData = async () => {
     setLoading(true);
@@ -2736,6 +2745,7 @@ const AdminDashboard = ({ user, navigate, onLogout }) => {
     const smSales = getSalesmanSales(sm.salesmanId, currentSales);
     return {
       name: sm.name,
+      id: sm.salesmanId,
       sales: calculateTotal(smSales),
       transactions: smSales.length,
     };
@@ -3099,14 +3109,25 @@ const AdminDashboard = ({ user, navigate, onLogout }) => {
                   </span>
                 </h3>
                 <ResponsiveContainer width="100%" height={300}>
-                  <BarChart data={salesBySalesman}>
+                  <BarChart
+                    data={salesBySalesman}
+                    margin={{ top: 5, right: 10, left: 10, bottom: 5 }}
+                  >
                     <CartesianGrid
                       strokeDasharray="3 3"
                       stroke={theme.colors.grey300}
                     />
-                    <XAxis dataKey="name" />
+                    <XAxis dataKey="id" tick={{ fontSize: 12 }} interval={0} />
                     <YAxis />
-                    <Tooltip formatter={(value) => money(value)} />
+                    <Tooltip
+                      formatter={(value) => [money(value), "Total Sales"]}
+                      labelFormatter={(label) => {
+                        const entry = salesBySalesman.find(
+                          (e) => e.id === label,
+                        );
+                        return entry ? entry.name : label;
+                      }}
+                    />
                     <Legend />
                     <Bar
                       dataKey="sales"
@@ -3602,7 +3623,7 @@ export default function App() {
   }, [route]);
 
   useEffect(() => {
-    const handlePop = (e) => {
+    const handlePop = () => {
       // Always push a new entry so we never fall off the stack
       window.history.pushState({ route }, "", window.location.pathname);
       if (user) {
