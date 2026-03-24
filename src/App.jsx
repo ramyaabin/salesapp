@@ -467,7 +467,7 @@ const GlobalStyles = () => {
     const style = document.createElement("style");
     style.textContent = `
       * { box-sizing: border-box; }
-      body { margin:0; padding:0; font-family:'Segoe UI','Helvetica Neue',Arial,sans-serif; overflow-x:hidden; }
+      body { margin:0; padding:0; font-family:'Segoe UI','Helvetica Neue',Arial,sans-serif; overflow-x:auto; -webkit-overflow-scrolling: touch; }
       button:hover { opacity:0.9; transform:translateY(-1px); box-shadow:0 2px 4px rgba(0,0,0,0.1); }
       button:active { transform:translateY(0); }
       button:disabled { opacity:0.6; cursor:not-allowed; transform:none !important; }
