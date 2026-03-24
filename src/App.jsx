@@ -566,10 +566,37 @@ const GlobalStyles = () => {
   color:#e53935; 
 }
         /* Product cards */
-        .prod-row { background:#fff; border:1px solid #e0e0e0; border-radius:8px; padding:12px 14px; margin-bottom:7px; display:flex; justify-content:space-between; align-items:center; }
-        .prod-row-brand { font-size:14px; font-weight:600; }
-        .prod-row-code { font-size:12px; color:#888; margin-top:2px; }
-        .prod-row-price { font-size:15px; font-weight:700; color:#e53935; }
+        .prod-row { 
+  background:#fff; 
+  border:1px solid #e0e0e0; 
+  border-radius:8px; 
+  padding:12px 14px; 
+  margin-bottom:7px; 
+
+  display:flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.prod-row-brand { 
+  font-size:14px; 
+  font-weight:600;
+  width: 100%; 
+}
+
+.prod-row-code { 
+  font-size:12px; 
+  color:#888; 
+  margin-top:2px; 
+  width: 100%;
+}
+
+.prod-row-price {
+  margin-top: 6px;
+  font-size:15px; 
+  font-weight:700; 
+  color:#e53935;
+}
         /* Manage salesmen cards */
         .mgr-row { background:#fff; border:1px solid #e0e0e0; border-radius:8px; padding:12px 14px; margin-bottom:8px; }
         .mgr-row-name { font-size:15px; font-weight:600; }
