@@ -514,8 +514,15 @@ const GlobalStyles = () => {
         /* Form max-width */
         .form-card { max-width:100% !important; margin:0 !important; }
         /* Action btn group */
-        .act-btns { flex-direction:column !important; }
-        .act-btns button { width:100% !important; }
+        .act-btns { 
+  display: flex;
+  flex-wrap: wrap;     /* ✅ allows wrapping */
+  gap: 6px;
+}
+
+.act-btns button {
+  width: auto;         /* ✅ natural size */
+}
         /* Mobile sale/leave row cards */
         .row-card { background:#fff; border:1px solid #e0e0e0; border-radius:8px; padding:12px 14px; margin-bottom:8px; }
         .row-card-head { display:flex; justify-content:space-between; align-items:center; margin-bottom:4px; }
@@ -523,11 +530,41 @@ const GlobalStyles = () => {
         .row-card-amount { font-size:16px; font-weight:700; color:#e53935; }
         .row-card-meta { font-size:12px; color:#777; margin-top:2px; }
         /* Salesman cards */
-        .sm-row { background:#fff; border:1px solid #e0e0e0; border-radius:8px; padding:12px 14px; margin-bottom:8px; display:flex; justify-content:space-between; align-items:center; }
-        .sm-row-l .sm-name { font-size:15px; font-weight:600; }
-        .sm-row-l .sm-meta { font-size:12px; color:#888; margin-top:2px; }
-        .sm-row-r { text-align:right; }
-        .sm-row-r .sm-total { font-size:16px; font-weight:700; color:#e53935; }
+       .sm-row {
+  background:#fff;
+  border:1px solid #e0e0e0;
+  border-radius:8px;
+  padding:12px 14px;
+  margin-bottom:8px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.sm-row-l .sm-name { 
+  font-size:15px; 
+  font-weight:600; 
+}
+
+.sm-row-l .sm-meta { 
+  font-size:12px; 
+  color:#888; 
+  margin-top:2px; 
+}
+
+/* ✅ FIXED RIGHT SECTION */
+.sm-row-r { 
+  width: 100%;
+  margin-top: 8px;
+  text-align: left;   /* keep ONLY this */
+}
+
+.sm-row-r .sm-total { 
+  font-size:16px; 
+  font-weight:700; 
+  color:#e53935; 
+}
         /* Product cards */
         .prod-row { background:#fff; border:1px solid #e0e0e0; border-radius:8px; padding:12px 14px; margin-bottom:7px; display:flex; justify-content:space-between; align-items:center; }
         .prod-row-brand { font-size:14px; font-weight:600; }
